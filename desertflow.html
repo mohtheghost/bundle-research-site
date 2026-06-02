@@ -69,29 +69,31 @@
   <strong>Abstract.</strong> Desertflow Global Bundle is a per-region NDVI prediction system built on Google Earth Engine. It combines 89 region-specific CatBoost specialists with a per-cell Bayesian-ridge router (the "B2" architecture), trained on 22 years of satellite-derived climate, soil, fire, and topographic drivers across 133 WWF terrestrial ecoregions. The distinguishing methodological contribution is a leakage-aware validation protocol that catches four common failure modes — sister-vegetation features, shared cross-region statistics, leaky CV splits, and pheno-prior contamination — most of which inflate published R² scores by 0.05–0.20. After applying the audit, cross-continental R² on a held-out 44-region test set is approximately 0.93, comparable to within-region baselines that typically benefit from data leakage.
 </div>
 
-<!-- Table of contents -->
-<nav class="toc">
-  <div class="toc-title">On this page</div>
-  <ol>
-    <li><a href="#overview">Overview</a></li>
-    <li><a href="#why">Why this matters</a></li>
-    <li><a href="#problem">The problem</a></li>
-    <li><a href="#architecture">System architecture</a></li>
-    <li><a href="#details">Project details</a></li>
-    <li><a href="#methodology">Methodology</a></li>
-    <li><a href="#modules">Driver modules (19)</a></li>
-    <li><a href="#validation">Validation protocol</a></li>
-    <li><a href="#stack">Tech stack</a></li>
-    <li><a href="#leakage">Leakage audit</a></li>
-    <li><a href="#results">Results</a></li>
-    <li><a href="#openproblems">Open problems</a></li>
-    <li><a href="#progress">Recent progress</a></li>
-    <li><a href="#compute">Earth Engine compute</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#refs">References</a></li>
-    <li><a href="#faq">FAQ</a></li>
-    <li><a href="#ack">Acknowledgments</a></li>
-  </ol>
+<!-- Circular "revolver" table of contents -->
+<nav class="toc-circle" aria-label="Page sections">
+  <div class="toc-circle-center">
+    <span class="toc-circle-eyebrow">Page sections</span>
+    <span class="toc-circle-title" id="tocCenterTitle">Navigate</span>
+    <span class="toc-circle-hint">Hover a chamber</span>
+  </div>
+  <a class="toc-chamber" style="--i:0"  href="#overview"      title="Overview"><span class="toc-chamber-num">01</span><span>Overview</span></a>
+  <a class="toc-chamber" style="--i:1"  href="#why"           title="Why this matters"><span class="toc-chamber-num">02</span><span>Why it matters</span></a>
+  <a class="toc-chamber" style="--i:2"  href="#problem"       title="The problem"><span class="toc-chamber-num">03</span><span>Problem</span></a>
+  <a class="toc-chamber" style="--i:3"  href="#architecture"  title="System architecture"><span class="toc-chamber-num">04</span><span>Architecture</span></a>
+  <a class="toc-chamber" style="--i:4"  href="#details"       title="Project details"><span class="toc-chamber-num">05</span><span>Details</span></a>
+  <a class="toc-chamber" style="--i:5"  href="#methodology"   title="Methodology"><span class="toc-chamber-num">06</span><span>Methodology</span></a>
+  <a class="toc-chamber" style="--i:6"  href="#modules"       title="Driver modules (19)"><span class="toc-chamber-num">07</span><span>Modules</span></a>
+  <a class="toc-chamber" style="--i:7"  href="#validation"    title="Validation protocol"><span class="toc-chamber-num">08</span><span>Validation</span></a>
+  <a class="toc-chamber" style="--i:8"  href="#stack"         title="Tech stack"><span class="toc-chamber-num">09</span><span>Tech stack</span></a>
+  <a class="toc-chamber" style="--i:9"  href="#leakage"       title="Leakage audit"><span class="toc-chamber-num">10</span><span>Leakage</span></a>
+  <a class="toc-chamber" style="--i:10" href="#results"       title="Results"><span class="toc-chamber-num">11</span><span>Results</span></a>
+  <a class="toc-chamber" style="--i:11" href="#openproblems"  title="Open problems"><span class="toc-chamber-num">12</span><span>Hard regions</span></a>
+  <a class="toc-chamber" style="--i:12" href="#progress"      title="Recent progress"><span class="toc-chamber-num">13</span><span>Progress</span></a>
+  <a class="toc-chamber" style="--i:13" href="#compute"       title="Earth Engine compute"><span class="toc-chamber-num">14</span><span>EE Compute</span></a>
+  <a class="toc-chamber" style="--i:14" href="#roadmap"       title="Roadmap"><span class="toc-chamber-num">15</span><span>Roadmap</span></a>
+  <a class="toc-chamber" style="--i:15" href="#refs"          title="References"><span class="toc-chamber-num">16</span><span>References</span></a>
+  <a class="toc-chamber" style="--i:16" href="#faq"           title="FAQ"><span class="toc-chamber-num">17</span><span>FAQ</span></a>
+  <a class="toc-chamber" style="--i:17" href="#ack"           title="Acknowledgments"><span class="toc-chamber-num">18</span><span>Credits</span></a>
 </nav>
 
 <h2 id="overview">Overview</h2>

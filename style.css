@@ -799,6 +799,246 @@ body {
 .toc a { color: var(--ink); text-decoration: none; border: none; transition: color var(--tx-fast); }
 .toc a:hover { color: var(--accent); }
 
+/* ---------- 21b. Circular TOC ("revolver" navigation) --------------- */
+.toc-circle {
+  position: relative;
+  width: 660px;
+  height: 660px;
+  margin: 3.5rem auto 4rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, #0c2520 0%, #050e0c 100%);
+  border: 1px solid rgba(15, 123, 108, 0.25);
+  box-shadow:
+    0 0 80px rgba(15, 123, 108, 0.18),
+    inset 0 0 80px rgba(15, 123, 108, 0.10);
+  max-width: 100%;
+}
+
+/* Decorative concentric rings */
+.toc-circle::before {
+  content: "";
+  position: absolute;
+  inset: 36px;
+  border-radius: 50%;
+  border: 1px dashed rgba(15, 123, 108, 0.25);
+  animation: toc-ring-spin 80s linear infinite;
+  pointer-events: none;
+}
+.toc-circle::after {
+  content: "";
+  position: absolute;
+  inset: 110px;
+  border-radius: 50%;
+  border: 1px solid rgba(15, 123, 108, 0.15);
+  pointer-events: none;
+}
+@keyframes toc-ring-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Center disc */
+.toc-circle-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  box-shadow:
+    0 0 40px var(--accent-glow),
+    inset 0 0 30px rgba(255, 255, 255, 0.06);
+  z-index: 5;
+  padding: 0 1.2rem;
+  transition: transform var(--tx-base), box-shadow var(--tx-base);
+}
+.toc-circle-center::before {
+  /* Pulsing outer ring */
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-light);
+  opacity: 0.5;
+  animation: toc-center-pulse 3s ease-in-out infinite;
+}
+@keyframes toc-center-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50%      { transform: scale(1.08); opacity: 0.15; }
+}
+.toc-circle-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.78;
+  margin-bottom: 0.45rem;
+}
+.toc-circle-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.15;
+  min-height: 2.2rem;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  transition: opacity var(--tx-fast);
+}
+.toc-circle-hint {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin-top: 0.45rem;
+}
+
+/* Chamber items */
+.toc-chamber {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  --r: 268px;
+  --angle: calc(var(--i) * 20deg);
+  /* Position around circle: rotate, translate out, counter-rotate to stay upright */
+  transform:
+    translate(-50%, -50%)
+    rotate(var(--angle))
+    translateY(calc(-1 * var(--r)))
+    rotate(calc(-1 * var(--angle)));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  background: rgba(15, 30, 28, 0.88);
+  border: 1px solid rgba(15, 123, 108, 0.4);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  z-index: 2;
+  transition: background var(--tx-base), border-color var(--tx-base),
+              color var(--tx-base), box-shadow var(--tx-base), transform var(--tx-base);
+  backdrop-filter: blur(4px);
+}
+
+.toc-chamber-num {
+  color: var(--accent-light);
+  font-weight: 700;
+  font-size: 0.6rem;
+  transition: color var(--tx-base);
+}
+
+.toc-chamber:hover {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border-color: #fff;
+  color: #fff;
+  z-index: 10;
+  box-shadow:
+    0 0 16px rgba(20, 160, 140, 0.45),
+    0 0 36px rgba(15, 123, 108, 0.4);
+  transform:
+    translate(-50%, -50%)
+    rotate(var(--angle))
+    translateY(calc(-1 * var(--r)))
+    rotate(calc(-1 * var(--angle)))
+    scale(1.18);
+}
+.toc-chamber:hover .toc-chamber-num { color: #fff; }
+
+/* Connector line from center to hovered chamber (subtle) */
+.toc-circle .toc-chamber::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-light));
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity var(--tx-base);
+}
+
+/* Mobile: collapse to a plain list */
+@media (max-width: 760px) {
+  .toc-circle {
+    width: auto;
+    height: auto;
+    aspect-ratio: auto;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 1.4rem 1.65rem;
+    margin: 1.75rem 0 2.75rem;
+    box-shadow: var(--shadow-xs);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .toc-circle::before, .toc-circle::after { display: none; }
+  .toc-circle-center {
+    position: static;
+    transform: none;
+    width: auto;
+    height: auto;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    color: var(--ink);
+    padding: 0 0 0.6rem;
+    display: block;
+    text-align: left;
+  }
+  .toc-circle-center::before { display: none; }
+  .toc-circle-eyebrow { font-size: 0.7rem; color: var(--muted); }
+  .toc-circle-title {
+    color: var(--ink);
+    font-size: 1.05rem;
+    min-height: auto;
+    display: block;
+    text-align: left;
+    margin-top: 0.15rem;
+  }
+  .toc-circle-hint { display: none; }
+  .toc-chamber {
+    position: static;
+    transform: none;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.95rem;
+    padding: 0.35rem 0;
+    border-radius: 0;
+    backdrop-filter: none;
+    gap: 0.6rem;
+  }
+  .toc-chamber:hover {
+    transform: none;
+    background: transparent;
+    color: var(--accent);
+    box-shadow: none;
+    border: none;
+  }
+  .toc-chamber-num { color: var(--muted); font-family: var(--font-mono); }
+}
+
 /* ---------- 22. Diagram ---------------------------------------------- */
 .diagram {
   background: var(--dark-bg);

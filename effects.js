@@ -86,11 +86,30 @@
     window.addEventListener('scroll', update, { passive: true });
   }
 
+  // ---------- Circular TOC center display ----------
+  // When the visitor hovers a chamber in the circular TOC, swap the
+  // center disc text to the chamber's full title (taken from `title`
+  // attribute). When they move away, restore the default.
+  function initTocCircle(){
+    var center = document.getElementById('tocCenterTitle');
+    var chambers = document.querySelectorAll('.toc-chamber');
+    if (!center || !chambers.length) return;
+    var defaultText = center.textContent;
+    chambers.forEach(function(ch){
+      var full = ch.getAttribute('title') || ch.textContent.trim();
+      ch.addEventListener('mouseenter', function(){ center.textContent = full; });
+      ch.addEventListener('focus',      function(){ center.textContent = full; });
+      ch.addEventListener('mouseleave', function(){ center.textContent = defaultText; });
+      ch.addEventListener('blur',       function(){ center.textContent = defaultText; });
+    });
+  }
+
   // ---------- Init ----------
   function init(){
     initReveals();
     initCounters();
     initNavShadow();
+    initTocCircle();
   }
 
   if (document.readyState === 'loading') {
