@@ -16,10 +16,9 @@
  */
 (function(){
   var CONSENT_KEY = 'br_analytics_consent';
-  // REPLACE THIS with your Microsoft Clarity Project ID after signing up.
-  // Until set, the consent banner still shows but no tracking will run
-  // (so the banner is "dormant" — clicking Agree won't break anything).
-  var CLARITY_ID = 'YOUR_CLARITY_ID';
+  // Microsoft Clarity Project ID — Bundle Research project.
+  // Dashboard: https://clarity.microsoft.com
+  var CLARITY_ID = 'x0x4wc5l93';
 
   function loadClarity(){
     if(!CLARITY_ID || CLARITY_ID === 'YOUR_CLARITY_ID') return;
