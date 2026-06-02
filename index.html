@@ -3,185 +3,146 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bundle Research — Per-region NDVI forecasting across 133 ecoregions</title>
-<meta name="description" content="Independent Earth observation research from Saudi Arabia. Cross-continental NDVI forecasting with leakage-audited methodology.">
-<style>
-  :root{--ink:#1a1f2e;--muted:#5a6477;--line:#e4e8ee;--accent:#0f7b6c;--accent-soft:#e8f3f1;--bg:#fafbfc;--card:#ffffff}
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--ink);line-height:1.6;background:var(--bg);-webkit-font-smoothing:antialiased}
-
-  /* Hero with background image */
-  .hero-wrap{
-    background-image:linear-gradient(180deg,rgba(15,30,40,.4) 0%,rgba(15,30,40,.55) 55%,rgba(15,30,40,.88) 100%),url('hero-bg.jpg');
-    background-size:cover;background-position:center;background-color:#0f1e28;
-    color:#fff;padding:5rem 1.5rem 4rem;position:relative;
-  }
-  .hero{max-width:840px;margin:0 auto}
-  .badge{display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:rgba(15,123,108,.85);backdrop-filter:blur(4px);padding:.45rem .85rem;border-radius:999px;margin-bottom:1.25rem;border:1px solid rgba(255,255,255,.2)}
-  h1{font-size:2.5rem;line-height:1.12;margin:0 0 1rem;font-weight:700;letter-spacing:-.02em;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.5)}
-  .lede{font-size:1.2rem;color:rgba(255,255,255,.93);margin:0 0 1.75rem;max-width:680px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
-  .ctas{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem}
-  .btn{display:inline-block;padding:.7rem 1.25rem;border-radius:6px;text-decoration:none;font-weight:500;font-size:.95rem;transition:all .15s;border:none}
-  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(15,123,108,.4)}
-  .btn-primary:hover{background:#0a5c50;transform:translateY(-1px)}
-  .btn-secondary{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(4px)}
-  .btn-secondary:hover{background:rgba(255,255,255,.22)}
-
-  .content{max-width:840px;margin:0 auto;padding:0 1.5rem 4rem}
-
-  /* Stats - elevated cards floating above page */
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin:-2.25rem 0 2.5rem;position:relative;z-index:2}
-  .stat{background:var(--card);padding:1.5rem 1.25rem;border-radius:10px;border:1px solid var(--line);box-shadow:0 4px 20px rgba(15,30,40,.1)}
-  .stat-num{font-size:2rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:.4rem}
-  .stat-label{font-size:.85rem;color:var(--muted);line-height:1.35}
-
-  /* Status row */
-  .status-row{display:flex;align-items:center;gap:.6rem;font-size:.9rem;color:var(--ink);margin:1rem 0 1.5rem;padding:.85rem 1.1rem;background:var(--card);border:1px solid var(--line);border-radius:6px}
-  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.2);animation:pulse 2s infinite;flex-shrink:0}
-  @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.2)}50%{box-shadow:0 0 0 6px rgba(34,197,94,.08)}}
-
-  h2{font-size:1.4rem;margin:2.5rem 0 .75rem;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center}
-  h2::before{content:"";display:inline-block;width:4px;height:1.15rem;background:var(--accent);margin-right:.7rem;border-radius:2px;flex-shrink:0}
-  p{margin:0 0 1rem}
-  ul{padding-left:1.25rem;margin:0 0 1rem}
-  li{margin:.4rem 0}
-  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
-  a:hover{border-color:var(--accent)}
-  .btn,.hero a{border-bottom:none !important}
-  code{background:#f1f3f5;padding:1px 6px;border-radius:3px;font-size:.9em;font-family:'SF Mono',Menlo,Consolas,monospace}
-  strong{color:var(--ink);font-weight:600}
-
-  .highlight{background:var(--accent-soft);border-left:3px solid var(--accent);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1.25rem 0}
-  .highlight strong{color:var(--accent)}
-
-  /* Tech stack chips */
-  .chips{display:flex;flex-wrap:wrap;gap:.45rem;margin:.75rem 0 1.25rem}
-  .chip{font-size:.8rem;padding:.3rem .7rem;background:var(--accent-soft);color:var(--accent);border-radius:999px;font-weight:500}
-
-  /* Timeline */
-  .timeline{margin:1rem 0;border-left:2px solid var(--line);padding-left:1.25rem}
-  .timeline-item{margin-bottom:1.15rem;position:relative}
-  .timeline-item::before{content:"";position:absolute;left:-1.45rem;top:.45rem;width:11px;height:11px;background:var(--accent);border-radius:50%;border:2px solid var(--bg)}
-  .timeline-date{font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
-  .timeline-text{font-size:.95rem;line-height:1.55}
-
-  footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-
-  @media (max-width:600px){
-    .hero-wrap{padding:3.5rem 1rem 3rem}
-    h1{font-size:1.85rem}
-    .lede{font-size:1.05rem}
-    .stat-num{font-size:1.6rem}
-    .content{padding:0 1rem 3rem}
-  }
-</style>
+<title>Bundle Research — Mohamed Benkaddour</title>
+<meta name="description" content="Independent research and projects by Mohamed Benkaddour. Earth observation, machine learning, and software.">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="hero-wrap">
-  <div class="hero">
-    <span class="badge">Independent Research · Riyadh, Saudi Arabia</span>
-    <h1>Per-region NDVI forecasting across 133 global ecoregions</h1>
-    <p class="lede">Bundle Research builds leakage-audited vegetation prediction baselines for desertification monitoring. Cross-continental R² ≈ 0.93 on held-out test regions.</p>
-    <div class="ctas">
-      <a class="btn btn-primary" href="https://github.com/mohtheghost">View Code →</a>
-      <a class="btn btn-secondary" href="mailto:bagbagig@bundle-research.xyz">Get in touch</a>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">Bundle Research</a>
+    <ul class="nav-links">
+      <li><a href="/" class="active">Home</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="mailto:bagbagig@bundle-research.xyz">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero-home container-narrow">
+  <span class="badge">Independent Research · Riyadh, Saudi Arabia</span>
+  <h1>Independent research and projects by <span class="accent">Mohamed Benkaddour</span></h1>
+  <p class="lede">High school student researcher focused on Earth observation, machine learning, and building tools that scale. Currently working on a per-region NDVI forecasting framework using Google Earth Engine.</p>
+  <div class="ctas">
+    <a class="btn btn-primary" href="#projects">Explore Projects ↓</a>
+    <a class="btn btn-secondary" href="about.html">About me</a>
+  </div>
+</section>
+
+<section class="projects-section container" id="projects">
+  <h2 class="section-title">Projects &amp; Work</h2>
+  <p class="section-subtitle">Filter by area of interest:</p>
+
+  <div class="filters">
+    <button class="filter active" data-filter="all">All</button>
+    <button class="filter" data-filter="research">Research</button>
+    <button class="filter" data-filter="ml">Machine Learning</button>
+    <button class="filter" data-filter="climate">Climate &amp; Environment</button>
+    <button class="filter" data-filter="tools">Tools</button>
+    <button class="filter" data-filter="gamedev">Game Dev</button>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- DESERTFLOW (active research) -->
+    <a class="project-card" href="desertflow.html" data-tags="research ml climate">
+      <div class="project-card-image">D</div>
+      <div class="project-card-body">
+        <div class="project-card-tags">
+          <span class="tag">Research</span>
+          <span class="tag">ML</span>
+          <span class="tag">Climate</span>
+        </div>
+        <h3 class="project-card-title">Desertflow Global Bundle</h3>
+        <p class="project-card-desc">Per-region NDVI forecasting across 133 ecoregions using Google Earth Engine. R² ≈ 0.93 with leakage-audited methodology.</p>
+        <div class="project-card-meta">
+          <span class="project-card-status"><span class="dot"></span> Active</span>
+          <span>June 2026</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- BUNDLE FRAMEWORK (tool spinoff) -->
+    <div class="project-card" data-tags="tools ml" style="opacity:.85">
+      <div class="project-card-image" style="background:linear-gradient(135deg,#4a5d75 0%,#2c3e50 100%)">B</div>
+      <div class="project-card-body">
+        <div class="project-card-tags">
+          <span class="tag">Tools</span>
+          <span class="tag">ML</span>
+        </div>
+        <h3 class="project-card-title">Bundle Framework</h3>
+        <p class="project-card-desc">Open-source PySide6 desktop GUI for running per-region ML experiments at scale. Schema-agnostic, supports custom drivers per region.</p>
+        <div class="project-card-meta">
+          <span class="project-card-status"><span class="dot"></span> In progress</span>
+          <span>Spinoff project</span>
+        </div>
+      </div>
     </div>
+
+    <!-- JACK THE ROBOT (your existing game dev) -->
+    <a class="project-card" href="https://github.com/mohtheghost/jack-the-Robot-pr" data-tags="gamedev tools">
+      <div class="project-card-image" style="background:linear-gradient(135deg,#6d28d9 0%,#9333ea 100%)">J</div>
+      <div class="project-card-body">
+        <div class="project-card-tags">
+          <span class="tag">Game Dev</span>
+          <span class="tag">C# / Unity</span>
+        </div>
+        <h3 class="project-card-title">Jack the Robot</h3>
+        <p class="project-card-desc">A small game project: a robot that listens for your question and answers it. Built while learning Unity and C#.</p>
+        <div class="project-card-meta">
+          <span class="project-card-status"><span class="dot dot-paused"></span> Paused</span>
+          <span>2025</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- PLACEHOLDER for future -->
+    <div class="project-card" data-tags="research ml tools" style="opacity:.55;cursor:default">
+      <div class="project-card-image" style="background:linear-gradient(135deg,#94a3b8 0%,#64748b 100%)">+</div>
+      <div class="project-card-body">
+        <div class="project-card-tags">
+          <span class="tag">Coming soon</span>
+        </div>
+        <h3 class="project-card-title">More projects coming</h3>
+        <p class="project-card-desc">New projects, learning notes, and tool experiments will appear here as they launch.</p>
+        <div class="project-card-meta">
+          <span class="project-card-status"><span class="dot dot-planned"></span> Planned</span>
+          <span>TBD</span>
+        </div>
+      </div>
+    </div>
+
   </div>
-</header>
-
-<main class="content">
-
-<div class="stats">
-  <div class="stat"><div class="stat-num">133</div><div class="stat-label">WWF ecoregions covered</div></div>
-  <div class="stat"><div class="stat-num">22</div><div class="stat-label">Years of data (2002–2024)</div></div>
-  <div class="stat"><div class="stat-num">19</div><div class="stat-label">Earth Engine driver modules</div></div>
-  <div class="stat"><div class="stat-num">0.93</div><div class="stat-label">R² cross-continental</div></div>
-</div>
-
-<div class="status-row">
-  <span class="dot"></span>
-  <span><strong>Active development</strong> · Phase 3: validation hardening · Currently fetching anomaly modules for E26 experiments</span>
-</div>
-
-<h2>About</h2>
-<p>I am an independent high school student researcher based in Riyadh, Saudi Arabia. <strong>Bundle Research</strong> is the name I use for my Earth observation work, focused on desertification and vegetation dynamics in arid and semi-arid regions. The work supports UN Convention to Combat Desertification (UNCCD) goals and Sustainable Development Goal 15.3 (Land Degradation Neutrality).</p>
-
-<h2>Active Project — Desertflow Global Bundle</h2>
-<ul>
-  <li><strong>Scope:</strong> 133 WWF terrestrial ecoregions, 2002–2024 (22 years), monthly cadence.</li>
-  <li><strong>Drivers:</strong> 19 Earth Engine modules covering MODIS NDVI/LST, CHIRPS precipitation, ERA5 climate, SMAP soil moisture, GLDAS, fire activity, snow phenology, VPD extremes, and topographic context.</li>
-  <li><strong>Modeling:</strong> per-region CatBoost specialists combined with a per-cell Bayesian-ridge router, trained with explicit temporal-leakage audits.</li>
-  <li><strong>Validation:</strong> held-out 44-region cross-continental test set; leakage-safe driver list with no NDVI-derived inputs in 2030-prediction-safe models.</li>
-</ul>
-
-<div class="highlight">
-  <strong>Headline result:</strong> cross-continental mean R² ≈ 0.93 on held-out test regions after rigorous leakage controls — comparable to within-region baselines that typically benefit from data leakage.
-</div>
-
-<h2>Tech Stack</h2>
-<div class="chips">
-  <span class="chip">Google Earth Engine</span>
-  <span class="chip">Python</span>
-  <span class="chip">CatBoost</span>
-  <span class="chip">XGBoost</span>
-  <span class="chip">Bayesian Ridge</span>
-  <span class="chip">MODIS</span>
-  <span class="chip">ERA5</span>
-  <span class="chip">CHIRPS</span>
-  <span class="chip">SMAP</span>
-  <span class="chip">GLDAS</span>
-  <span class="chip">PySide6</span>
-  <span class="chip">Optuna</span>
-</div>
-
-<h2>Methodological Contribution</h2>
-<p>The distinguishing contribution of this work is a <strong>leakage-aware validation protocol</strong>. Many published NDVI forecasting studies inadvertently leak future information through:</p>
-<ul>
-  <li>Sister vegetation features (NDVI-derived land cover, GPP, phenology metrics)</li>
-  <li>Shared cross-region statistics in scalers or imputers</li>
-  <li>Improperly designed cross-validation splits</li>
-  <li>Pheno-prior features computed from the target NDVI series itself</li>
-</ul>
-<p>Bundle Research documents and tests against each failure mode before reporting metrics. The validation harness, driver modules, and trained models will be released publicly upon publication.</p>
-
-<h2>Recent Progress</h2>
-<div class="timeline">
-  <div class="timeline-item">
-    <div class="timeline-date">June 2026</div>
-    <div class="timeline-text">Completed leakage audit and removed sister-vegetation features from training set. Built per-region framework UI with PySide6 for cross-region experimentation.</div>
-  </div>
-  <div class="timeline-item">
-    <div class="timeline-date">May 2026</div>
-    <div class="timeline-text">Finalized 89-region train / 44-region test split (v2). Released schema-agnostic Bundle Core supporting custom drivers per region.</div>
-  </div>
-  <div class="timeline-item">
-    <div class="timeline-date">April 2026</div>
-    <div class="timeline-text">Bayesian-ridge router selected as production router after sweep over 12 candidate architectures. Per-cell calibration outperforms global stacking.</div>
-  </div>
-</div>
-
-<h2>Earth Engine Compute</h2>
-<p>This work requires sustained Earth Engine compute for large-scale ecoregion processing — approximately <strong>30,000 batch export tasks per full bundle refresh</strong> across 133 regions × 22 years × 19 driver modules. The project is registered under Google Earth Engine's noncommercial research program (project ID: <code>celtic-science-493107-c6</code>).</p>
-
-<h2>Planned Future Work</h2>
-<ul>
-  <li><strong>Deforestation early warning</strong> — applying the same architecture to tropical-forest biomes (Amazon, Congo, Borneo) with target lead time of 1–3 years.</li>
-  <li><strong>Wildfire burn-area forecasting</strong> — per-region specialists for fire-prone regions (Australian bushfire belt, Iberian wildfire zone, Siberian taiga, California chaparral).</li>
-  <li><strong>Coastal/mangrove degradation monitoring</strong> — extending to Sundarbans, Niger Delta, western Sahara coast, Madagascar mangroves.</li>
-</ul>
-
-<h2>Contact</h2>
-<p>Email: <a href="mailto:bagbagig@bundle-research.xyz">bagbagig@bundle-research.xyz</a><br>
-GitHub: <a href="https://github.com/mohtheghost">github.com/mohtheghost</a></p>
+</section>
 
 <footer>
-  <span>Bundle Research · Independent research · Riyadh, Saudi Arabia</span>
-  <span>Updated June 2026</span>
+  <div class="footer-inner">
+    <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
+    <div class="footer-links">
+      <a href="https://github.com/mohtheghost">GitHub</a>
+      <a href="mailto:bagbagig@bundle-research.xyz">Email</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
 </footer>
 
-</main>
+<script>
+  const filters=document.querySelectorAll('.filter');
+  const cards=document.querySelectorAll('.project-card');
+  filters.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      filters.forEach(f=>f.classList.remove('active'));
+      btn.classList.add('active');
+      const filter=btn.dataset.filter;
+      cards.forEach(card=>{
+        const tags=(card.dataset.tags||'').split(' ');
+        card.style.display=(filter==='all'||tags.includes(filter))?'':'none';
+      });
+    });
+  });
+</script>
 
 </body>
 </html>
