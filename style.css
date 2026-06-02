@@ -1332,6 +1332,386 @@ footer {
 [data-reveal-delay="3"].is-visible { transition-delay: 0.24s; }
 [data-reveal-delay="4"].is-visible { transition-delay: 0.32s; }
 
+/* ==========================================================================
+   v3.0 — Visual identity overhaul (June 2026)
+   Hero topo background, achievement strip, rich project-card visuals,
+   homepage research timeline + status checklist, premium card hover.
+   ========================================================================== */
+
+/* ---------- v3.1 Hero topographic background ------------------------ */
+.hero-home { isolation: isolate; }
+.hero-topo-bg {
+  position: absolute;
+  inset: -40px -20% 0 -20%;
+  z-index: -1;
+  color: var(--accent);
+  opacity: 0.16;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 70% 80% at 50% 35%, #000 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 35%, #000 30%, transparent 80%);
+}
+.hero-topo-bg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  animation: topo-drift 60s ease-in-out infinite alternate;
+}
+@keyframes topo-drift {
+  0%   { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.05) translate(-10px, 8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-topo-bg svg { animation: none; }
+}
+
+/* Monospace badge variant — slightly different feel for the new tagline */
+.badge-mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: none;
+  font-size: 0.72rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  box-shadow: var(--shadow-glow), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* ---------- v3.2 Achievement strip ---------------------------------- */
+.achievement-strip {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 0.9rem;
+  margin-top: 1.5rem;
+  padding: 0.65rem 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: var(--shadow-xs);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.achievement-strip strong {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-right: 0.25rem;
+}
+.achievement-strip .dot-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.5;
+  display: inline-block;
+}
+
+/* ---------- v3.3 Project-card image variants (NDVI / neural / leakage) */
+.project-card-image {
+  /* Override the default text-letter sizing for visual variants */
+  position: relative;
+}
+.project-card-image svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.card-glyph {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 3.2rem;
+  color: rgba(255, 255, 255, 0.96);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+  letter-spacing: -0.02em;
+}
+.card-glyph-corner {
+  position: absolute;
+  left: 14px;
+  bottom: 8px;
+  font-size: 2.1rem;
+  z-index: 3;
+  color: rgba(255, 255, 255, 0.78);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+/* NDVI heatmap — Desertflow card */
+.img-ndvi {
+  background:
+    radial-gradient(circle at 32% 38%, #f4c430 0%, #b8a23a 9%, #88b04b 22%, #2d8a6f 45%, var(--accent) 65%, #0a1f1c 92%),
+    conic-gradient(from 215deg at 32% 38%, #0a1f1c, var(--accent), #88b04b, #f4c430, #88b04b, var(--accent), #0a1f1c);
+  background-blend-mode: soft-light;
+  filter: contrast(1.12) saturate(1.18);
+}
+.img-ndvi::before {
+  /* Subtle scanline texture, overrides the default radial overlay */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(10, 31, 28, 0.18) 0 1px, transparent 1px 4px);
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  z-index: 1;
+}
+.card-scan {
+  position: absolute;
+  left: -30%;
+  top: 0;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(244, 196, 48, 0.22), transparent);
+  z-index: 1;
+  animation: card-scan-sweep 7s linear infinite;
+  pointer-events: none;
+}
+@keyframes card-scan-sweep { to { transform: translateX(560%); } }
+@media (prefers-reduced-motion: reduce) { .card-scan { animation: none; display: none; } }
+
+/* Neural-net — Bundle Framework card */
+.img-neural {
+  background: #0a1f1c;
+}
+.img-neural::before { display: none; }
+
+/* Leakage-audit timeline — Leakage Audit card */
+.img-leakage {
+  background: #0a1f1c;
+}
+.img-leakage::before { display: none; }
+.img-leakage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(10, 31, 28, 0.55) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---------- v3.4 Premium card hover --------------------------------- */
+.project-card { isolation: isolate; }
+.project-card::before {
+  /* Glowing gradient border that appears on hover */
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(15, 123, 108, 0.35) 30%,
+    rgba(20, 160, 140, 0.55) 50%,
+    rgba(15, 123, 108, 0.35) 70%,
+    transparent 100%);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity var(--tx-base);
+  pointer-events: none;
+}
+.project-card[href]:hover {
+  transform: translateY(-6px) rotate(0.35deg);
+}
+.project-card[href]:hover::before {
+  opacity: 1;
+}
+
+/* ---------- v3.5 Research timeline + status grid (homepage) -------- */
+.research-meta-section {
+  padding: 1.5rem 0 2.5rem;
+}
+.research-meta-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+  margin: 1rem 0 2.5rem;
+}
+.section-title-sm {
+  font-size: 1.35rem;
+  margin: 0 0 1.25rem;
+}
+
+/* Timeline (homepage variant — same DNA as the project-page one) */
+.timeline-home {
+  margin: 0;
+  border-left: 2px solid var(--line);
+  padding-left: 1.5rem;
+}
+.timeline-home .timeline-item { margin-bottom: 1.5rem; }
+.timeline-home .timeline-item::before {
+  background: var(--card);
+  border: 2px solid var(--line);
+  box-shadow: 0 0 0 2px var(--card);
+}
+.timeline-home .timeline-item-current::before {
+  background: var(--accent);
+  border-color: var(--card);
+  box-shadow: 0 0 0 2px var(--accent), 0 0 18px var(--accent-glow);
+  animation: pulse-dot 2.5s ease-in-out infinite;
+}
+.timeline-home .timeline-item-future::before {
+  background: var(--card);
+  border: 2px dashed var(--accent);
+  box-shadow: none;
+}
+.timeline-home .timeline-item-current .timeline-date,
+.timeline-home .timeline-item-current .timeline-text {
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+.timeline-home .timeline-item-future { opacity: 0.7; }
+
+/* Status checklist — GitHub-project-style */
+.status-checklist {
+  list-style: none;
+  padding: 1.25rem 1.5rem;
+  margin: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-xs);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.status-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--ink-soft);
+  transition: color var(--tx-fast);
+}
+.status-checklist li:last-child { border-bottom: none; }
+.status-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.status-done {
+  color: var(--ink);
+}
+.status-done .status-mark {
+  background: var(--accent);
+  color: #fff;
+}
+.status-progress {
+  color: var(--ink-soft);
+}
+.status-progress .status-mark {
+  background: #fef3c7;
+  color: #b45309;
+  animation: pulse-status 2s ease-in-out infinite;
+}
+@keyframes pulse-status {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  50%      { box-shadow: 0 0 0 4px rgba(245, 158, 11, 0); }
+}
+.status-planned {
+  color: var(--muted);
+  opacity: 0.75;
+}
+.status-planned .status-mark {
+  background: transparent;
+  border: 1px dashed var(--muted);
+  color: var(--muted);
+}
+
+/* ---------- v3.5b Publication cards (publications.html) ------------- */
+.pub-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding: 1.5rem 1.75rem;
+  margin: 1.5rem 0 2.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--tx-base), box-shadow var(--tx-base);
+}
+.pub-card:hover {
+  transform: translateX(3px);
+  box-shadow: var(--shadow-md);
+}
+.pub-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.85rem;
+}
+.pub-status {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.pub-status-prep {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+.pub-title {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+.pub-authors {
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin: 0 0 0.9rem;
+  font-style: italic;
+}
+.pub-authors strong { color: var(--ink); font-style: normal; }
+.pub-abstract {
+  font-size: 0.95rem !important;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin: 0 0 1.1rem !important;
+}
+.pub-links {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+.pub-links a {
+  border-bottom: none !important;
+  color: var(--accent);
+}
+.pub-links a:hover { color: var(--accent-dark); }
+
+/* ---------- v3.6 Responsive for new v3 sections --------------------- */
+@media (max-width: 760px) {
+  .hero-topo-bg { inset: -20px -10% 0 -10%; opacity: 0.10; }
+  .achievement-strip { font-size: 0.7rem; padding: 0.55rem 0.9rem; gap: 0.4rem 0.65rem; }
+  .achievement-strip strong { font-size: 0.85rem; }
+  .achievement-strip .dot-sep { display: none; }
+  .research-meta-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .card-glyph { font-size: 2.6rem; }
+  .card-glyph-corner { font-size: 1.7rem; left: 10px; bottom: 6px; }
+  .project-card[href]:hover { transform: translateY(-4px); }
+}
+
 /* ---------- 33. Responsive ------------------------------------------ */
 @media (max-width: 760px) {
   .hero-home { padding: 3rem 1rem 2.25rem; }

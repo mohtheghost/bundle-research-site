@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bundle Research — Mohamed Benkaddour</title>
-<meta name="description" content="Independent research and projects by Mohamed Benkaddour. Earth observation, machine learning, and software from Asir, Saudi Arabia.">
+<meta name="description" content="Independent research and projects by Mohamed Benkaddour. Earth observation, machine learning, and reproducible tools for satellite-based environmental forecasting.">
 
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -54,7 +54,9 @@
     <a href="/" class="nav-brand">Bundle Research</a>
     <ul class="nav-links">
       <li><a href="/" class="active">Home</a></li>
+      <li><a href="desertflow.html">Research</a></li>
       <li><a href="#projects">Projects</a></li>
+      <li><a href="publications.html">Publications</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="#contact-footer" onclick="document.getElementById('contact-footer').scrollIntoView({behavior:'smooth'});return false;">Contact</a></li>
     </ul>
@@ -62,12 +64,44 @@
 </nav>
 
 <section class="hero-home container-narrow">
-  <span class="badge" data-reveal>Independent Research · Asir, Saudi Arabia</span>
+  <!-- Decorative topographic background — research/satellite aesthetic -->
+  <div class="hero-topo-bg" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <filter id="hero-warp" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="3" seed="11"/>
+          <feDisplacementMap in="SourceGraphic" scale="55"/>
+        </filter>
+      </defs>
+      <g fill="none" stroke="currentColor" stroke-width="0.9" filter="url(#hero-warp)">
+        <circle cx="300" cy="300" r="40"/>
+        <circle cx="300" cy="300" r="80"/>
+        <circle cx="300" cy="300" r="120"/>
+        <circle cx="300" cy="300" r="160"/>
+        <circle cx="300" cy="300" r="200"/>
+        <circle cx="300" cy="300" r="240"/>
+        <circle cx="300" cy="300" r="280"/>
+      </g>
+    </svg>
+  </div>
+  <span class="badge badge-mono" data-reveal>Earth Observation · Machine Learning · Environmental Forecasting</span>
   <h1 data-reveal data-reveal-delay="1">Independent research and projects by <span class="accent">Mohamed Benkaddour</span></h1>
-  <p class="lede" data-reveal data-reveal-delay="2">High school student researcher in the Asir region of southwestern Saudi Arabia, focused on Earth observation, machine learning, and building tools that scale. Currently working on a per-region NDVI forecasting framework using Google Earth Engine.</p>
+  <p class="lede" data-reveal data-reveal-delay="2">Independent Earth observation researcher focused on NDVI dynamics. Per-region forecasting, leakage-aware validation, and reproducible remote-sensing pipelines. Open code, honest evaluation, and a methods preprint in preparation for EarthArXiv.</p>
   <div class="ctas" data-reveal data-reveal-delay="3">
     <a class="btn btn-primary" href="desertflow.html">Featured Research →</a>
     <a class="btn btn-secondary" href="#projects">All Projects ↓</a>
+  </div>
+  <!-- Achievement strip: compact credibility row -->
+  <div class="achievement-strip" data-reveal data-reveal-delay="4">
+    <span><strong>133</strong> ecoregions</span>
+    <span class="dot-sep"></span>
+    <span><strong>22</strong> years</span>
+    <span class="dot-sep"></span>
+    <span><strong>45+</strong> drivers</span>
+    <span class="dot-sep"></span>
+    <span><strong>89</strong> specialist models</span>
+    <span class="dot-sep"></span>
+    <span><strong>5</strong> ML algorithms</span>
   </div>
 </section>
 
@@ -92,6 +126,52 @@
   </div>
 </section>
 
+<!-- RESEARCH TIMELINE + CURRENT STATUS -->
+<section class="container research-meta-section">
+  <div class="research-meta-grid">
+
+    <!-- Timeline column -->
+    <div class="research-timeline-col" data-reveal>
+      <h2 class="section-title section-title-sm">Research Timeline</h2>
+      <div class="timeline timeline-home">
+        <div class="timeline-item">
+          <div class="timeline-date">2024</div>
+          <div class="timeline-text">Started independent remote-sensing research; first NDVI experiments using MODIS archives.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2025</div>
+          <div class="timeline-text">Built Desertflow core: per-region CatBoost specialists + Bayesian-ridge router architecture (B2).</div>
+        </div>
+        <div class="timeline-item timeline-item-current">
+          <div class="timeline-date">2026 — Active</div>
+          <div class="timeline-text">Scaled to 133 WWF ecoregions × 22 years × 19 driver modules. Leakage-audited cross-continental R² ≈ 0.93.</div>
+        </div>
+        <div class="timeline-item timeline-item-future">
+          <div class="timeline-date">2027 — Planned</div>
+          <div class="timeline-text">EarthArXiv preprint, open benchmark dataset release, and global dryland forecast service.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status column -->
+    <div class="research-status-col" data-reveal data-reveal-delay="1">
+      <h2 class="section-title section-title-sm">Current Status</h2>
+      <ul class="status-checklist">
+        <li class="status-done"><span class="status-mark">✓</span> Dataset collection (133 regions × 22 years)</li>
+        <li class="status-done"><span class="status-mark">✓</span> Feature engineering (19 driver modules)</li>
+        <li class="status-done"><span class="status-mark">✓</span> Model training (89 specialists)</li>
+        <li class="status-done"><span class="status-mark">✓</span> Cross-region testing (44 held-out regions)</li>
+        <li class="status-done"><span class="status-mark">✓</span> Leakage audit protocol</li>
+        <li class="status-progress"><span class="status-mark">●</span> Anomaly modules (E26 fetch)</li>
+        <li class="status-progress"><span class="status-mark">●</span> Preprint writing</li>
+        <li class="status-planned"><span class="status-mark">○</span> EarthArXiv submission</li>
+        <li class="status-planned"><span class="status-mark">○</span> Public benchmark release</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
 <section class="projects-section container" id="projects">
   <h2 class="section-title">All Projects &amp; Work</h2>
   <p class="section-subtitle">Filter by area of interest:</p>
@@ -109,7 +189,10 @@
 
     <!-- DESERTFLOW (active research) -->
     <a class="project-card" href="desertflow.html" data-tags="research ml climate">
-      <div class="project-card-image">D</div>
+      <div class="project-card-image img-ndvi" aria-hidden="true">
+        <span class="card-glyph">D</span>
+        <span class="card-scan"></span>
+      </div>
       <div class="project-card-body">
         <div class="project-card-tags">
           <span class="tag">Research</span>
@@ -127,7 +210,24 @@
 
     <!-- BUNDLE FRAMEWORK (tool spinoff) -->
     <div class="project-card" data-tags="tools ml" style="opacity:.9">
-      <div class="project-card-image" style="background:linear-gradient(135deg,#4a5d75 0%,#2c3e50 100%)">B</div>
+      <div class="project-card-image img-neural" aria-hidden="true">
+        <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
+          <rect width="200" height="200" fill="#0a1f1c"/>
+          <g stroke="#14a08c" stroke-width="0.7" opacity="0.55" fill="none">
+            <path d="M40,50 L100,40 M40,50 L100,90 M40,50 L100,140 M40,100 L100,40 M40,100 L100,90 M40,100 L100,140 M40,150 L100,40 M40,150 L100,90 M40,150 L100,140 M100,40 L160,75 M100,40 L160,125 M100,90 L160,75 M100,90 L160,125 M100,140 L160,75 M100,140 L160,125"/>
+          </g>
+          <g fill="#14a08c">
+            <circle cx="40" cy="50" r="4"/><circle cx="40" cy="100" r="4"/><circle cx="40" cy="150" r="4"/>
+            <circle cx="100" cy="40" r="4"/><circle cx="100" cy="90" r="4"/><circle cx="100" cy="140" r="4"/>
+            <circle cx="160" cy="75" r="4"/><circle cx="160" cy="125" r="4"/>
+          </g>
+          <circle cx="100" cy="90" r="6" fill="#f4c430">
+            <animate attributeName="opacity" values="1;0.25;1" dur="2.4s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="6;9;6" dur="2.4s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+        <span class="card-glyph card-glyph-corner">B</span>
+      </div>
       <div class="project-card-body">
         <div class="project-card-tags">
           <span class="tag">Tools</span>
@@ -144,7 +244,35 @@
 
     <!-- LEAKAGE AUDIT PROTOCOL (research methodology) -->
     <div class="project-card" data-tags="research ml" style="opacity:.85">
-      <div class="project-card-image" style="background:linear-gradient(135deg,#7c2d12 0%,#dc2626 100%)">L</div>
+      <div class="project-card-image img-leakage" aria-hidden="true">
+        <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
+          <rect width="200" height="200" fill="#0a1f1c"/>
+          <!-- Time axis -->
+          <line x1="20" y1="170" x2="180" y2="170" stroke="#14a08c" stroke-width="0.6" opacity="0.65"/>
+          <g stroke="#14a08c" stroke-width="0.5" opacity="0.5">
+            <line x1="40" y1="168" x2="40" y2="174"/>
+            <line x1="80" y1="168" x2="80" y2="174"/>
+            <line x1="120" y1="168" x2="120" y2="174"/>
+            <line x1="160" y1="168" x2="160" y2="174"/>
+          </g>
+          <!-- Train / val / test rolling windows -->
+          <g>
+            <rect x="20"  y="40"  width="80"  height="14" fill="#14a08c" opacity="0.55"/>
+            <rect x="105" y="40"  width="25"  height="14" fill="#88b04b" opacity="0.75"/>
+            <rect x="135" y="40"  width="25"  height="14" fill="#f4c430" opacity="0.88"/>
+            <rect x="20"  y="70"  width="100" height="14" fill="#14a08c" opacity="0.55"/>
+            <rect x="125" y="70"  width="25"  height="14" fill="#88b04b" opacity="0.75"/>
+            <rect x="155" y="70"  width="25"  height="14" fill="#f4c430" opacity="0.88"/>
+            <rect x="20"  y="100" width="120" height="14" fill="#14a08c" opacity="0.55"/>
+            <rect x="145" y="100" width="20"  height="14" fill="#88b04b" opacity="0.75"/>
+            <rect x="170" y="100" width="10"  height="14" fill="#f4c430" opacity="0.88"/>
+          </g>
+          <!-- Forbidden-zone guard line -->
+          <line x1="100" y1="30" x2="100" y2="170" stroke="#f4c430" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.85"/>
+          <text x="103" y="28" font-family="monospace" font-size="7" fill="#f4c430" opacity="0.9">t = cutoff</text>
+        </svg>
+        <span class="card-glyph card-glyph-corner">L</span>
+      </div>
       <div class="project-card-body">
         <div class="project-card-tags">
           <span class="tag">Research</span>
@@ -224,7 +352,7 @@
 
 <footer>
   <div class="footer-inner">
-    <span>© 2026 Mohamed Benkaddour · Bundle Research · Asir, Saudi Arabia</span>
+    <span>© 2026 Mohamed Benkaddour · Bundle Research · Independent Earth observation research</span>
     <div class="footer-links">
       <a href="https://github.com/mohtheghost">GitHub</a>
       <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>

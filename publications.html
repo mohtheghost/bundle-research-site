@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Publications — Bundle Research</title>
+<meta name="description" content="Forthcoming publications and preprints from Bundle Research — independent Earth observation work.">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bundle-research.xyz/publications.html">
+<meta property="og:title" content="Publications — Bundle Research">
+<meta property="og:description" content="Forthcoming publications and preprints from Bundle Research.">
+<meta property="og:site_name" content="Bundle Research">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Publications — Bundle Research">
+<meta name="twitter:description" content="Forthcoming publications and preprints from Bundle Research.">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">Bundle Research</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="desertflow.html">Research</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="publications.html" class="active">Publications</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="/#contact-footer">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero-home container-narrow">
+  <span class="badge badge-mono">Publications · Preprints · Methodology Notes</span>
+  <h1>Publications</h1>
+  <p class="lede">Open methods, transparent results, and a strong preference for preprint servers over closed-access journals.</p>
+</section>
+
+<main class="container-narrow content">
+
+<h2>In preparation</h2>
+<div class="pub-card">
+  <div class="pub-card-meta">
+    <span class="pub-status pub-status-prep">In preparation</span>
+    <span>Target: EarthArXiv · 2026</span>
+  </div>
+  <h3 class="pub-title">A leakage-aware per-region framework for NDVI forecasting across 133 global ecoregions</h3>
+  <p class="pub-authors"><strong>Mohamed Benkaddour</strong></p>
+  <p class="pub-abstract">A per-region NDVI forecasting framework combining 89 region-specific CatBoost specialists with a per-cell Bayesian-ridge router, trained on 22 years of satellite-derived climate, soil, fire, and topographic drivers. The methodological contribution is a four-test leakage-audit protocol that catches sister-vegetation features, shared cross-region statistics, leaky CV splits, and pheno-prior contamination — failure modes that inflate published R² scores by 0.05–0.20 in much of the existing literature. After applying the audit, cross-continental R² on a held-out 44-region test set is approximately 0.93.</p>
+  <div class="pub-links">
+    <a href="desertflow.html">Project page →</a>
+    <a href="https://github.com/mohtheghost">Code on GitHub →</a>
+  </div>
+</div>
+
+<h2>Planned</h2>
+<ul>
+  <li><strong>Open benchmark release</strong> — public dataset of 133-region NDVI prediction targets + 19-module driver matrix, with the v2 leakage-audited train/test split (89/44). Intended as a community reference for honest evaluation of regional vegetation models.</li>
+  <li><strong>Methodology companion paper</strong> — standalone treatment of the four-test leakage protocol with worked examples on a smaller open dataset, designed to be cited independently of the Desertflow framework.</li>
+</ul>
+
+<h2>Why preprint-first?</h2>
+<p>Closed-access journals add a 6–18 month delay between methodology lock and public availability. For an evolving framework where the methodology <em>is</em> the contribution, that delay actively harms reproducibility. Posting to EarthArXiv makes the work citable immediately, lets reviewers verify the audit on the live codebase, and stays open after acceptance.</p>
+
+<p>If you're a reviewer, collaborator, or researcher interested in the framework: <button class="copy-link" onclick="copyEmail(this)">bagbagig@bundle-research.xyz</button> <span style="color:var(--muted);font-size:.85rem">(click to copy)</span></p>
+
+<a href="/" class="back-link">← Back home</a>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 Mohamed Benkaddour · Bundle Research · Independent Earth observation research</span>
+    <div class="footer-links">
+      <a href="https://github.com/mohtheghost">GitHub</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+</script>
+
+<!-- Scroll reveals + animated stat counters + nav-on-scroll shadow -->
+<script src="effects.js" defer></script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "4aaf0ee4234e476abf6fdd8727459ccf"}'></script>
+
+<!-- Consent banner + opt-in Microsoft Clarity -->
+<script src="consent.js" defer></script>
+
+</body>
+</html>
