@@ -3,36 +3,118 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bundle Research — Earth observation for desertification</title>
+<title>Bundle Research — Per-region NDVI forecasting across 133 ecoregions</title>
+<meta name="description" content="Independent Earth observation research from Saudi Arabia. Cross-continental NDVI forecasting with leakage-audited methodology.">
 <style>
-  body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:720px;margin:3rem auto;padding:0 1.25rem;color:#1a1a1a;line-height:1.55}
-  h1{font-size:1.8rem;margin-bottom:.2rem} h2{margin-top:2.2rem;font-size:1.2rem;border-bottom:1px solid #ddd;padding-bottom:.25rem}
-  .lede{color:#555;margin-top:0;font-size:1.05rem} a{color:#0b5fff} code{background:#f3f3f3;padding:1px 5px;border-radius:3px;font-size:.92em}
-  ul{padding-left:1.25rem} li{margin:.35rem 0}
-  footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #ddd;color:#777;font-size:.9rem}
+  :root{
+    --ink:#1a1f2e;
+    --muted:#5a6477;
+    --line:#e4e8ee;
+    --accent:#0f7b6c;
+    --accent-soft:#e8f3f1;
+    --bg:#fafbfc;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    max-width:840px;margin:0 auto;padding:2rem 1.5rem 4rem;
+    color:var(--ink);line-height:1.6;background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+  }
+  .hero{padding:2rem 0 1.5rem;border-bottom:1px solid var(--line);margin-bottom:2.5rem}
+  .badge{display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:.35rem .7rem;border-radius:999px;margin-bottom:1rem}
+  h1{font-size:2.25rem;line-height:1.15;margin:0 0 .75rem;font-weight:700;letter-spacing:-.02em}
+  .lede{font-size:1.15rem;color:var(--muted);margin:0 0 1.5rem;max-width:680px}
+  .ctas{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.25rem}
+  .btn{display:inline-block;padding:.65rem 1.15rem;border-radius:6px;text-decoration:none;font-weight:500;font-size:.95rem;transition:all .15s;border:none}
+  .btn-primary{background:var(--ink);color:#fff}
+  .btn-primary:hover{background:var(--accent)}
+  .btn-secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn-secondary:hover{border-color:var(--ink)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin:2.5rem 0}
+  .stat{background:var(--card);padding:1.25rem 1.15rem;border-radius:8px;border:1px solid var(--line)}
+  .stat-num{font-size:1.85rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:.35rem}
+  .stat-label{font-size:.85rem;color:var(--muted);line-height:1.35}
+  h2{font-size:1.35rem;margin:2.5rem 0 .75rem;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center}
+  h2::before{content:"";display:inline-block;width:4px;height:1.1rem;background:var(--accent);margin-right:.65rem;border-radius:2px;flex-shrink:0}
+  p{margin:0 0 1rem}
+  ul{padding-left:1.25rem;margin:0 0 1rem}
+  li{margin:.4rem 0}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+  a:hover{border-color:var(--accent)}
+  .btn{border-bottom:none !important}
+  code{background:#f1f3f5;padding:1px 6px;border-radius:3px;font-size:.9em;font-family:'SF Mono',Menlo,Consolas,monospace}
+  strong{color:var(--ink);font-weight:600}
+  .highlight{background:var(--accent-soft);border-left:3px solid var(--accent);padding:1rem 1.25rem;border-radius:0 6px 6px 0;margin:1.25rem 0}
+  .highlight strong{color:var(--accent)}
+  footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+  @media (max-width:600px){
+    body{padding:1.5rem 1rem 3rem}
+    h1{font-size:1.7rem}
+    .lede{font-size:1.05rem}
+    .stat-num{font-size:1.5rem}
+  }
 </style>
 </head>
 <body>
 
-<h1>Bundle Research</h1>
-<p class="lede">Independent Earth observation research from Riyadh, Saudi Arabia. Per-region NDVI forecasting across 133 WWF ecoregions using Google Earth Engine.</p>
+<section class="hero">
+  <span class="badge">Independent Research · Riyadh, Saudi Arabia</span>
+  <h1>Per-region NDVI forecasting across 133 global ecoregions</h1>
+  <p class="lede">Bundle Research builds leakage-audited vegetation prediction baselines for desertification monitoring. Cross-continental R² ≈ 0.93 on held-out test regions.</p>
+  <div class="ctas">
+    <a class="btn btn-primary" href="https://github.com/mohtheghost">View Code →</a>
+    <a class="btn btn-secondary" href="mailto:contact@bundle-research.xyz">Get in touch</a>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">133</div>
+    <div class="stat-label">WWF ecoregions covered</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">22</div>
+    <div class="stat-label">Years of data (2002–2024)</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">19</div>
+    <div class="stat-label">Earth Engine driver modules</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">0.93</div>
+    <div class="stat-label">R² cross-continental</div>
+  </div>
+</div>
 
 <h2>About</h2>
-<p>I am an independent high school student researcher based in Riyadh, Saudi Arabia. "Bundle Research" is the name I use for my Earth observation work, focused on desertification and vegetation dynamics in arid and semi-arid regions. The work supports UN Convention to Combat Desertification (UNCCD) goals and Sustainable Development Goal 15.3 (Land Degradation Neutrality).</p>
+<p>I am an independent high school student researcher based in Riyadh, Saudi Arabia. <strong>Bundle Research</strong> is the name I use for my Earth observation work, focused on desertification and vegetation dynamics in arid and semi-arid regions. The work supports UN Convention to Combat Desertification (UNCCD) goals and Sustainable Development Goal 15.3 (Land Degradation Neutrality).</p>
 
 <h2>Active Project — Desertflow Global Bundle</h2>
 <ul>
   <li><strong>Scope:</strong> 133 WWF terrestrial ecoregions, 2002–2024 (22 years), monthly cadence.</li>
   <li><strong>Drivers:</strong> 19 Earth Engine modules covering MODIS NDVI/LST, CHIRPS precipitation, ERA5 climate, SMAP soil moisture, GLDAS, fire activity, snow phenology, VPD extremes, and topographic context.</li>
-  <li><strong>Modeling:</strong> per-region CatBoost specialists combined with a per-cell Bayesian-ridge router architecture, trained with explicit temporal-leakage audits.</li>
-  <li><strong>Headline result:</strong> cross-continental mean R² ≈ 0.93 on held-out test regions after leakage controls.</li>
+  <li><strong>Modeling:</strong> per-region CatBoost specialists combined with a per-cell Bayesian-ridge router, trained with explicit temporal-leakage audits.</li>
+  <li><strong>Validation:</strong> held-out 44-region cross-continental test set; leakage-safe driver list with no NDVI-derived inputs in 2030-prediction-safe models.</li>
 </ul>
 
-<h2>Methods</h2>
-<p>The project's distinguishing methodological contribution is a leakage-aware validation protocol. Many published NDVI forecasting studies inadvertently leak future information through sister vegetation features (NDVI-derived land-cover, GPP, phenology metrics), shared cross-region statistics, or improperly designed cross-validation splits. Bundle Research documents and tests against each of these failure modes before reporting metrics. The validation harness, driver modules, and trained models will be released publicly upon publication.</p>
+<div class="highlight">
+  <strong>Headline result:</strong> cross-continental mean R² ≈ 0.93 on held-out test regions after rigorous leakage controls — comparable to within-region baselines that typically benefit from data leakage.
+</div>
+
+<h2>Methodological Contribution</h2>
+<p>The distinguishing contribution of this work is a <strong>leakage-aware validation protocol</strong>. Many published NDVI forecasting studies inadvertently leak future information through:</p>
+<ul>
+  <li>Sister vegetation features (NDVI-derived land cover, GPP, phenology metrics)</li>
+  <li>Shared cross-region statistics in scalers or imputers</li>
+  <li>Improperly designed cross-validation splits</li>
+  <li>Pheno-prior features computed from the target NDVI series itself</li>
+</ul>
+<p>Bundle Research documents and tests against each failure mode before reporting metrics. The validation harness, driver modules, and trained models will be released publicly upon publication.</p>
 
 <h2>Earth Engine Compute</h2>
-<p>This work requires sustained Earth Engine compute for large-scale ecoregion processing — approximately 30,000 batch export tasks per full bundle refresh across 133 regions × 22 years × 19 driver modules. The project is registered under Google Earth Engine's noncommercial research program.</p>
+<p>This work requires sustained Earth Engine compute for large-scale ecoregion processing — approximately <strong>30,000 batch export tasks per full bundle refresh</strong> across 133 regions × 22 years × 19 driver modules. The project is registered under Google Earth Engine's noncommercial research program (project ID: <code>celtic-science-493107-c6</code>).</p>
 
 <h2>Planned Future Work</h2>
 <ul>
@@ -46,7 +128,8 @@
 GitHub: <a href="https://github.com/mohtheghost">github.com/mohtheghost</a></p>
 
 <footer>
-Bundle Research · Independent research · Riyadh, Saudi Arabia
+  <span>Bundle Research · Independent research · Riyadh, Saudi Arabia</span>
+  <span>Updated June 2026</span>
 </footer>
 
 </body>
