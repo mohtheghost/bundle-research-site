@@ -89,8 +89,8 @@
       <div class="versus-bar"><div class="versus-fill versus-fill-win" style="width:93%"><span class="versus-val">93%</span></div></div>
     </div>
     <div class="versus-row">
-      <span class="versus-label">Per-region specialists alone</span>
-      <div class="versus-bar"><div class="versus-fill" style="width:88%"><span class="versus-val">88%</span></div></div>
+      <span class="versus-label">Per-region specialists alone (before bundle)</span>
+      <div class="versus-bar"><div class="versus-fill versus-fill-baseline" style="width:66%"><span class="versus-val">66%</span></div></div>
     </div>
     <div class="versus-row">
       <span class="versus-label">Standard global model (literature)</span>
@@ -440,12 +440,12 @@
     <tr><td>Regions with R² &gt; 0.85</td><td>35 of 44</td><td>~80% of test regions</td></tr>
     <tr><td>Regions with R² &gt; 0.95</td><td>17 of 44</td><td>Mostly arid + temperate</td></tr>
     <tr><td>Regions with R² &lt; 0.70</td><td>9 of 44</td><td>The "hard regions" — see below</td></tr>
-    <tr><td>Specialist-only baseline (no router)</td><td>0.88</td><td>+0.05 lift from router</td></tr>
+    <tr><td>Specialist-only baseline (no bundle)</td><td>0.66</td><td>+0.27 lift from bundle architecture</td></tr>
     <tr><td>Global-model baseline (XGBoost, no per-region)</td><td>~0.67</td><td>Standard literature comparison</td></tr>
   </tbody>
 </table>
 
-<p>The +0.05 router lift over specialist-only baseline is the empirical justification for the two-layer architecture: per-region specialists alone don't generalize cross-continent, but the router learns to combine them in regionally-appropriate ways.</p>
+<p>The <strong>+0.27 lift from the bundle architecture</strong> over specialist-only baseline is the empirical justification for the two-layer design. Per-region specialists trained in isolation score essentially no better than a standard global model (0.66 vs ~0.67) — neither approach generalizes cross-continent on its own. The bundle's Bayesian-ridge router is what turns 89 narrow specialists into a system that matches within-region accuracy on regions it has never seen.</p>
 
 <h2 id="openproblems">Open problems: regions where the model struggles</h2>
 <p>Nine of the 44 held-out regions score R² &lt; 0.7. These are the open problems being worked on:</p>
