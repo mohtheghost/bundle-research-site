@@ -34,6 +34,42 @@
     })(window,document,"clarity","script",CLARITY_ID);
   }
 
+  function logConsentEvent(action){
+    // Action is "agreed" or "declined".
+    // 1) Console log — visible to the operator in DevTools during testing
+    //    and to anyone who opens DevTools. Useful for local verification.
+    try {
+      console.log('%c[Bundle Consent]', 'color:#0f7b6c;font-weight:bold',
+                  action.toUpperCase() + ' at ' + new Date().toISOString());
+    } catch(e) {}
+
+    // 2) Microsoft Clarity custom event — only works for Agree (Clarity is
+    //    loaded then). Wait briefly for Clarity to initialize.
+    var label = (action === 'agreed') ? 'Consent Agreed' : 'Consent Declined';
+    var tries = 0;
+    var fireClarityEvent = function(){
+      try {
+        if (typeof window.clarity === 'function') {
+          window.clarity('event', label);
+          return;
+        }
+      } catch(e) {}
+      if (tries++ < 20) setTimeout(fireClarityEvent, 200);
+    };
+    fireClarityEvent();
+
+    // 3) Beacon to your own domain — generates a GET request that Cloudflare
+    //    logs at the edge. The URL pattern shows up if you ever enable
+    //    detailed Cloudflare request logs. Cheap fallback so DECLINE events
+    //    have ANY server-side trace (Clarity won't record them).
+    try {
+      var img = new Image();
+      img.referrerPolicy = 'no-referrer-when-downgrade';
+      img.src = '/?consent=' + encodeURIComponent(action)
+              + '&t=' + Date.now();
+    } catch(e) {}
+  }
+
   function showBanner(){
     var b = document.createElement('div');
     b.className = 'consent-banner';
@@ -50,10 +86,12 @@
       try{ sessionStorage.setItem(CONSENT_KEY,'agree'); }catch(e){}
       b.remove();
       loadClarity();
+      logConsentEvent('agreed');
     });
     b.querySelector('.consent-decline').addEventListener('click', function(){
       try{ sessionStorage.setItem(CONSENT_KEY,'decline'); }catch(e){}
       b.remove();
+      logConsentEvent('declined');
     });
   }
 
