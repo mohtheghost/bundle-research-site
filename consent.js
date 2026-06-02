@@ -1,8 +1,13 @@
 /* Session-recording consent banner for bundle-research.xyz
  *
- * Shows a small bottom-right banner on first visit asking for explicit
- * opt-in to collect session data via Microsoft Clarity.
- * - Stores the choice in localStorage so we don't re-ask on every page.
+ * Shows a small bottom-right banner asking for explicit opt-in to collect
+ * session data via Microsoft Clarity.
+ * - Stores the choice in sessionStorage — the choice is remembered for the
+ *   current browsing session only. When the visitor closes the browser/tab
+ *   and reopens the site later, the banner appears again so they can
+ *   reaffirm (or change) their choice.
+ * - Within a single session, the choice IS remembered (no nagging on every
+ *   page navigation).
  * - Only loads the Clarity script if the user has explicitly clicked Agree.
  * - Cloudflare Web Analytics is loaded UNCONDITIONALLY in the HTML files
  *   because it is cookie-free, fingerprint-free, and does not identify
@@ -42,19 +47,19 @@
       '</div>';
     document.body.appendChild(b);
     b.querySelector('.consent-agree').addEventListener('click', function(){
-      try{ localStorage.setItem(CONSENT_KEY,'agree'); }catch(e){}
+      try{ sessionStorage.setItem(CONSENT_KEY,'agree'); }catch(e){}
       b.remove();
       loadClarity();
     });
     b.querySelector('.consent-decline').addEventListener('click', function(){
-      try{ localStorage.setItem(CONSENT_KEY,'decline'); }catch(e){}
+      try{ sessionStorage.setItem(CONSENT_KEY,'decline'); }catch(e){}
       b.remove();
     });
   }
 
   function init(){
     var stored;
-    try{ stored = localStorage.getItem(CONSENT_KEY); }catch(e){ stored = null; }
+    try{ stored = sessionStorage.getItem(CONSENT_KEY); }catch(e){ stored = null; }
     if(stored === 'agree'){
       // User already agreed in a previous visit — start tracking immediately
       loadClarity();
