@@ -34,10 +34,15 @@
     })(window,document,"clarity","script",CLARITY_ID);
   }
 
+  // Google Apps Script Web App that logs each consent event into a
+  // Google Sheet. Set up via https://sheets.google.com → Extensions →
+  // Apps Script (deployed as Web App, "Anyone" access).
+  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwnw36gVv0X752KAiGt6DEik7ks3YIpcxWUXdigUsaHDnMR_SCHmtNR1k4Ez6aLUyWgzQ/exec';
+
   function logConsentEvent(action){
     // Action is "agreed" or "declined".
-    // 1) Console log — visible to the operator in DevTools during testing
-    //    and to anyone who opens DevTools. Useful for local verification.
+
+    // 1) Console log — visible to the operator in DevTools during testing.
     try {
       console.log('%c[Bundle Consent]', 'color:#0f7b6c;font-weight:bold',
                   action.toUpperCase() + ' at ' + new Date().toISOString());
@@ -46,7 +51,7 @@
     // 2) Microsoft Clarity custom event — only works for Agree (Clarity is
     //    loaded then). Wait briefly for Clarity to initialize.
     var label = (action === 'agreed') ? 'Consent Agreed' : 'Consent Declined';
-    var tries = 0;
+    var clarityTries = 0;
     var fireClarityEvent = function(){
       try {
         if (typeof window.clarity === 'function') {
@@ -54,20 +59,84 @@
           return;
         }
       } catch(e) {}
-      if (tries++ < 20) setTimeout(fireClarityEvent, 200);
+      if (clarityTries++ < 20) setTimeout(fireClarityEvent, 200);
     };
     fireClarityEvent();
 
-    // 3) Beacon to your own domain — generates a GET request that Cloudflare
-    //    logs at the edge. The URL pattern shows up if you ever enable
-    //    detailed Cloudflare request logs. Cheap fallback so DECLINE events
-    //    have ANY server-side trace (Clarity won't record them).
+    // 3) Cloudflare-edge beacon (cheap fallback so the request is logged
+    //    at the edge even if the Sheet POST fails).
     try {
       var img = new Image();
       img.referrerPolicy = 'no-referrer-when-downgrade';
       img.src = '/?consent=' + encodeURIComponent(action)
               + '&t=' + Date.now();
     } catch(e) {}
+
+    // 4) POST to the Google Sheet logger (rich per-event data).
+    //    First collect everything the browser can report synchronously,
+    //    then try to enrich with IP geolocation via ipapi.co. Whichever
+    //    finishes first posts to the Sheet (with a 1.5s geo timeout so
+    //    a slow ipapi doesn't lose the event).
+    var payload = {
+      action: action,
+      timestamp: new Date().toISOString(),
+      page: window.location.href,
+      referrer: document.referrer || '',
+      user_agent: navigator.userAgent || '',
+      language: navigator.language || '',
+      timezone: '',
+      screen: (window.screen && window.screen.width)
+                ? window.screen.width + 'x' + window.screen.height : '',
+      viewport: window.innerWidth + 'x' + window.innerHeight,
+      platform: navigator.platform || ''
+    };
+    try {
+      if (Intl && Intl.DateTimeFormat) {
+        payload.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      }
+    } catch(e) {}
+
+    var posted = false;
+    function postOnce(data){
+      if (posted) return;
+      posted = true;
+      try {
+        // text/plain + no-cors avoids the CORS preflight that Apps Script
+        // doesn't answer. keepalive lets the request survive page unload.
+        fetch(SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {'Content-Type': 'text/plain;charset=utf-8'},
+          body: JSON.stringify(data),
+          keepalive: true
+        }).catch(function(){});
+      } catch(e) {}
+    }
+
+    // Hard timeout: if ipapi.co is slow/unreachable, post the basic data
+    // after 1.5s so we never lose the event.
+    var geoTimer = setTimeout(function(){ postOnce(payload); }, 1500);
+
+    // Best-effort geo enrichment
+    try {
+      fetch('https://ipapi.co/json/', {cache: 'no-store'})
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .catch(function(){ return null; })
+        .then(function(geo){
+          clearTimeout(geoTimer);
+          if (geo && !geo.error) {
+            payload.country = geo.country_name || '';
+            payload.country_code = geo.country_code || '';
+            payload.region = geo.region || '';
+            payload.city = geo.city || '';
+            payload.ip = geo.ip || '';
+          }
+          postOnce(payload);
+        });
+    } catch(e) {
+      clearTimeout(geoTimer);
+      postOnce(payload);
+    }
   }
 
   function showBanner(){
