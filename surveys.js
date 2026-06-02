@@ -120,8 +120,22 @@
   // ------------------------------------------------------------------
   // Surveys
   // ------------------------------------------------------------------
+  // Tiny logger so the operator can see what's happening in DevTools.
+  function L(){
+    try {
+      var args = ['%c[Bundle Survey]', 'color:#0f7b6c;font-weight:bold'];
+      for (var i = 0; i < arguments.length; i++) args.push(arguments[i]);
+      console.log.apply(console, args);
+    } catch(e) {}
+  }
+
   function showHomepageSurvey(){
-    if (sessionStorage.getItem(KEY_HOMEPAGE)) return;
+    if (sessionStorage.getItem(KEY_HOMEPAGE)) {
+      L('homepage survey already answered this session — skipping.',
+        'To re-test, clear sessionStorage key', KEY_HOMEPAGE);
+      return;
+    }
+    L('showing homepage survey: "Do you like our projects?"');
     buildBanner(
       'Do you like our projects?',
       'projects_liked',
@@ -133,7 +147,12 @@
   }
 
   function showResearchSurvey(){
-    if (sessionStorage.getItem(KEY_RESEARCH)) return;
+    if (sessionStorage.getItem(KEY_RESEARCH)) {
+      L('research survey already answered this session — skipping.',
+        'To re-test, clear sessionStorage key', KEY_RESEARCH);
+      return;
+    }
+    L('showing research survey Q1: "Did you like the research?"');
     buildBanner(
       'Did you like the research?',
       'research_liked',
@@ -147,7 +166,11 @@
   }
 
   function showContactSurvey(){
-    if (sessionStorage.getItem(KEY_CONTACT)) return;
+    if (sessionStorage.getItem(KEY_CONTACT)) {
+      L('contact survey already answered — skipping.');
+      return;
+    }
+    L('showing research survey Q2: "Can we contact you?"');
     buildBanner(
       'Can we contact you for feedback? This would be very useful for us — we would appreciate it.',
       'contact_yes',
@@ -164,17 +187,32 @@
   function waitForConsent(cb){
     var stored;
     try { stored = sessionStorage.getItem(CONSENT_KEY); } catch(e) { stored = null; }
-    if (stored) { cb(); return; }
-    // Re-check periodically until consent is chosen (or page is closed)
-    setTimeout(function(){ waitForConsent(cb); }, 1500);
+    if (stored) { L('consent detected (' + stored + ') — starting survey timer'); cb(); return; }
+    // Re-check fast so the survey fires soon after the user clicks consent
+    setTimeout(function(){ waitForConsent(cb); }, 400);
   }
 
   function init(){
-    // No survey on the about page (or any page that isn't homepage/research)
-    if (!isHomepage() && !isResearchPage()) return;
+    L('surveys.js loaded. Path:', window.location.pathname,
+      'isHomepage:', isHomepage(), 'isResearchPage:', isResearchPage());
+    L('sessionStorage state:', {
+      consent: sessionStorage.getItem(CONSENT_KEY),
+      homepage_answered: sessionStorage.getItem(KEY_HOMEPAGE),
+      research_answered: sessionStorage.getItem(KEY_RESEARCH),
+      contact_answered: sessionStorage.getItem(KEY_CONTACT)
+    });
 
+    // No survey on the about page (or any page that isn't homepage/research)
+    if (!isHomepage() && !isResearchPage()) {
+      L('not on a survey-eligible page — exiting.');
+      return;
+    }
+
+    L('waiting for consent to be chosen...');
     waitForConsent(function(){
+      L('survey will appear in', DELAY_MS, 'ms');
       setTimeout(function(){
+        L('delay elapsed — attempting to show survey');
         if (isResearchPage()) {
           showResearchSurvey();
         } else if (isHomepage()) {
