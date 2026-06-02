@@ -4,7 +4,42 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bundle Research — Mohamed Benkaddour</title>
-<meta name="description" content="Independent research and projects by Mohamed Benkaddour. Earth observation, machine learning, and software.">
+<meta name="description" content="Independent research and projects by Mohamed Benkaddour. Earth observation, machine learning, and software from Riyadh, Saudi Arabia.">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<!-- Open Graph (Facebook, LinkedIn, etc) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bundle-research.xyz/">
+<meta property="og:title" content="Bundle Research — Independent Earth Observation Research">
+<meta property="og:description" content="Per-region NDVI forecasting across 133 ecoregions. Cross-continental R² ≈ 0.93 with leakage-audited methodology.">
+<meta property="og:site_name" content="Bundle Research">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bundle Research — Independent Earth Observation Research">
+<meta name="twitter:description" content="Per-region NDVI forecasting across 133 ecoregions. Cross-continental R² ≈ 0.93 with leakage-audited methodology.">
+
+<!-- URL Redirect: ?go=X jumps to a project. Plain URL = portfolio (no redirect). -->
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var go = params.get('go');
+  var map = {
+    'desertflow': '/desertflow.html',
+    'bundle': '/desertflow.html',
+    'research': '/desertflow.html',
+    'paper': '/desertflow.html',
+    'about': '/about.html',
+    'jack': 'https://github.com/mohtheghost/jack-the-Robot-pr'
+  };
+  if (go && map[go]) {
+    window.location.replace(map[go]);
+  }
+})();
+</script>
+
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -26,13 +61,34 @@
   <h1>Independent research and projects by <span class="accent">Mohamed Benkaddour</span></h1>
   <p class="lede">High school student researcher focused on Earth observation, machine learning, and building tools that scale. Currently working on a per-region NDVI forecasting framework using Google Earth Engine.</p>
   <div class="ctas">
-    <a class="btn btn-primary" href="#projects">Explore Projects ↓</a>
-    <a class="btn btn-secondary" href="about.html">About me</a>
+    <a class="btn btn-primary" href="desertflow.html">Featured Research →</a>
+    <a class="btn btn-secondary" href="#projects">All Projects ↓</a>
+  </div>
+</section>
+
+<!-- FEATURED: spotlight on the active research -->
+<section class="container">
+  <div class="featured-card">
+    <div class="featured-meta">
+      <span class="dot"></span> Active research · Updated June 2026
+    </div>
+    <h2 class="featured-title">Desertflow Global Bundle</h2>
+    <p class="featured-desc">Per-region NDVI forecasting across 133 WWF ecoregions and 22 years using Google Earth Engine. The headline contribution is a leakage-aware validation protocol that catches the common failure modes most published NDVI forecasting studies miss — sister vegetation features, shared cross-region statistics, pheno-prior leakage.</p>
+    <div class="featured-stats">
+      <div><span class="featured-stat-num">133</span><span class="featured-stat-label">ecoregions</span></div>
+      <div><span class="featured-stat-num">22</span><span class="featured-stat-label">years</span></div>
+      <div><span class="featured-stat-num">19</span><span class="featured-stat-label">driver modules</span></div>
+      <div><span class="featured-stat-num">0.93</span><span class="featured-stat-label">R² cross-continental</span></div>
+    </div>
+    <div class="ctas">
+      <a class="btn btn-primary" href="desertflow.html">Read full project →</a>
+      <a class="btn btn-secondary" href="https://github.com/mohtheghost">GitHub →</a>
+    </div>
   </div>
 </section>
 
 <section class="projects-section container" id="projects">
-  <h2 class="section-title">Projects &amp; Work</h2>
+  <h2 class="section-title">All Projects &amp; Work</h2>
   <p class="section-subtitle">Filter by area of interest:</p>
 
   <div class="filters">
@@ -65,7 +121,7 @@
     </a>
 
     <!-- BUNDLE FRAMEWORK (tool spinoff) -->
-    <div class="project-card" data-tags="tools ml" style="opacity:.85">
+    <div class="project-card" data-tags="tools ml" style="opacity:.9">
       <div class="project-card-image" style="background:linear-gradient(135deg,#4a5d75 0%,#2c3e50 100%)">B</div>
       <div class="project-card-body">
         <div class="project-card-tags">
@@ -81,7 +137,24 @@
       </div>
     </div>
 
-    <!-- JACK THE ROBOT (your existing game dev) -->
+    <!-- LEAKAGE AUDIT PROTOCOL (research methodology) -->
+    <div class="project-card" data-tags="research ml" style="opacity:.85">
+      <div class="project-card-image" style="background:linear-gradient(135deg,#7c2d12 0%,#dc2626 100%)">L</div>
+      <div class="project-card-body">
+        <div class="project-card-tags">
+          <span class="tag">Research</span>
+          <span class="tag">Methodology</span>
+        </div>
+        <h3 class="project-card-title">Leakage Audit Protocol</h3>
+        <p class="project-card-desc">A documented protocol catching the four failure modes most NDVI forecasting studies miss: sister-vegetation features, shared scalers, leaky CV splits, pheno-prior contamination.</p>
+        <div class="project-card-meta">
+          <span class="project-card-status"><span class="dot"></span> Active</span>
+          <span>Preprint planned</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- JACK THE ROBOT -->
     <a class="project-card" href="https://github.com/mohtheghost/jack-the-Robot-pr" data-tags="gamedev tools">
       <div class="project-card-image" style="background:linear-gradient(135deg,#6d28d9 0%,#9333ea 100%)">J</div>
       <div class="project-card-body">
@@ -98,15 +171,31 @@
       </div>
     </a>
 
-    <!-- PLACEHOLDER for future -->
+    <!-- LEARNING NOTES (placeholder, future) -->
     <div class="project-card" data-tags="research ml tools" style="opacity:.55;cursor:default">
-      <div class="project-card-image" style="background:linear-gradient(135deg,#94a3b8 0%,#64748b 100%)">+</div>
+      <div class="project-card-image" style="background:linear-gradient(135deg,#0891b2 0%,#0e7490 100%)">📓</div>
       <div class="project-card-body">
         <div class="project-card-tags">
           <span class="tag">Coming soon</span>
         </div>
+        <h3 class="project-card-title">Learning notes</h3>
+        <p class="project-card-desc">Paper summaries and methodology notes from research I'm working through. ML, remote sensing, and statistical learning.</p>
+        <div class="project-card-meta">
+          <span class="project-card-status"><span class="dot dot-planned"></span> Planned</span>
+          <span>Q3 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MORE COMING -->
+    <div class="project-card" data-tags="research ml tools" style="opacity:.45;cursor:default">
+      <div class="project-card-image" style="background:linear-gradient(135deg,#94a3b8 0%,#64748b 100%)">+</div>
+      <div class="project-card-body">
+        <div class="project-card-tags">
+          <span class="tag">Future</span>
+        </div>
         <h3 class="project-card-title">More projects coming</h3>
-        <p class="project-card-desc">New projects, learning notes, and tool experiments will appear here as they launch.</p>
+        <p class="project-card-desc">New experiments, tools, and side projects will appear here as they launch.</p>
         <div class="project-card-meta">
           <span class="project-card-status"><span class="dot dot-planned"></span> Planned</span>
           <span>TBD</span>
@@ -117,9 +206,20 @@
   </div>
 </section>
 
+<!-- Quick direct-link shortcuts (for sharing) -->
+<section class="container shortcuts-section">
+  <h2 class="section-title">Direct Links</h2>
+  <p class="section-subtitle">Shareable URLs that jump directly to a specific page:</p>
+  <div class="shortcuts">
+    <code>bundle-research.xyz/?go=research</code> → opens the Desertflow research page<br>
+    <code>bundle-research.xyz/?go=about</code> → opens the about page<br>
+    <code>bundle-research.xyz/?go=jack</code> → opens the Jack the Robot repo
+  </div>
+</section>
+
 <footer>
   <div class="footer-inner">
-    <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
+    <span>© 2026 Mohamed Benkaddour · Bundle Research · Riyadh, Saudi Arabia</span>
     <div class="footer-links">
       <a href="https://github.com/mohtheghost">GitHub</a>
       <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>

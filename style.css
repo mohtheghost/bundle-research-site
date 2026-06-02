@@ -122,3 +122,94 @@ footer{margin-top:4rem;padding:2rem 1.5rem;border-top:1px solid var(--line);back
 .copy-link{background:none;border:none;color:var(--accent);font-family:inherit;font-size:inherit;cursor:pointer;padding:0;border-bottom:1px solid var(--accent-soft);transition:all .15s}
 .copy-link:hover{border-color:var(--accent)}
 .copy-link.copied{border-bottom-color:#22c55e !important}
+
+/* ============================================================
+   HOMEPAGE — Featured project card
+============================================================ */
+.featured-card{background:linear-gradient(135deg,#ffffff 0%,#f0f9f6 100%);border:1px solid var(--accent-soft);border-radius:14px;padding:2rem 2rem 1.75rem;margin:1.5rem 0 2.5rem;box-shadow:0 8px 30px rgba(15,123,108,.08);position:relative;overflow:hidden}
+.featured-card::before{content:"";position:absolute;top:0;left:0;width:4px;height:100%;background:var(--accent)}
+.featured-meta{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:.75rem}
+.featured-title{font-size:1.8rem;font-weight:700;margin:0 0 .75rem;letter-spacing:-.02em;color:var(--ink)}
+.featured-desc{font-size:1.02rem;color:var(--muted);margin:0 0 1.5rem;line-height:1.6;max-width:760px}
+.featured-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1rem;padding:1.15rem 0;margin:1rem 0;border-top:1px solid var(--accent-soft);border-bottom:1px solid var(--accent-soft)}
+.featured-stats > div{display:flex;flex-direction:column;text-align:left}
+.featured-stat-num{font-size:1.6rem;font-weight:700;color:var(--accent);line-height:1}
+.featured-stat-label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:.3rem}
+
+/* HOMEPAGE — Direct-link shortcuts box */
+.shortcuts-section{padding:1.5rem 0 4rem}
+.shortcuts{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1.25rem 1.5rem;font-size:.95rem;line-height:2.1;color:var(--ink)}
+.shortcuts code{background:var(--accent-soft);color:var(--accent);padding:3px 8px;border-radius:4px;font-size:.88em;font-family:'SF Mono',Menlo,Consolas,monospace}
+
+/* ============================================================
+   DESERTFLOW — Abstract callout
+============================================================ */
+.callout{background:linear-gradient(135deg,#fefbf3 0%,#fef3c7 100%);border:1px solid #fcd34d;border-radius:10px;padding:1.5rem 1.75rem;margin:2rem 0;font-size:.98rem;line-height:1.7;color:#78350f;box-shadow:0 4px 15px rgba(252,211,77,.15)}
+.callout strong{color:#78350f}
+
+/* Table of contents */
+.toc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.25rem 1.5rem;margin:1.5rem 0 2.5rem}
+.toc-title{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.85rem}
+.toc ol{padding-left:1.5rem;margin:0;columns:2;column-gap:1.5rem}
+.toc li{margin:.3rem 0;break-inside:avoid;font-size:.92rem}
+.toc a{color:var(--ink);text-decoration:none;border:none}
+.toc a:hover{color:var(--accent)}
+
+/* Text/ASCII diagram block */
+.diagram{background:#0f1e28;color:#a7f3d0;padding:1.5rem 1.25rem;border-radius:8px;font-family:'SF Mono',Menlo,Consolas,monospace;font-size:.78rem;line-height:1.45;overflow-x:auto;white-space:pre;margin:1.5rem 0;border:1px solid #1f3a48}
+
+/* Module grid */
+.module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin:1.5rem 0}
+.module-group{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem 1.25rem}
+.module-title{font-weight:700;font-size:.95rem;color:var(--accent);margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.04em;font-size:.78rem}
+.module-group ul{padding-left:1.25rem;margin:0;font-size:.9rem}
+.module-group li{margin:.3rem 0;color:var(--ink)}
+
+/* Results table */
+.results-table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:.94rem}
+.results-table thead{background:var(--accent-soft)}
+.results-table th{text-align:left;padding:.85rem 1rem;font-weight:600;color:var(--accent);border-bottom:2px solid var(--accent)}
+.results-table td{padding:.7rem 1rem;border-bottom:1px solid var(--line)}
+.results-table tr:hover td{background:#f9fafb}
+.results-table strong{color:var(--accent)}
+
+/* Open problems grid */
+.problem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin:1.5rem 0}
+.problem-card{background:var(--card);border:1px solid var(--line);border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;padding:1rem 1.25rem}
+.problem-card strong{color:#b45309;display:block;margin-bottom:.4rem;font-size:1rem}
+.problem-card p{margin:0;font-size:.9rem;color:var(--muted);line-height:1.5}
+
+/* Roadmap */
+.roadmap{margin:1.5rem 0}
+.roadmap-phase{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1rem;border-left:3px solid var(--accent)}
+.roadmap-phase-title{font-weight:700;color:var(--accent);font-size:1.02rem;margin-bottom:.6rem}
+.roadmap-phase ul{margin:0;padding-left:1.25rem}
+.roadmap-phase li{margin:.3rem 0;font-size:.92rem}
+
+/* References list */
+.ref-list{padding-left:1.25rem}
+.ref-list li{margin:.5rem 0;font-size:.92rem;color:var(--ink);line-height:1.5}
+.ref-list li strong{color:var(--accent)}
+
+/* FAQ - using native <details>/<summary> */
+.faq{background:var(--card);border:1px solid var(--line);border-radius:8px;margin:.6rem 0;overflow:hidden;transition:all .15s}
+.faq:hover{border-color:var(--accent-soft)}
+.faq[open]{border-color:var(--accent);box-shadow:0 4px 15px rgba(15,123,108,.06)}
+.faq summary{padding:1rem 1.25rem;cursor:pointer;font-weight:600;color:var(--ink);font-size:.98rem;list-style:none;position:relative;padding-right:2.5rem;transition:color .15s}
+.faq summary:hover{color:var(--accent)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:1.25rem;top:50%;transform:translateY(-50%);font-size:1.4rem;color:var(--accent);font-weight:300;transition:transform .2s}
+.faq[open] summary::after{content:"−"}
+.faq p{padding:0 1.25rem 1rem;margin:0;color:var(--muted);font-size:.94rem;line-height:1.6}
+
+/* Smooth-scroll for in-page anchors */
+html{scroll-behavior:smooth}
+
+@media (max-width:700px){
+  .toc ol{columns:1}
+  .featured-card{padding:1.5rem 1.25rem}
+  .featured-title{font-size:1.4rem}
+  .diagram{font-size:.6rem}
+  .results-table{font-size:.82rem}
+  .results-table th,.results-table td{padding:.5rem .6rem}
+}

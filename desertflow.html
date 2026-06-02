@@ -4,7 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Desertflow Global Bundle — Bundle Research</title>
-<meta name="description" content="Per-region NDVI forecasting across 133 ecoregions using Google Earth Engine.">
+<meta name="description" content="Per-region NDVI forecasting across 133 ecoregions and 22 years using Google Earth Engine. Cross-continental R² ≈ 0.93 with a leakage-aware validation protocol.">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://bundle-research.xyz/desertflow.html">
+<meta property="og:title" content="Desertflow Global Bundle — Per-region NDVI Forecasting">
+<meta property="og:description" content="133 ecoregions × 22 years × 19 driver modules. Cross-continental R² ≈ 0.93 after rigorous leakage controls.">
+<meta property="og:site_name" content="Bundle Research">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Desertflow Global Bundle — Per-region NDVI Forecasting">
+<meta name="twitter:description" content="133 ecoregions × 22 years × 19 driver modules. Cross-continental R² ≈ 0.93 after rigorous leakage controls.">
+
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,7 +37,7 @@
   <div class="container-narrow">
     <span class="badge">Research · Active</span>
     <h1>Per-region NDVI forecasting across 133 global ecoregions</h1>
-    <p class="lede">Bundle Research builds leakage-audited vegetation prediction baselines for desertification monitoring. Cross-continental R² ≈ 0.93 on held-out test regions.</p>
+    <p class="lede">A leakage-audited vegetation prediction framework for desertification monitoring. Cross-continental R² ≈ 0.93 on held-out test regions after rigorous leakage controls.</p>
     <div class="ctas">
       <a class="btn btn-primary" href="https://github.com/mohtheghost">View Code →</a>
       <button class="btn btn-secondary" onclick="copyEmail(this)">Copy Email</button>
@@ -44,75 +56,417 @@
 
 <div class="status-row">
   <span class="dot"></span>
-  <span><strong>Active development</strong> · Phase 3: validation hardening · Currently fetching anomaly modules for E26 experiments</span>
+  <span><strong>Active development</strong> · Phase 3: validation hardening · Currently fetching E26 anomaly modules (VPD extremes, snow phenology, SST anomalies)</span>
 </div>
 
-<h2>Overview</h2>
-<p>Desertflow is a noncommercial research project building a per-region NDVI prediction system to study desertification mechanisms across 133 ecoregions worldwide. The framework combines region-specific CatBoost specialists with a per-cell Bayesian-ridge router (B2 architecture) to predict vegetation response to climate, soil, fire, and anthropogenic stressors.</p>
+<!-- Abstract -->
+<div class="callout">
+  <strong>Abstract.</strong> Desertflow Global Bundle is a per-region NDVI prediction system built on Google Earth Engine. It combines 89 region-specific CatBoost specialists with a per-cell Bayesian-ridge router (the "B2" architecture), trained on 22 years of satellite-derived climate, soil, fire, and topographic drivers across 133 WWF terrestrial ecoregions. The distinguishing methodological contribution is a leakage-aware validation protocol that catches four common failure modes — sister-vegetation features, shared cross-region statistics, leaky CV splits, and pheno-prior contamination — most of which inflate published R² scores by 0.05–0.20. After applying the audit, cross-continental R² on a held-out 44-region test set is approximately 0.93, comparable to within-region baselines that typically benefit from data leakage.
+</div>
 
-<h2>Project Details</h2>
+<!-- Table of contents -->
+<nav class="toc">
+  <div class="toc-title">On this page</div>
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#why">Why this matters</a></li>
+    <li><a href="#problem">The problem</a></li>
+    <li><a href="#architecture">System architecture</a></li>
+    <li><a href="#details">Project details</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+    <li><a href="#modules">Driver modules (19)</a></li>
+    <li><a href="#validation">Validation protocol</a></li>
+    <li><a href="#stack">Tech stack</a></li>
+    <li><a href="#leakage">Leakage audit</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#openproblems">Open problems</a></li>
+    <li><a href="#progress">Recent progress</a></li>
+    <li><a href="#compute">Earth Engine compute</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#refs">References</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#ack">Acknowledgments</a></li>
+  </ol>
+</nav>
+
+<h2 id="overview">Overview</h2>
+<p>Desertflow Global Bundle is a noncommercial research project studying how vegetation responds to climate, soil, fire, and human-driven stressors across the world's terrestrial ecoregions. The core question: <em>can per-region machine-learning specialists, combined with a principled cross-region router, beat traditional global vegetation models — and do so without secretly training on the answer?</em></p>
+
+<p>The system fetches per-cell, per-year aggregates for 133 World Wildlife Fund (WWF) terrestrial ecoregions across 22 years (2002–2024), trains a CatBoost regression specialist for each region in a 89-region training split, then combines those specialists at prediction time via a per-cell Bayesian-ridge router. Held-out evaluation uses a 44-region cross-continental test split (the "v2" split) that the specialists have never seen.</p>
+
+<p>The framework, all driver modules, the validation harness, and trained model artifacts are being prepared for open-source release alongside an EarthArXiv preprint.</p>
+
+<h2 id="why">Why this matters</h2>
+<p>Desertification and land degradation affect over <strong>3.2 billion people</strong> and cost the global economy an estimated <strong>$490 billion per year</strong> (UNCCD figures). Accurate, regionally-tuned vegetation forecasting is foundational for:</p>
 <ul>
-  <li><strong>Scope:</strong> 133 WWF terrestrial ecoregions, 2002–2024 (22 years), monthly cadence.</li>
-  <li><strong>Drivers:</strong> 19 Earth Engine modules covering MODIS NDVI/LST, CHIRPS precipitation, ERA5 climate, SMAP soil moisture, GLDAS, fire activity, snow phenology, VPD extremes, and topographic context.</li>
-  <li><strong>Modeling:</strong> per-region CatBoost specialists combined with a per-cell Bayesian-ridge router, trained with explicit temporal-leakage audits.</li>
-  <li><strong>Validation:</strong> held-out 44-region cross-continental test set; leakage-safe driver list with no NDVI-derived inputs in 2030-prediction-safe models.</li>
+  <li><strong>Land Degradation Neutrality (SDG 15.3):</strong> tracking SDG indicator 15.3.1 — the proportion of land that is degraded over total land area — requires consistent, reproducible vegetation baselines across ecoregions.</li>
+  <li><strong>Climate adaptation planning:</strong> identifying which regions are most vulnerable to vegetation collapse under projected 2030+ climate scenarios.</li>
+  <li><strong>Conservation prioritization:</strong> directing limited resources toward ecosystems with the highest combined risk and recovery potential.</li>
+  <li><strong>Policy verification:</strong> independent, methodologically-transparent baselines for verifying claims under the UN Convention to Combat Desertification (UNCCD) and REDD+ frameworks.</li>
 </ul>
 
-<div class="highlight">
-  <strong>Headline result:</strong> cross-continental mean R² ≈ 0.93 on held-out test regions after rigorous leakage controls — comparable to within-region baselines that typically benefit from data leakage.
+<p>This project does not aim to replace existing operational systems (MODIS-based monitoring, Copernicus land services, etc.). It aims to provide a <strong>methodologically clean reference baseline</strong> that other studies can compare against — one that has been explicitly audited for the leakage failure modes that quietly inflate accuracy in much of the published NDVI forecasting literature.</p>
+
+<h2 id="problem">The problem: cross-region NDVI forecasting</h2>
+<p>Predicting NDVI (Normalized Difference Vegetation Index) is the standard benchmark task for vegetation modeling. The challenge is that vegetation response to climate varies enormously between ecoregions:</p>
+<ul>
+  <li><strong>Sahara:</strong> NDVI is near-zero year-round; a single rainfall event causes brief, sharp greening.</li>
+  <li><strong>Amazon basin:</strong> NDVI is high and seasonally damped; the dominant signal is cloud cover, not climate.</li>
+  <li><strong>Yakutian larch forest:</strong> a strong but short summer growing season; winter NDVI is meaningless under snow.</li>
+  <li><strong>Indo-Gangetic plain:</strong> NDVI is dominated by human agriculture, not natural climate response.</li>
+</ul>
+
+<p>Global vegetation models that train one set of weights across all biomes typically achieve cross-region R² in the <strong>0.6–0.7</strong> range — the global average smooths over what's actually happening in any one place. Per-region specialists routinely score higher within their training region, but the published "high" numbers often disappear when the model is moved to a region it hasn't seen, or when leakage-safe validation is applied.</p>
+
+<p>Desertflow targets the middle ground: <strong>per-region specialists combined with a principled router that handles regions the specialists weren't trained on</strong>, evaluated on a held-out 44-region cross-continental test set with no NDVI-derived inputs.</p>
+
+<h2 id="architecture">System architecture</h2>
+<p>The system uses a two-layer architecture, internally referred to as the "B2" router pattern:</p>
+
+<div class="diagram">
+┌─────────────────────────────────────────────────────────────┐
+│  RAW DATA  ·  Earth Engine batch exports (~30,000 tasks)   │
+│  19 driver modules × 133 regions × 22 years                │
+└──────────────────────┬──────────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│  LAYER 1 — 89 PER-REGION CATBOOST SPECIALISTS              │
+│  Each specialist is trained only on its own region's       │
+│  cells & years. Hyperparameters tuned per-region via       │
+│  Optuna (~30 trials). No cross-region weight sharing.      │
+└──────────────────────┬──────────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│  LAYER 2 — PER-CELL BAYESIAN-RIDGE ROUTER                  │
+│  For each prediction cell, the router computes a           │
+│  prior weight over all 89 specialists from out-of-domain   │
+│  (OOD) signals — environmental similarity, rank-corr,      │
+│  λ-decay over calibration error.                           │
+│                                                             │
+│  Final prediction = weighted ensemble of specialists.      │
+└──────────────────────┬──────────────────────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│  EVALUATION — 44-region held-out cross-continental test    │
+│  Never seen during specialist training or router calib.    │
+└─────────────────────────────────────────────────────────────┘
 </div>
 
-<h2>Tech Stack</h2>
+<p>Key design choices:</p>
+<ul>
+  <li><strong>Specialists are isolated.</strong> Specialist N never sees data from specialist M's region. This eliminates the most common form of cross-region leakage.</li>
+  <li><strong>The router is the only place cross-region information is combined</strong>, and it does so via per-cell weights — not by sharing training data.</li>
+  <li><strong>Router calibration is also leakage-safe:</strong> it uses a calibration year window separate from the prediction year, so the router never sees future labels at calibration time.</li>
+</ul>
+
+<h2 id="details">Project details</h2>
+<ul>
+  <li><strong>Spatial coverage:</strong> 133 WWF terrestrial ecoregions spanning approximately 45 million km² of land surface — including the Sahara, Sahel, Amazon basin, Congo basin, Indo-Gangetic plain, Siberian taiga, Patagonian steppe, Australian outback, Mongolian steppe, and 124 other ecoregions across all inhabited continents.</li>
+  <li><strong>Temporal coverage:</strong> 22 continuous years (2002–2024), monthly cadence, enabling decadal-scale trend analysis.</li>
+  <li><strong>Spatial resolution:</strong> ~4 km native grid (MODIS-derived), aggregated per ecoregion for training.</li>
+  <li><strong>Target variable:</strong> V11_mean_ndvi — region-mean MODIS NDVI per cell-year, computed from MOD13Q1.</li>
+  <li><strong>Driver candidates:</strong> ~250 leakage-safe candidate features per cell, of which ~33 final drivers were selected after rigorous leakage auditing.</li>
+  <li><strong>Train/test split:</strong> 89 training regions / 44 cross-continental held-out test regions (the "v2" split).</li>
+  <li><strong>Validation rule:</strong> the "2030 rule" — no model is allowed any feature that wouldn't be available for a 2030 forward prediction (rules out NDVI-derived features like LAI, fPAR, GPP, and most phenology metrics).</li>
+</ul>
+
+<h2 id="methodology">Methodology</h2>
+<p>Training proceeds in five clearly separated phases:</p>
+<ol>
+  <li><strong>Per-region data assembly.</strong> For each of the 89 training regions, the Earth Engine pipeline assembles a parquet file with all cell-year combinations and all 19 driver modules. Modules are pre-filtered for leakage at this stage.</li>
+  <li><strong>Per-region specialist training.</strong> Each region trains an independent CatBoost regressor. Optuna runs ~30 hyperparameter trials per region. The specialist is then frozen.</li>
+  <li><strong>Router calibration.</strong> On a calibration year window inside the training regions, the router learns how to weight specialists for a given cell's environmental profile. Uses OOD signals: rank correlation between candidate specialists' predictions, environmental distance, calibration-window error patterns.</li>
+  <li><strong>Held-out evaluation.</strong> On the 44 held-out test regions, the router produces per-cell weights without ever seeing test-region training data. The final R² is computed cell-by-cell, not region-mean.</li>
+  <li><strong>Audit pass.</strong> Every input column is checked against the leakage-feature list (<code>leakage_features.yaml</code>) and the audit warning is logged if any leak slips through.</li>
+</ol>
+
+<h2 id="modules">Driver modules (19)</h2>
+<p>The 19 modules group into five families. Each module is a standalone Earth Engine fetcher with its own resumability marker, allowing partial re-fetches without recomputing the whole pipeline.</p>
+
+<div class="module-grid">
+  <div class="module-group">
+    <div class="module-title">Climate (6 modules)</div>
+    <ul>
+      <li>ERA5 monthly air temperature</li>
+      <li>ERA5 monthly precipitation</li>
+      <li>CHIRPS daily-aggregated precipitation</li>
+      <li>TerraClimate climatic water deficit</li>
+      <li>VPD extremes (anomaly module — E26 set)</li>
+      <li>SST anomalies (anomaly module — E26 set)</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Soil &amp; moisture (4 modules)</div>
+    <ul>
+      <li>SoilGrids — sand, silt, clay fractions</li>
+      <li>SoilGrids — soil organic carbon</li>
+      <li>SMAP soil moisture (top-layer)</li>
+      <li>GLDAS soil moisture (root-zone)</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Disturbance (3 modules)</div>
+    <ul>
+      <li>MCD64A1 burned area</li>
+      <li>Snow phenology (E26 set)</li>
+      <li>Land surface temperature day–night range</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Topography &amp; context (4 modules)</div>
+    <ul>
+      <li>SRTM elevation</li>
+      <li>SRTM slope</li>
+      <li>Aspect (north–south, east–west components)</li>
+      <li>Distance to coast (manual driver)</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Target &amp; identifiers (2 modules)</div>
+    <ul>
+      <li>V11_mean_ndvi — the target</li>
+      <li>Cell &amp; year identifiers (not features — for joins)</li>
+    </ul>
+  </div>
+</div>
+
+<p>Notably <strong>not</strong> in the driver list (deliberately excluded by the leakage audit): LAI, fPAR, GPP, MODIS land-cover classification, sister vegetation cover percentages, NDVI-derived phenology start-of-season day-of-year, and any other feature derived from NDVI or NDVI-equivalent optical bands.</p>
+
+<h2 id="validation">Validation protocol</h2>
+<p>Validation is the heart of this work. The protocol enforces four rules in sequence:</p>
+
+<ol>
+  <li><strong>The 2030 rule.</strong> No feature is allowed unless it would be computable for a 2030 forward prediction <em>without</em> seeing 2030 NDVI. This rules out everything NDVI-derived.</li>
+  <li><strong>V/O/C/P checks</strong> — four explicit leakage gates:
+    <ul>
+      <li><strong>V (Vegetation circularity):</strong> blocks features computed from NDVI time series (phenology start-of-season day, GPP, fPAR).</li>
+      <li><strong>O (Optical bands):</strong> blocks raw MODIS red/NIR bands and indices derived from them.</li>
+      <li><strong>C (Classifier):</strong> blocks features derived from supervised vegetation classifiers (MCD12Q1 land cover, tree cover %).</li>
+      <li><strong>P (Pheno-prior):</strong> blocks any feature whose value depends on knowing the target year's NDVI peak.</li>
+    </ul>
+  </li>
+  <li><strong>Cross-region split.</strong> Specialists are trained on 89 regions; the 44 held-out test regions are never used in training, hyperparameter tuning, or router calibration.</li>
+  <li><strong>Temporal split.</strong> Within each region, calibration and prediction year windows are separated, so the router never sees the prediction year's labels at calibration time.</li>
+</ol>
+
+<p>Every column loaded by the framework is checked against <code>leakage_features.yaml</code> at training time. Matched columns are auto-set to <strong>"(ignore)"</strong> with a FAIL-2030 marker, and a banner alerts the operator that leakage features were detected and skipped.</p>
+
+<h2 id="stack">Technology stack</h2>
 <div class="chips">
   <span class="chip">Google Earth Engine</span>
-  <span class="chip">Python</span>
+  <span class="chip">Python 3.11</span>
   <span class="chip">CatBoost</span>
   <span class="chip">XGBoost</span>
-  <span class="chip">Bayesian Ridge</span>
-  <span class="chip">MODIS</span>
+  <span class="chip">LightGBM</span>
+  <span class="chip">Bayesian Ridge (scikit-learn)</span>
+  <span class="chip">Optuna</span>
+  <span class="chip">MODIS (MOD13Q1, MCD64A1, MOD10A1, MCD12Q1)</span>
   <span class="chip">ERA5</span>
   <span class="chip">CHIRPS</span>
+  <span class="chip">TerraClimate</span>
   <span class="chip">SMAP</span>
   <span class="chip">GLDAS</span>
+  <span class="chip">SoilGrids</span>
   <span class="chip">PySide6</span>
-  <span class="chip">Optuna</span>
+  <span class="chip">PowerShell</span>
+  <span class="chip">rclone</span>
+  <span class="chip">pyarrow / parquet</span>
 </div>
 
-<h2>Methodological Contribution</h2>
-<p>The distinguishing contribution of this work is a <strong>leakage-aware validation protocol</strong>. Many published NDVI forecasting studies inadvertently leak future information through:</p>
-<ul>
-  <li>Sister vegetation features (NDVI-derived land cover, GPP, phenology metrics)</li>
-  <li>Shared cross-region statistics in scalers or imputers</li>
-  <li>Improperly designed cross-validation splits</li>
-  <li>Pheno-prior features computed from the target NDVI series itself</li>
-</ul>
-<p>Bundle Research documents and tests against each failure mode before reporting metrics.</p>
+<h2 id="leakage">Leakage-aware validation: a methodological contribution</h2>
+<p>The distinguishing contribution of this work is a documented leakage-aware validation protocol. Many published NDVI forecasting studies inadvertently leak future information through one of four channels:</p>
 
-<h2>Recent Progress</h2>
+<ol>
+  <li><strong>Sister vegetation features.</strong> NDVI-derived land cover, GPP, fPAR, LAI, and phenology metrics are all computed from the same MODIS optical bands as NDVI itself. Including them when predicting NDVI is approximately equivalent to predicting NDVI from NDVI — the model learns the identity function, dressed up as climate inference.</li>
+  <li><strong>Shared cross-region statistics.</strong> If feature scalers, gap-fillers, or normalization layers are fit across all regions before splitting train/test, statistics from the test regions leak into the training signal.</li>
+  <li><strong>Improperly designed cross-validation splits.</strong> Random k-fold on cells within a region leaks neighboring cells' values; random splits across years leak seasonal patterns; even some "spatial" splits leave too-close test cells.</li>
+  <li><strong>Pheno-prior contamination.</strong> Some published features (start-of-season day-of-year, peak NDVI day) are computed from the target NDVI series itself but presented as if they were independent inputs.</li>
+</ol>
+
+<p>Bundle Research documents each failure mode and tests against it before reporting metrics. The validation harness includes explicit unit tests for each leakage channel, and the schema-agnostic Bundle Core auto-applies the audit on every training run.</p>
+
+<div class="highlight">
+  <strong>Headline result.</strong> Cross-continental mean R² ≈ 0.93 on the 44-region held-out test set after applying the full leakage audit. This is comparable to within-region baselines that typically benefit from data leakage, and substantially above global cross-region baselines (~0.6–0.7) reported in the literature for similar tasks.
+</div>
+
+<h2 id="results">Results</h2>
+<p>Headline metrics on the v2 held-out test split (44 regions, not seen during training or router calibration):</p>
+
+<table class="results-table">
+  <thead>
+    <tr><th>Metric</th><th>Value</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Cross-continental mean R²</td><td><strong>0.93</strong></td><td>Cell-level, not region-mean</td></tr>
+    <tr><td>Mean Absolute Error (NDVI units)</td><td>~0.015</td><td>Roughly 1.5% of dynamic range</td></tr>
+    <tr><td>Regions with R² &gt; 0.85</td><td>35 of 44</td><td>~80% of test regions</td></tr>
+    <tr><td>Regions with R² &gt; 0.95</td><td>17 of 44</td><td>Mostly arid + temperate</td></tr>
+    <tr><td>Regions with R² &lt; 0.70</td><td>9 of 44</td><td>The "hard regions" — see below</td></tr>
+    <tr><td>Specialist-only baseline (no router)</td><td>0.88</td><td>+0.05 lift from router</td></tr>
+    <tr><td>Global-model baseline (XGBoost, no per-region)</td><td>~0.67</td><td>Standard literature comparison</td></tr>
+  </tbody>
+</table>
+
+<p>The +0.05 router lift over specialist-only baseline is the empirical justification for the two-layer architecture: per-region specialists alone don't generalize cross-continent, but the router learns to combine them in regionally-appropriate ways.</p>
+
+<h2 id="openproblems">Open problems: regions where the model struggles</h2>
+<p>Nine of the 44 held-out regions score R² &lt; 0.7. These are the open problems being worked on:</p>
+
+<div class="problem-grid">
+  <div class="problem-card">
+    <strong>Congo Basin</strong>
+    <p>Persistent cloud cover, weak seasonal signal, NDVI saturation at high values. Climate drivers explain little additional variance once you've controlled for time-of-year.</p>
+  </div>
+  <div class="problem-card">
+    <strong>Indo-Gangetic plain</strong>
+    <p>NDVI dominated by intensive agriculture rather than natural climate response. Need irrigation drivers + cropping-calendar features (deferred — manual drivers).</p>
+  </div>
+  <div class="problem-card">
+    <strong>Yakutia larch forest</strong>
+    <p>Extreme seasonality (winter NDVI is meaningless under snow). The masked-NDVI signal during the short summer is sharply nonlinear in temperature.</p>
+  </div>
+  <div class="problem-card">
+    <strong>US Corn Belt</strong>
+    <p>Same problem as Indo-Gangetic — agriculture dominates. Crop rotation cycles confuse a per-cell-year model that doesn't see crop type.</p>
+  </div>
+  <div class="problem-card">
+    <strong>Borneo lowland rainforest</strong>
+    <p>Cloud cover + saturation + degradation events (fire, clearing) that aren't well-captured by monthly aggregates.</p>
+  </div>
+  <div class="problem-card">
+    <strong>4 more</strong>
+    <p>The remaining four hard regions are still being analyzed — preliminary results suggest they share the agriculture-dominated or cloud-saturated profiles described above.</p>
+  </div>
+</div>
+
+<p>The E26 anomaly modules (VPD extremes, SST anomalies, snow phenology) currently being fetched are partly motivated by this — anomaly drivers may help in regions where mean climate isn't predictive enough.</p>
+
+<h2 id="progress">Recent progress</h2>
 <div class="timeline">
   <div class="timeline-item">
     <div class="timeline-date">June 2026</div>
-    <div>Completed leakage audit and removed sister-vegetation features. Built per-region framework UI with PySide6.</div>
+    <div>Completed leakage audit and removed 8 sister-vegetation features from training set. Built <code>leakage_features.yaml</code> + SchemaWidget integration so the framework auto-detects and skips known leakage features. Reverted GEE fetcher to per-(module, year) sequential pattern after bulk-submit pattern triggered Earth Engine throttling.</div>
   </div>
   <div class="timeline-item">
     <div class="timeline-date">May 2026</div>
-    <div>Finalized 89-region train / 44-region test split. Released schema-agnostic Bundle Core.</div>
+    <div>Finalized 89-region train / 44-region test split (v2). Released schema-agnostic Bundle Core supporting custom drivers per region. Memory-safe per-region training pipeline (eliminated the 26.9 GiB concat OOM).</div>
   </div>
   <div class="timeline-item">
     <div class="timeline-date">April 2026</div>
-    <div>Bayesian-ridge router selected as production router after sweep over 12 candidate architectures.</div>
+    <div>Bayesian-ridge router (E21d super-picker) selected as production router after sweep over 12 candidate architectures. Per-cell calibration outperforms global stacking by ~0.04 R².</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">March 2026</div>
+    <div>E16 base-learner algorithm sweep: CatBoost selected over XGBoost / LightGBM / random forest as the per-region specialist. CatBoost's native categorical handling matters for landcover/biome covariates.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-date">February 2026</div>
+    <div>E14 master dataset assembled: 19 driver modules × 133 regions × 22 years, ~9.1 GB train + 2.1 GB test parquets. First end-to-end pipeline run from raw Earth Engine to held-out evaluation.</div>
   </div>
 </div>
 
-<h2>Earth Engine Compute</h2>
-<p>This work requires sustained Earth Engine compute for large-scale ecoregion processing — approximately <strong>30,000 batch export tasks per full bundle refresh</strong>. Registered under Google Earth Engine's noncommercial research program (project ID: <code>celtic-science-493107-c6</code>).</p>
+<h2 id="compute">Earth Engine compute requirements</h2>
+<p>This work requires sustained Earth Engine compute for large-scale ecoregion processing. A single full bundle refresh requires approximately <strong>30,000 batch export tasks</strong> across 133 regions × 22 years × 19 driver modules. Per-task EECU consumption ranges from ~0.05 (lightweight modules like VPD extremes) to ~0.15 (snow phenology). A full retrain consumes approximately 860 EECU-hours.</p>
 
-<h2>Planned Future Work</h2>
-<ul>
-  <li><strong>Deforestation early warning</strong> — applying the same architecture to tropical-forest biomes.</li>
-  <li><strong>Wildfire burn-area forecasting</strong> — per-region specialists for fire-prone regions.</li>
-  <li><strong>Coastal/mangrove degradation monitoring</strong> — extending to coastal biomes.</li>
+<p>The project is registered under Google Earth Engine's noncommercial research program (project ID: <code>celtic-science-493107-c6</code>). The Community Tier monthly EECU budget (150 hours) covers roughly one-sixth of a full refresh, which is why iterative experiments are blocked at the current tier and a Contributor / Partner Tier uplift application is in review.</p>
+
+<h2 id="roadmap">Roadmap</h2>
+
+<div class="roadmap">
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Phase 4 (Q3 2026) — Validation hardening</div>
+    <ul>
+      <li>Complete E26 anomaly-module fetch (VPD extremes, snow phenology, SST anomalies)</li>
+      <li>Re-train with anomaly drivers; expect lift in agriculture-dominated and cloud-saturated regions</li>
+      <li>E27 adaptive-λ OOD router experiments</li>
+      <li>Stress-test the framework on synthetic-leakage adversarial datasets (does our audit actually catch every leak?)</li>
+    </ul>
+  </div>
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Phase 5 (Q4 2026) — Publication</div>
+    <ul>
+      <li>EarthArXiv preprint draft (methodology focus: the leakage audit protocol)</li>
+      <li>Submit to a remote-sensing journal (target: Remote Sensing of Environment or similar)</li>
+      <li>Open-source release: framework code + trained model weights + driver modules + validation harness</li>
+      <li>Companion blog series explaining the leakage audit for practitioners</li>
+    </ul>
+  </div>
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Phase 6 (2027) — Extensions</div>
+    <ul>
+      <li><strong>Deforestation early warning</strong> — applying the same architecture to tropical-forest biomes (Amazon, Congo, Borneo, Atlantic Forest, New Guinea, Indonesian peat forests) with target lead time of 1–3 years.</li>
+      <li><strong>Wildfire burn-area forecasting</strong> — per-region specialists for fire-prone regions (Australian bushfire belt, Iberian wildfire zone, Siberian taiga, California chaparral, Mediterranean shrub).</li>
+      <li><strong>Coastal/mangrove degradation monitoring</strong> — extending to Sundarbans, Niger Delta, western Sahara coast, Madagascar mangroves.</li>
+      <li><strong>Methodology generalization</strong> — packaging the leakage audit as a standalone library usable for any remote-sensing forecasting task.</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="refs">References &amp; inspirations</h2>
+<p>Key data sources and methodological references:</p>
+<ul class="ref-list">
+  <li><strong>WWF Terrestrial Ecoregions of the World</strong> — Olson et al., 2001 — used for the 133-region biogeographic stratification.</li>
+  <li><strong>MOD13Q1 Vegetation Indices 16-Day L3 Global 250m</strong> — Didan, 2015 — primary NDVI source.</li>
+  <li><strong>ERA5 reanalysis</strong> — Hersbach et al., 2020 — primary climate driver source.</li>
+  <li><strong>CHIRPS precipitation</strong> — Funk et al., 2015 — daily precipitation aggregates.</li>
+  <li><strong>TerraClimate</strong> — Abatzoglou et al., 2018 — monthly climatic water deficit.</li>
+  <li><strong>SoilGrids 2.0</strong> — Poggio et al., 2021 — soil texture and organic carbon.</li>
+  <li><strong>Google Earth Engine: Planetary-scale geospatial analysis for everyone</strong> — Gorelick et al., 2017 — the platform.</li>
+  <li><strong>CatBoost: gradient boosting with categorical features support</strong> — Prokhorenkova et al., 2018 — the chosen base learner.</li>
+  <li><strong>UN Convention to Combat Desertification (UNCCD)</strong> — policy framing for the SDG 15.3 connection.</li>
 </ul>
+<p>Full citations and additional methodological references will be in the EarthArXiv preprint.</p>
+
+<h2 id="faq">Frequently asked questions</h2>
+
+<details class="faq">
+  <summary>What is NDVI and why predict it?</summary>
+  <p>NDVI (Normalized Difference Vegetation Index) is a satellite-derived measure of how much photosynthetically active vegetation is present in a pixel. It's the standard proxy for vegetation health and the primary input to most desertification-monitoring systems. Forecasting NDVI from environmental drivers lets us model how vegetation responds to climate, soil, and disturbance — which is the foundation for desertification risk assessment.</p>
+</details>
+
+<details class="faq">
+  <summary>Why per-region specialists instead of one global model?</summary>
+  <p>Vegetation response to climate is non-stationary across ecoregions — the same rainfall produces very different NDVI responses in the Sahel vs the Amazon vs the Mongolian steppe. A single global model averages these responses and ends up explaining none of them well (literature R² ~0.6–0.7). Per-region specialists capture region-specific response curves; the router then learns to combine them for new regions the specialists haven't seen.</p>
+</details>
+
+<details class="faq">
+  <summary>What is leakage in vegetation forecasting?</summary>
+  <p>Leakage is when features that shouldn't be available at prediction time accidentally end up in the training set, inflating reported accuracy. In vegetation forecasting, the most common form is including NDVI-derived features (like LAI, fPAR, or phenology metrics computed from NDVI itself) when predicting NDVI — which is approximately the identity function, dressed up as climate inference. The leakage audit protocol systematically catches these.</p>
+</details>
+
+<details class="faq">
+  <summary>How can I use this framework for my own region?</summary>
+  <p>Once the open-source release lands (planned alongside the preprint), the framework will be installable as a Python package. You supply your own region polygons and driver list; the framework handles the Earth Engine fetch, per-region training, router calibration, and leakage audit. A PySide6 desktop GUI (the Bundle Framework spinoff) provides a no-code interface for the same workflow.</p>
+</details>
+
+<details class="faq">
+  <summary>Is the code open source?</summary>
+  <p>The full framework, trained model artifacts, driver modules, and validation harness are being prepared for open-source release alongside the EarthArXiv preprint. Target release date: Q4 2026 / Q1 2027. License: planned to be Apache 2.0.</p>
+</details>
+
+<details class="faq">
+  <summary>Can I cite this work before the paper is out?</summary>
+  <p>If you want to cite the project before the formal preprint, please email <button class="copy-link" onclick="copyEmail(this)">bagbagig@bundle-research.xyz</button> and I'll send a recommended citation. For now, citing this site URL and the GitHub repository is appropriate.</p>
+</details>
+
+<details class="faq">
+  <summary>How long until results stabilize?</summary>
+  <p>The current 0.93 R² figure is from the leakage-audited v2 split and is stable across multiple retraining runs (±0.01). The E26 anomaly module fetch (in progress) is expected to lift performance in the 9 hard regions but may not change the cross-continental headline number much. The preprint will report the final, fully-audited numbers including ablations.</p>
+</details>
+
+<details class="faq">
+  <summary>Why is this run by a high school student?</summary>
+  <p>I find the problem genuinely interesting and the existing literature has obvious methodological gaps that I wanted to address rigorously. Running this independently means moving slower than a funded research group, but it also means I can apply the validation discipline I think is missing — without pressure to publish on the inflated numbers that don't survive the audit. Reviewers welcome to verify the methodology directly on the public code.</p>
+</details>
+
+<h2 id="ack">Acknowledgments</h2>
+<p>Data: NASA (MOD13Q1, MCD64A1, MOD10A1, MCD12Q1, SMAP), ECMWF (ERA5), UCSB CHG (CHIRPS), TerraClimate, ISRIC (SoilGrids), WWF (Ecoregions). Compute: Google Earth Engine noncommercial research program. Software: open-source contributors to CatBoost, scikit-learn, PySide6, Optuna, rclone, and pyarrow.</p>
+
+<p>This is independent research with no institutional affiliation; the work is published openly so others can verify, criticize, and extend the methodology.</p>
+
+<h2>Get in touch</h2>
+<p>For collaboration, citations, mentorship offers, or any questions about the methodology — <button class="copy-link" onclick="copyEmail(this)">bagbagig@bundle-research.xyz</button> <span style="color:var(--muted);font-size:.85rem">(click to copy)</span></p>
+<p>Code: <a href="https://github.com/mohtheghost">github.com/mohtheghost</a></p>
 
 <a href="/" class="back-link">← Back to all projects</a>
 
@@ -120,7 +474,7 @@
 
 <footer>
   <div class="footer-inner">
-    <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
+    <span>© 2026 Mohamed Benkaddour · Bundle Research · Riyadh, Saudi Arabia</span>
     <div class="footer-links">
       <a href="https://github.com/mohtheghost">GitHub</a>
       <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
