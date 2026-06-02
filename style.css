@@ -116,3 +116,9 @@ footer{margin-top:4rem;padding:2rem 1.5rem;border-top:1px solid var(--line);back
   .nav-links a{font-size:0.88rem}
   .stat-num{font-size:1.6rem}
 }
+
+/* Copy email button feedback */
+.btn.copied,.copy-link.copied{background:#22c55e !important;color:#fff !important;border-color:#22c55e !important}
+.copy-link{background:none;border:none;color:var(--accent);font-family:inherit;font-size:inherit;cursor:pointer;padding:0;border-bottom:1px solid var(--accent-soft);transition:all .15s}
+.copy-link:hover{border-color:var(--accent)}
+.copy-link.copied{border-bottom-color:#22c55e !important}

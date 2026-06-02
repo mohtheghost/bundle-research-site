@@ -16,7 +16,7 @@
       <li><a href="/">Home</a></li>
       <li><a href="/#projects" class="active">Projects</a></li>
       <li><a href="about.html">About</a></li>
-      <li><a href="mailto:bagbagig@bundle-research.xyz">Contact</a></li>
+      <li><a href="/#contact-footer">Contact</a></li>
     </ul>
   </div>
 </nav>
@@ -28,7 +28,7 @@
     <p class="lede">Bundle Research builds leakage-audited vegetation prediction baselines for desertification monitoring. Cross-continental R² ≈ 0.93 on held-out test regions.</p>
     <div class="ctas">
       <a class="btn btn-primary" href="https://github.com/mohtheghost">View Code →</a>
-      <a class="btn btn-secondary" href="mailto:bagbagig@bundle-research.xyz">Get in touch</a>
+      <button class="btn btn-secondary" onclick="copyEmail(this)">Copy Email</button>
     </div>
   </div>
 </header>
@@ -123,11 +123,22 @@
     <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
     <div class="footer-links">
       <a href="https://github.com/mohtheghost">GitHub</a>
-      <a href="mailto:bagbagig@bundle-research.xyz">Email</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
       <a href="about.html">About</a>
     </div>
   </div>
 </footer>
+
+<script>
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+</script>
 
 </body>
 </html>

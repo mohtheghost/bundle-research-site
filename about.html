@@ -16,7 +16,7 @@
       <li><a href="/">Home</a></li>
       <li><a href="/#projects">Projects</a></li>
       <li><a href="about.html" class="active">About</a></li>
-      <li><a href="mailto:bagbagig@bundle-research.xyz">Contact</a></li>
+      <li><a href="/#contact-footer">Contact</a></li>
     </ul>
   </div>
 </nav>
@@ -54,7 +54,7 @@
 </ul>
 
 <h2>Get in touch</h2>
-<p>Email: <a href="mailto:bagbagig@bundle-research.xyz">bagbagig@bundle-research.xyz</a></p>
+<p>Email: <button class="copy-link" onclick="copyEmail(this)">bagbagig@bundle-research.xyz</button> <span style="color:var(--muted);font-size:.85rem">(click to copy)</span></p>
 <p>Code on <a href="https://github.com/mohtheghost">GitHub</a>.</p>
 
 <a href="/" class="back-link">← Back home</a>
@@ -66,11 +66,22 @@
     <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
     <div class="footer-links">
       <a href="https://github.com/mohtheghost">GitHub</a>
-      <a href="mailto:bagbagig@bundle-research.xyz">Email</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
       <a href="about.html">About</a>
     </div>
   </div>
 </footer>
+
+<script>
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+</script>
 
 </body>
 </html>

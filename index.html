@@ -16,7 +16,7 @@
       <li><a href="/" class="active">Home</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="about.html">About</a></li>
-      <li><a href="mailto:bagbagig@bundle-research.xyz">Contact</a></li>
+      <li><a href="#contact-footer" onclick="document.getElementById('contact-footer').scrollIntoView({behavior:'smooth'});return false;">Contact</a></li>
     </ul>
   </div>
 </nav>
@@ -122,13 +122,24 @@
     <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
     <div class="footer-links">
       <a href="https://github.com/mohtheghost">GitHub</a>
-      <a href="mailto:bagbagig@bundle-research.xyz">Email</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
       <a href="about.html">About</a>
     </div>
   </div>
 </footer>
 
 <script>
+  // Copy email to clipboard with visual feedback
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+
+  // Project filter
   const filters=document.querySelectorAll('.filter');
   const cards=document.querySelectorAll('.project-card');
   filters.forEach(btn=>{
