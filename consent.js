@@ -35,7 +35,7 @@
     b.setAttribute('role','dialog');
     b.setAttribute('aria-label','Analytics consent');
     b.innerHTML =
-      '<p>Do you agree to only collect data from your session on the website to further improve it?</p>' +
+      '<p>Do you think that this website is built correctly? Your answear is important</p>' +
       '<div class="consent-banner-buttons">' +
         '<button class="consent-btn consent-agree" type="button">Agree</button>' +
         '<button class="consent-btn consent-decline" type="button">Decline</button>' +
