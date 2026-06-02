@@ -30,7 +30,7 @@
   var SHEET_URL = 'https://script.google.com/macros/s/AKfycbwnw36gVv0X752KAiGt6DEik7ks3YIpcxWUXdigUsaHDnMR_SCHmtNR1k4Ez6aLUyWgzQ/exec';
 
   // Tunable: how long after consent is dismissed before the survey appears.
-  var DELAY_MS = 30000;
+  var DELAY_MS = 7000;
 
   // ------------------------------------------------------------------
   // Logging — same shape as consent.js, simpler (no geo race)
