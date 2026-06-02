@@ -40,6 +40,11 @@
 })();
 </script>
 
+<!-- Google Fonts: Inter (body) + Crimson Pro (serif headlines) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -57,10 +62,10 @@
 </nav>
 
 <section class="hero-home container-narrow">
-  <span class="badge">Independent Research · Asir, Saudi Arabia</span>
-  <h1>Independent research and projects by <span class="accent">Mohamed Benkaddour</span></h1>
-  <p class="lede">High school student researcher in the Asir region of southwestern Saudi Arabia, focused on Earth observation, machine learning, and building tools that scale. Currently working on a per-region NDVI forecasting framework using Google Earth Engine.</p>
-  <div class="ctas">
+  <span class="badge" data-reveal>Independent Research · Asir, Saudi Arabia</span>
+  <h1 data-reveal data-reveal-delay="1">Independent research and projects by <span class="accent">Mohamed Benkaddour</span></h1>
+  <p class="lede" data-reveal data-reveal-delay="2">High school student researcher in the Asir region of southwestern Saudi Arabia, focused on Earth observation, machine learning, and building tools that scale. Currently working on a per-region NDVI forecasting framework using Google Earth Engine.</p>
+  <div class="ctas" data-reveal data-reveal-delay="3">
     <a class="btn btn-primary" href="desertflow.html">Featured Research →</a>
     <a class="btn btn-secondary" href="#projects">All Projects ↓</a>
   </div>
@@ -68,17 +73,17 @@
 
 <!-- FEATURED: spotlight on the active research -->
 <section class="container">
-  <div class="featured-card">
+  <div class="featured-card" data-reveal>
     <div class="featured-meta">
       <span class="dot"></span> Active research · Updated June 2026
     </div>
     <h2 class="featured-title">Desertflow Global Bundle</h2>
     <p class="featured-desc">Per-region NDVI forecasting across 133 WWF ecoregions and 22 years using Google Earth Engine. The headline contribution is a leakage-aware validation protocol that catches the common failure modes most published NDVI forecasting studies miss — sister vegetation features, shared cross-region statistics, pheno-prior leakage.</p>
     <div class="featured-stats">
-      <div><span class="featured-stat-num">133</span><span class="featured-stat-label">ecoregions</span></div>
-      <div><span class="featured-stat-num">22</span><span class="featured-stat-label">years</span></div>
-      <div><span class="featured-stat-num">19</span><span class="featured-stat-label">driver modules</span></div>
-      <div><span class="featured-stat-num">0.93</span><span class="featured-stat-label">R² cross-continental</span></div>
+      <div><span class="featured-stat-num" data-counter-target="133">133</span><span class="featured-stat-label">ecoregions</span></div>
+      <div><span class="featured-stat-num" data-counter-target="22">22</span><span class="featured-stat-label">years</span></div>
+      <div><span class="featured-stat-num" data-counter-target="19">19</span><span class="featured-stat-label">driver modules</span></div>
+      <div><span class="featured-stat-num" data-counter-target="0.93">0.93</span><span class="featured-stat-label">R² cross-continental</span></div>
     </div>
     <div class="ctas">
       <a class="btn btn-primary" href="desertflow.html">Read full project →</a>
@@ -264,6 +269,9 @@
 
 <!-- Lightweight feedback survey (runs after consent is dismissed) -->
 <script src="surveys.js" defer></script>
+
+<!-- Scroll reveals + animated stat counters + nav-on-scroll shadow -->
+<script src="effects.js" defer></script>
 
 </body>
 </html>

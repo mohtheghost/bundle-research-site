@@ -17,6 +17,11 @@
 <meta name="twitter:title" content="Desertflow Global Bundle — Per-region NDVI Forecasting">
 <meta name="twitter:description" content="133 ecoregions × 22 years × 19 driver modules. Cross-continental R² ≈ 0.93 after rigorous leakage controls.">
 
+<!-- Google Fonts: Inter (body) + Crimson Pro (serif headlines) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -48,10 +53,10 @@
 <main class="container-narrow content">
 
 <div class="stats">
-  <div class="stat"><div class="stat-num">133</div><div class="stat-label">WWF ecoregions covered</div></div>
-  <div class="stat"><div class="stat-num">22</div><div class="stat-label">Years of data (2002–2024)</div></div>
-  <div class="stat"><div class="stat-num">19</div><div class="stat-label">Earth Engine driver modules</div></div>
-  <div class="stat"><div class="stat-num">0.93</div><div class="stat-label">R² cross-continental</div></div>
+  <div class="stat" data-reveal><div class="stat-num" data-counter-target="133">133</div><div class="stat-label">WWF ecoregions covered</div></div>
+  <div class="stat" data-reveal data-reveal-delay="1"><div class="stat-num" data-counter-target="22">22</div><div class="stat-label">Years of data (2002–2024)</div></div>
+  <div class="stat" data-reveal data-reveal-delay="2"><div class="stat-num" data-counter-target="19">19</div><div class="stat-label">Earth Engine driver modules</div></div>
+  <div class="stat" data-reveal data-reveal-delay="3"><div class="stat-num" data-counter-target="0.93">0.93</div><div class="stat-label">R² cross-continental</div></div>
 </div>
 
 <div class="status-row">
@@ -503,6 +508,9 @@
 
 <!-- Lightweight feedback survey (runs after consent is dismissed) -->
 <script src="surveys.js" defer></script>
+
+<!-- Scroll reveals + animated stat counters + nav-on-scroll shadow -->
+<script src="effects.js" defer></script>
 
 </body>
 </html>
