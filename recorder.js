@@ -49,15 +49,17 @@
   // page like Desertflow. At a 500 ms interval some snapshots will be
   // skipped (snapshotInFlight guard) — that's fine and self-regulating.
   // The effective rate becomes whatever the CPU can sustain.
-  // Aggressively tuned for FRAME COUNT over quality. User explicitly
-  // wants more frames, accepts blurrier snapshots.
+  // Extreme low-quality / high-frame-rate mode. User explicitly
+  // wants more frames, accepts heavily compressed snapshots.
   //
-  // At scale 0.35 the canvas is roughly 672×378 (vs 960×540 at scale 0.5),
-  // which html2canvas can render ~2x faster — getting us closer to a real
-  // 2 fps capture rate on the homepage.
-  var SNAPSHOT_INTERVAL_MS = 250;    // attempt 4 fps (still gated by html2canvas)
-  var SNAPSHOT_SCALE       = 0.35;   // ~50% less pixel area than scale 0.5
-  var JPEG_QUALITY         = 0.45;   // visible JPEG artifacts but text still readable
+  //   - SCALE 0.25 → canvas 480×270 (vs 960×540 at scale 0.5). About 4×
+  //     fewer pixels to render means roughly 4× faster html2canvas.
+  //   - JPEG_QUALITY 0.4 → noticeable artifacts, still readable.
+  //   - INTERVAL 200ms → attempt 5 fps. snapshotInFlight will still cap
+  //     the real rate at whatever the visitor's CPU sustains.
+  var SNAPSHOT_INTERVAL_MS = 200;
+  var SNAPSHOT_SCALE       = 0.25;
+  var JPEG_QUALITY         = 0.4;
 
   // Events buffer + flush
   var EVENT_FLUSH_MS = 5000;
@@ -273,8 +275,14 @@
       scale: SNAPSHOT_SCALE,
       logging: false,
       useCORS: true,
-      foreignObjectRendering: false,
-      imageTimeout: 3000,
+      // KEY SPEEDUP: use SVG <foreignObject> rendering instead of the
+      // default pixel-by-pixel canvas rasterization. The browser does
+      // the layout natively which is typically 3–8× faster on text-heavy
+      // pages. Tradeoff: some advanced CSS features (filter:..., certain
+      // backdrop-filter variants, complex SVG masks) may not render
+      // perfectly. Acceptable for "see what the visitor was doing".
+      foreignObjectRendering: true,
+      imageTimeout: 1500,
       removeContainer: true
     }).then(function(canvas){
       var renderMs = Date.now() - startWall;
