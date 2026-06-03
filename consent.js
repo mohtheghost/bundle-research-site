@@ -199,12 +199,13 @@
     b.querySelector('.consent-agree').addEventListener('click', function(){
       try{ sessionStorage.setItem(CONSENT_KEY,'agree'); }catch(e){}
       b.remove();
-      // Recording disabled — html-to-image / html2canvas / modern-screenshot
-      // all block the main thread for 1-2 s per snapshot, which makes the
-      // site visibly laggy. The recorder.js code stays in the repo for
-      // future re-enable, just not loaded automatically anymore.
-      // loadClarity();
-      // loadRecorder();
+      // Back to Microsoft Clarity for session recording. Our self-hosted
+      // recorder (rrweb / html-to-image / html2canvas attempts) all either
+      // broke on this site or blocked the main thread too long. Clarity
+      // is slow to LOAD (CDN edge is far from the Middle East) but its
+      // recording itself doesn't lag the page like our snapshots did.
+      loadClarity();
+      // loadRecorder();  // self-hosted snapshot recorder — kept for reference
       logConsentEvent('agreed');
     });
     b.querySelector('.consent-decline').addEventListener('click', function(){
@@ -218,8 +219,9 @@
     var stored;
     try{ stored = sessionStorage.getItem(CONSENT_KEY); }catch(e){ stored = null; }
     if(stored === 'agree'){
-      // Recording disabled — see comment in the Agree handler above.
-      // loadClarity();
+      // Returning visitor who already agreed — start Clarity tracking
+      // immediately.
+      loadClarity();
       // loadRecorder();
     } else if(stored !== 'decline'){
       // First visit (no stored choice) — show the banner
