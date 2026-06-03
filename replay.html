@@ -218,7 +218,13 @@
           // apply the captured DOM. Result: blank iframe. This option (badly
           // named — it's not actually about canvas alone) adds `allow-scripts`
           // to the sandbox so the Replayer can do its job.
-          UNSAFE_replayCanvas: true
+          UNSAFE_replayCanvas: true,
+          // Don't spam the console with "Node with id X not found" lines
+          // for every dropped mutation. If a few mutations don't apply
+          // cleanly (e.g. because the recorder caught mid-animation state)
+          // we still get a useful replay — these warnings are noise.
+          showWarning: false,
+          showDebug: false
         }
       });
 

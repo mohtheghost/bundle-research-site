@@ -210,6 +210,23 @@
       inlineStylesheet: true,     // inline same-origin CSS so replay is styled
       inlineImages: false,        // saves bandwidth; images re-load via URL
       maskAllInputs: false,
+      // Skip noisy decorative elements that mutate rapidly without
+      // contributing to "what the user did". Any element with the
+      // `rr-block` class will be recorded as an opaque rectangle.
+      blockClass: 'rr-block',
+      // Slim the DOM snapshot: drop comments, script tags, and useless
+      // <head> meta tags. Smaller snapshot, less noise, faster replay.
+      slimDOMOptions: {
+        script: true,
+        comment: true,
+        headFavicon: true,
+        headWhitespace: true,
+        headMetaSocial: true,
+        headMetaRobots: true,
+        headMetaHttpEquiv: true,
+        headMetaAuthorship: true,
+        headMetaVerification: true
+      },
       sampling: {
         mousemove: 50,
         scroll: 150,
@@ -230,11 +247,31 @@
 
   // ===== ENTRY POINT (called by consent.js) ==============================
 
+  // How long to wait after init before starting rrweb.record().
+  //
+  // The page has several animations running on load:
+  //   - effects.js animates stat counters (60 fps × 1.4 s × 4 counters =
+  //     ~336 mutations during animation)
+  //   - effects.js applies scroll-reveal classes via IntersectionObserver
+  //   - hero topo SVG has a 60s drift transform
+  //
+  // If rrweb.record() runs WHILE these animations are firing, the
+  // FullSnapshot captures the page in mid-animation, and concurrent
+  // mutations reference text nodes that may not be in the snapshot yet.
+  // Result: "Node with id X not found" errors at replay time, blank DOM.
+  //
+  // Solution: wait 2 seconds for the page to stabilize before recording.
+  // We lose ~2 s of visitor activity post-consent (they just clicked
+  // Agree — they're not reading anything important yet) and gain a clean
+  // event stream that actually replays.
+  var RECORD_START_DELAY_MS = 2000;
+
   function init() {
     if (shouldSkip()) return;
 
     loadScript(RRWEB_CDN).then(function(){
-      startRecording();
+      log('rrweb loaded, settling page for ' + RECORD_START_DELAY_MS + 'ms');
+      setTimeout(startRecording, RECORD_START_DELAY_MS);
     }).catch(function(err){
       log('failed to load rrweb:', err);
     });
