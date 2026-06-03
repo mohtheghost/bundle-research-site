@@ -41,26 +41,28 @@
   // Cadence + quality knobs (tune for size vs fidelity).
   //
   // Frame rate budget for a 60s session:
-  //   Interval 5000ms → 12 frames × ~150 KB = ~1.8 MB
-  //   Interval 1000ms → 60 frames × ~150 KB = ~9 MB     (current)
-  //   Interval  500ms → 120 frames × ~150 KB = ~18 MB
+  //   Interval 1000ms → 60 frames × ~100 KB = ~6 MB
+  //   Interval  500ms → 120 frames × ~100 KB = ~12 MB    (current)
+  //   Interval  250ms → 240 frames × ~100 KB = ~24 MB
   //
-  // Reducing the interval too far also costs CPU on the visitor's machine
-  // (html2canvas takes 100–400 ms per snapshot on a complex page).
-  // 1 fps is a good balance of "smooth enough to understand visitor
-  // behaviour" without burning their battery.
-  var SNAPSHOT_INTERVAL_MS = 1000;   // 1 fps
-  var SNAPSHOT_SCALE       = 0.75;   // 0.75 = 25% smaller than 1:1
-  var JPEG_QUALITY         = 0.65;   // 0.65 = good balance of size + clarity
+  // Real-world html2canvas takes 200-800 ms per snapshot on a complex
+  // page like Desertflow. At a 500 ms interval some snapshots will be
+  // skipped (snapshotInFlight guard) — that's fine and self-regulating.
+  // The effective rate becomes whatever the CPU can sustain.
+  var SNAPSHOT_INTERVAL_MS = 500;    // attempt ~2 fps (real rate gated by html2canvas speed)
+  var SNAPSHOT_SCALE       = 0.6;    // smaller = faster capture AND smaller upload
+  var JPEG_QUALITY         = 0.65;   // good balance of size + clarity
 
   // Events buffer + flush
   var EVENT_FLUSH_MS = 5000;
 
-  // Wait this long after consent before starting. The old rrweb recorder
-  // needed 2 s to dodge a "mid-animation FullSnapshot" bug; html2canvas
-  // captures pixels and doesn't have that problem, so 800 ms (mostly for
-  // web-font loading via `document.fonts.ready`) is enough.
-  var RECORD_START_DELAY_MS = 800;
+  // Wait this long after consent before starting. Just enough for the
+  // visible viewport to paint after the consent banner is dismissed.
+  // We DON'T wait for document.fonts.ready anymore — that can take 1-2 s
+  // on a cold connection and means a short test recording catches
+  // nothing past the first frame. Fonts fall back gracefully if not
+  // ready yet (Inter / Crimson Pro → system serif/sans).
+  var RECORD_START_DELAY_MS = 300;
 
   // Skip recording on these hostnames (local dev)
   var SKIP_HOSTNAMES = ['localhost', '127.0.0.1', '0.0.0.0', ''];
@@ -230,13 +232,20 @@
   // ===== SNAPSHOTTING =====================================================
 
   function captureSnapshot(useBeacon) {
-    if (state.snapshotInFlight) return Promise.resolve();
-    if (!window.html2canvas) return Promise.resolve();
+    if (state.snapshotInFlight) {
+      log('snapshot skipped: previous still in flight');
+      return Promise.resolve();
+    }
+    if (!window.html2canvas) {
+      log('snapshot skipped: html2canvas not loaded');
+      return Promise.resolve();
+    }
     state.snapshotInFlight = true;
+    var startWall = Date.now();
 
     var snapMeta = {
       index: state.snapshotIndex++,
-      timestamp: Date.now(),
+      timestamp: startWall,
       scrollY: window.scrollY || window.pageYOffset || 0,
       scrollX: window.scrollX || window.pageXOffset || 0,
       mouseX: state.lastMouseX,
@@ -244,8 +253,10 @@
       viewport: window.innerWidth + 'x' + window.innerHeight
     };
 
-    // Capture the visible viewport (not the full document) — this keeps
-    // each JPEG small and matches what the visitor actually saw.
+    log('snapshot ' + snapMeta.index + ' START',
+        '(scroll=' + snapMeta.scrollY + ', mouse=' +
+        snapMeta.mouseX + ',' + snapMeta.mouseY + ')');
+
     return window.html2canvas(document.body, {
       x: snapMeta.scrollX,
       y: snapMeta.scrollY,
@@ -257,20 +268,30 @@
       logging: false,
       useCORS: true,
       foreignObjectRendering: false,
-      imageTimeout: 4000,
+      imageTimeout: 3000,
       removeContainer: true
     }).then(function(canvas){
+      var renderMs = Date.now() - startWall;
+      log('snapshot ' + snapMeta.index + ' rendered in ' + renderMs + 'ms');
       return new Promise(function(resolve){
         canvas.toBlob(resolve, 'image/jpeg', JPEG_QUALITY);
       });
     }).then(function(blob){
-      if (!blob) return null;
+      if (!blob) {
+        log('snapshot ' + snapMeta.index + ' toBlob returned null');
+        return null;
+      }
+      log('snapshot ' + snapMeta.index + ' blob size ' +
+          Math.round(blob.size / 1024) + ' KB');
       return blobToBase64(blob);
     }).then(function(b64){
       if (!b64) return;
       return sendSnapshot(b64, snapMeta, !!useBeacon);
+    }).then(function(){
+      var totalMs = Date.now() - startWall;
+      log('snapshot ' + snapMeta.index + ' UPLOADED in ' + totalMs + 'ms total');
     }).catch(function(err){
-      log('snapshot failed (index ' + snapMeta.index + '):', err);
+      log('snapshot ' + snapMeta.index + ' FAILED:', err && err.message ? err.message : err);
     }).then(function(){
       state.snapshotInFlight = false;
     });
@@ -372,18 +393,10 @@
     if (shouldSkip()) return;
 
     loadScript(HTML2CANVAS_CDN).then(function(){
-      log('html2canvas loaded, settling page for ' +
-          RECORD_START_DELAY_MS + 'ms');
-
-      // Also wait for fonts so snapshots aren't using fallback typefaces
-      var fontsReady = document.fonts && document.fonts.ready
-                        ? document.fonts.ready
-                        : Promise.resolve();
-
-      Promise.all([
-        fontsReady,
-        new Promise(function(r){ setTimeout(r, RECORD_START_DELAY_MS); })
-      ]).then(startRecording);
+      log('html2canvas loaded, starting in ' + RECORD_START_DELAY_MS + 'ms');
+      // Quick settle delay only — don't await fontsReady (would
+      // potentially delay startup by 1-2 s on a cold connection).
+      setTimeout(startRecording, RECORD_START_DELAY_MS);
     }).catch(function(err){
       log('failed to load html2canvas:', err);
     });
