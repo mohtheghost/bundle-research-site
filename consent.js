@@ -199,14 +199,12 @@
     b.querySelector('.consent-agree').addEventListener('click', function(){
       try{ sessionStorage.setItem(CONSENT_KEY,'agree'); }catch(e){}
       b.remove();
-      // Clarity disabled — replaced by our own self-hosted rrweb recorder.
-      // Keeping the loadClarity() function around in case we want it back,
-      // but not calling it: running both at once causes the Replayer to see
-      // an inconsistent event stream (Clarity injects nodes faster than the
-      // recorder can stabilize, leading to "Node not found" errors at
-      // replay time).
+      // Recording disabled — html-to-image / html2canvas / modern-screenshot
+      // all block the main thread for 1-2 s per snapshot, which makes the
+      // site visibly laggy. The recorder.js code stays in the repo for
+      // future re-enable, just not loaded automatically anymore.
       // loadClarity();
-      loadRecorder();
+      // loadRecorder();
       logConsentEvent('agreed');
     });
     b.querySelector('.consent-decline').addEventListener('click', function(){
@@ -220,10 +218,9 @@
     var stored;
     try{ stored = sessionStorage.getItem(CONSENT_KEY); }catch(e){ stored = null; }
     if(stored === 'agree'){
-      // User already agreed in a previous visit — start tracking immediately.
-      // Clarity disabled (see comment in the Agree handler above).
+      // Recording disabled — see comment in the Agree handler above.
       // loadClarity();
-      loadRecorder();
+      // loadRecorder();
     } else if(stored !== 'decline'){
       // First visit (no stored choice) — show the banner
       showBanner();
