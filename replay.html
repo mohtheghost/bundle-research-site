@@ -195,17 +195,11 @@
 
     playerWrap.style.display = '';
     try {
-      // Size the player to roughly fit the visitor's viewport, capped to window
-      var maxW = Math.min(window.innerWidth - 80, 1180);
-      var maxH = Math.min(window.innerHeight - 280, 720);
-      var w = maxW, h = maxH;
-      if (meta && /\d+x\d+/.test(meta.viewport || '')) {
-        var parts = meta.viewport.split('x');
-        var vpW = parseInt(parts[0], 10), vpH = parseInt(parts[1], 10);
-        var scale = Math.min(maxW / vpW, maxH / vpH, 1);
-        w = Math.round(vpW * scale);
-        h = Math.round(vpH * scale);
-      }
+      // Size the player generously — let rrweb-player auto-scale the iframe
+      // content to fit. Smaller player = harder to see; we err on the side
+      // of using as much screen real estate as the window allows.
+      var w = Math.min(window.innerWidth - 80, 1400);
+      var h = Math.min(window.innerHeight - 240, 800);
 
       player = new rrwebPlayer({
         target: playerWrap,
@@ -213,9 +207,14 @@
           events: events,
           width: w,
           height: h,
-          autoPlay: false,
-          showController: true,
-          speedOption: [1, 2, 4, 8]
+          autoPlay: false,         // user clicks play
+          showController: true,    // built-in play/pause/speed controls
+          speedOption: [1, 2, 4, 8],
+          skipInactive: false      // play every second — no fast-forwarding
+                                   // through "boring" idle parts. Critical
+                                   // for debugging: without this, a 14-s
+                                   // recording with little activity skips
+                                   // straight to the end and looks blank.
         }
       });
     } catch (e) {
@@ -236,7 +235,17 @@
 
     if (meta) renderMeta(meta);
 
-    // Raw stats
+    // Raw stats with human-readable event type names so we can spot
+    // missing snapshot events at a glance.
+    var TYPE_NAMES = {
+      0: 'DomContentLoaded',
+      1: 'Load',
+      2: 'FullSnapshot',         // ← MUST be present, else iframe is blank
+      3: 'IncrementalSnapshot',  // ← all the DOM mutations + interactions
+      4: 'Meta',                 // ← MUST come first (page metadata)
+      5: 'Custom',
+      6: 'Plugin'
+    };
     var counts = {};
     events.forEach(function(e){ counts[e.type] = (counts[e.type]||0) + 1; });
     var statsLines = ['event count: ' + events.length,
@@ -244,12 +253,19 @@
                       'first ts:   ' + new Date(firstT).toISOString(),
                       'last ts:    ' + new Date(lastT).toISOString(),
                       '',
-                      'event types:'];
+                      'event types (must include type 2 FullSnapshot' +
+                      ' and type 4 Meta):'];
     Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; }).forEach(function(t){
-      statsLines.push('  type ' + t + ': ' + counts[t]);
+      var name = TYPE_NAMES[t] || ('unknown_' + t);
+      statsLines.push('  type ' + t + ' (' + name + '): ' + counts[t]);
     });
+    statsLines.push('', 'first event:');
+    statsLines.push('  ' + JSON.stringify(events[0]).substring(0, 240));
+    statsLines.push('second event:');
+    statsLines.push('  ' + JSON.stringify(events[1] || {}).substring(0, 240));
     rawText.textContent = statsLines.join('\n');
     rawDetails.style.display = '';
+    rawDetails.open = true;  // auto-open so user sees diagnostics
   }
 
   function loadFiles(files){
