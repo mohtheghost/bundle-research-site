@@ -2919,7 +2919,139 @@ footer {
 }
 
 /* ==========================================================================
-   v3.10 — Community impact section (homepage)
+   v3.11 — Team impact section (gold title left, card row right)
+   ========================================================================== */
+
+.team-impact-section {
+  padding: 2rem 0 1.5rem;
+}
+.team-impact-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.85fr) 3fr;
+  gap: 2.25rem;
+  align-items: start;
+}
+.team-impact-title-block {
+  position: sticky;
+  top: 1rem;
+}
+.team-impact-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 3.2vw, 2.35rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin: 0 0 0.85rem;
+  /* Gold gradient text — same treatment as the 93% banner */
+  background: linear-gradient(135deg, #b8860b 0%, #f4c430 45%, #f9d976 80%, #b8860b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 22px rgba(244, 196, 48, 0.18);
+}
+.team-impact-sub {
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+  max-width: 32ch;
+}
+
+.team-impact-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.team-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--r-md);
+  padding: 1.15rem 1.2rem 1.05rem;
+  box-shadow: var(--shadow-xs);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--tx-base), box-shadow var(--tx-base), border-color var(--tx-base);
+}
+.team-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+}
+/* Distinct top-stripe color per card so the four read as a sequence */
+.team-card:nth-child(1) { border-top-color: #b8860b; }
+.team-card:nth-child(2) { border-top-color: #0e7490; }
+.team-card:nth-child(3) { border-top-color: var(--accent); }
+.team-card:nth-child(4) { border-top-color: #d97706; }
+
+.team-card-num {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.55rem;
+  display: inline-block;
+  background: linear-gradient(135deg, #b8860b, #f4c430);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+.team-card:nth-child(2) .team-card-num {
+  background: linear-gradient(135deg, #0e7490, #67e8f9);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.team-card:nth-child(3) .team-card-num {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.team-card:nth-child(4) .team-card-num {
+  background: linear-gradient(135deg, #d97706, #fcd34d);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.team-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+.team-card-desc {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0;
+  line-height: 1.5;
+  flex: 1;
+}
+
+@media (max-width: 920px) {
+  .team-impact-row {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .team-impact-title-block { position: static; }
+  .team-impact-sub { max-width: none; }
+}
+@media (max-width: 600px) {
+  .team-impact-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   v3.10 LEGACY — old community impact section (still in CSS but no longer
+   referenced from HTML; safe to remove later)
    ========================================================================== */
 
 .community-impact-section {
