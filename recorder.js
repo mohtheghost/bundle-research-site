@@ -35,8 +35,11 @@
   // the old v1 URL is now retired.
   var RECORDER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyzInKU7GhqMgvnJvX9zfOg17sPdiB3khXFE_aLV1yshNnSP7YlvClX-BMoP9ielnVf/exec';
 
-  // html2canvas library — pinned to a stable version.
-  var HTML2CANVAS_CDN = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+  // modern-screenshot library — pinned. Replaces html2canvas, which
+  // hit a fundamental speed wall on this site (~2s per snapshot on the
+  // homepage). modern-screenshot is typically 2-3x faster — same DOM →
+  // canvas approach but a more modern implementation.
+  var SCREENSHOT_CDN = 'https://cdn.jsdelivr.net/npm/modern-screenshot@4.5.5/dist/index.umd.js';
 
   // Cadence + quality knobs (tune for size vs fidelity).
   //
@@ -49,12 +52,11 @@
   // page like Desertflow. At a 500 ms interval some snapshots will be
   // skipped (snapshotInFlight guard) — that's fine and self-regulating.
   // The effective rate becomes whatever the CPU can sustain.
-  // Low-quality / high-frame-rate mode. foreignObjectRendering was
-  // attempted as a 3-8x speedup but broke the capture on this site
-  // (1 KB blobs = empty canvas, AND 6s render times). Reverted.
-  var SNAPSHOT_INTERVAL_MS = 300;
-  var SNAPSHOT_SCALE       = 0.3;
-  var JPEG_QUALITY         = 0.45;
+  // Now using modern-screenshot which should be 2-3x faster than
+  // html2canvas. Tuning for high frame count.
+  var SNAPSHOT_INTERVAL_MS = 200;
+  var SNAPSHOT_SCALE       = 0.35;
+  var JPEG_QUALITY         = 0.5;
 
   // Events buffer + flush
   var EVENT_FLUSH_MS = 5000;
@@ -239,8 +241,8 @@
       log('snapshot skipped: previous capture still in flight');
       return Promise.resolve();
     }
-    if (!window.html2canvas) {
-      log('snapshot skipped: html2canvas not loaded');
+    if (!window.modernScreenshot || !window.modernScreenshot.domToCanvas) {
+      log('snapshot skipped: modern-screenshot not loaded');
       return Promise.resolve();
     }
     state.snapshotInFlight = true;
@@ -260,29 +262,43 @@
         '(scroll=' + snapMeta.scrollY + ', mouse=' +
         snapMeta.mouseX + ',' + snapMeta.mouseY + ')');
 
-    return window.html2canvas(document.body, {
-      x: snapMeta.scrollX,
-      y: snapMeta.scrollY,
-      width: window.innerWidth,
-      height: window.innerHeight,
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight,
+    // modern-screenshot's domToCanvas captures the WHOLE element passed
+    // to it. We capture document.documentElement (the entire page) and
+    // then crop the resulting canvas to the viewport ourselves below.
+    // The crop is cheap (~1ms via drawImage) compared to the render.
+    return window.modernScreenshot.domToCanvas(document.documentElement, {
       scale: SNAPSHOT_SCALE,
-      logging: false,
-      useCORS: true,
-      // foreignObjectRendering: true was 3-8x faster on simple pages
-      // but on THIS site it failed silently (1 KB blobs, 6s renders).
-      // The Google Fonts + topographic SVG + filter:warp combination
-      // breaks the SVG <foreignObject> path. Reverted to the slower
-      // but reliable canvas-rasterization path.
-      foreignObjectRendering: false,
-      imageTimeout: 2000,
-      removeContainer: true
-    }).then(function(canvas){
+      backgroundColor: '#ffffff',
+      // Skip elements that have rr-block class (future-proofing — we
+      // can add this class to noisy elements that misrender)
+      filter: function(node) {
+        if (node && node.classList && node.classList.contains('rr-block')) {
+          return false;
+        }
+        return true;
+      }
+    }).then(function(fullCanvas){
       var renderMs = Date.now() - startWall;
       log('snapshot ' + snapMeta.index + ' rendered in ' + renderMs + 'ms');
+
+      // Crop to viewport. fullCanvas is the entire page rendered at
+      // SNAPSHOT_SCALE. We want just the part the visitor was looking at.
+      var cropW = Math.round(window.innerWidth * SNAPSHOT_SCALE);
+      var cropH = Math.round(window.innerHeight * SNAPSHOT_SCALE);
+      var srcX  = Math.round(snapMeta.scrollX * SNAPSHOT_SCALE);
+      var srcY  = Math.round(snapMeta.scrollY * SNAPSHOT_SCALE);
+
+      var cropped = document.createElement('canvas');
+      cropped.width  = cropW;
+      cropped.height = cropH;
+      var ctx = cropped.getContext('2d');
+      // White background so any out-of-bounds area is white not transparent
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, cropW, cropH);
+      ctx.drawImage(fullCanvas, -srcX, -srcY);
+
       return new Promise(function(resolve){
-        canvas.toBlob(resolve, 'image/jpeg', JPEG_QUALITY);
+        cropped.toBlob(resolve, 'image/jpeg', JPEG_QUALITY);
       });
     }).then(function(blob){
       // CAPTURE IS DONE — release the lock NOW so the next snapshot can
@@ -416,13 +432,11 @@
   function init() {
     if (shouldSkip()) return;
 
-    loadScript(HTML2CANVAS_CDN).then(function(){
-      log('html2canvas loaded, starting in ' + RECORD_START_DELAY_MS + 'ms');
-      // Quick settle delay only — don't await fontsReady (would
-      // potentially delay startup by 1-2 s on a cold connection).
+    loadScript(SCREENSHOT_CDN).then(function(){
+      log('modern-screenshot loaded, starting in ' + RECORD_START_DELAY_MS + 'ms');
       setTimeout(startRecording, RECORD_START_DELAY_MS);
     }).catch(function(err){
-      log('failed to load html2canvas:', err);
+      log('failed to load modern-screenshot:', err);
     });
   }
 
