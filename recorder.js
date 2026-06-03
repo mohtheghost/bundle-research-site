@@ -274,8 +274,16 @@
       backgroundColor: '#ffffff',
       cacheBust: false,
       skipAutoScale: true,
+      // CRITICAL: skip font embedding. html-to-image tries to fetch
+      // Google Fonts CSS and inline it into the snapshot SVG. Google's
+      // CORS blocks reading cssRules from cross-origin stylesheets,
+      // which throws a SecurityError, which crashes the whole render
+      // → 2 KB empty blobs. With skipFonts:true, text falls back to
+      // system fonts in the snapshot, the page content renders, AND
+      // the snapshot completes faster (no font-embed roundtrip).
+      skipFonts: true,
       // Skip elements with rr-block class (escape hatch for future
-      // noisy elements that misrender in foreignObject mode)
+      // noisy elements that misrender)
       filter: function(node) {
         if (node && node.classList && node.classList.contains('rr-block')) {
           return false;
