@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Session Replay — Bundle Research</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+
+<!-- rrweb player — version pinned to match recorder.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@1.0.0-alpha.4/dist/style.css">
+<script src="https://cdn.jsdelivr.net/npm/rrweb-player@1.0.0-alpha.4/dist/index.js"></script>
+
+<style>
+  :root{
+    --bg:#0a1f1c; --card:#0f2a25; --line:#1f3a35;
+    --ink:#e8f3f1; --muted:#a3b8b4; --accent:#22d3ee; --accent2:#67e8f9;
+    --warn:#fcd34d; --err:#fca5a5;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    line-height:1.5;font-size:14px}
+  header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--line);background:#082019}
+  header h1{margin:0 0 .25rem;font-size:1.15rem;font-weight:600}
+  header p{margin:0;color:var(--muted);font-size:.85rem}
+  header .badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.7rem;
+    letter-spacing:.12em;text-transform:uppercase;color:#082f49;
+    background:linear-gradient(135deg,var(--accent2),var(--accent));
+    padding:.25rem .6rem;border-radius:999px;margin-left:.5rem;vertical-align:middle}
+  main{padding:1.25rem 1.5rem;max-width:1240px;margin:0 auto}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem 1.25rem;margin:0 0 1rem}
+  .panel h2{margin:0 0 .5rem;font-size:.95rem;font-weight:600;letter-spacing:-.01em}
+  .panel p{margin:0 0 .5rem;color:var(--muted);font-size:.85rem}
+  .panel code{background:#0a1f1c;color:var(--accent2);padding:.15rem .4rem;border-radius:3px;
+    font-family:'JetBrains Mono',monospace;font-size:.78rem}
+  .controls{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;margin:.75rem 0 .25rem}
+  .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1rem;
+    background:linear-gradient(135deg,var(--accent),#0e7490);color:#fff;border:none;
+    border-radius:5px;font-weight:500;cursor:pointer;font-family:inherit;font-size:.88rem;
+    transition:transform .15s,box-shadow .15s}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(34,211,238,.25)}
+  .btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn.secondary:hover{border-color:var(--accent)}
+  .fileinput{display:none}
+  .status{margin:.5rem 0;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted)}
+  .status.ok{color:var(--accent2)}
+  .status.err{color:var(--err)}
+  .status.warn{color:var(--warn)}
+  details{background:#082019;border:1px solid var(--line);border-radius:5px;padding:.6rem .85rem;margin:.5rem 0}
+  details summary{cursor:pointer;font-size:.82rem;color:var(--muted)}
+  details pre{margin:.6rem 0 0;font-family:'JetBrains Mono',monospace;font-size:.72rem;
+    color:var(--ink);overflow:auto;max-height:160px;background:#0a1f1c;padding:.6rem;border-radius:4px}
+  .player-wrap{background:#000;border:1px solid var(--line);border-radius:8px;
+    padding:.6rem;margin:.6rem 0;min-height:200px;overflow:hidden}
+  .meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:.5rem;font-size:.8rem;margin-top:.5rem}
+  .meta-grid div{background:#082019;padding:.45rem .65rem;border-radius:4px;
+    border-left:2px solid var(--accent)}
+  .meta-grid strong{color:var(--accent2);font-family:'JetBrains Mono',monospace;
+    font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.15rem}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Session Replay <span class="badge">Local Tool</span></h1>
+  <p>Drop a session folder (or its batch_*.json files) to replay what the visitor saw.</p>
+</header>
+
+<main>
+
+  <div class="panel">
+    <h2>Load a session</h2>
+    <p>
+      Recordings live in Google Drive under the folder you configured in your recorder Apps Script.
+      Each session has its own subfolder (e.g. <code>rec_a1b2c3d4-…</code>) containing
+      <code>metadata.json</code> and many <code>batch_&lt;timestamp&gt;.json</code> files.
+    </p>
+    <p>
+      <strong>Easiest path:</strong> install Google Drive Desktop so the recordings folder syncs to your
+      machine, then click <em>"Pick session folder"</em> below and select the session's subfolder.
+    </p>
+
+    <div class="controls">
+      <label class="btn" for="folderInput">Pick session folder</label>
+      <input class="fileinput" id="folderInput" type="file" webkitdirectory directory multiple>
+
+      <label class="btn secondary" for="filesInput">…or pick batch files</label>
+      <input class="fileinput" id="filesInput" type="file" multiple accept=".json,application/json">
+
+      <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+    </div>
+
+    <div class="status" id="status">No session loaded.</div>
+  </div>
+
+  <div class="panel" id="metaPanel" style="display:none">
+    <h2>Session metadata</h2>
+    <div class="meta-grid" id="metaGrid"></div>
+  </div>
+
+  <div class="player-wrap" id="playerWrap" style="display:none"></div>
+
+  <details id="rawDetails" style="display:none">
+    <summary>Show raw event stats</summary>
+    <pre id="rawText"></pre>
+  </details>
+
+</main>
+
+<script>
+(function(){
+  'use strict';
+
+  var statusEl  = document.getElementById('status');
+  var metaPanel = document.getElementById('metaPanel');
+  var metaGrid  = document.getElementById('metaGrid');
+  var playerWrap = document.getElementById('playerWrap');
+  var rawDetails = document.getElementById('rawDetails');
+  var rawText    = document.getElementById('rawText');
+
+  var folderInput = document.getElementById('folderInput');
+  var filesInput  = document.getElementById('filesInput');
+  var clearBtn    = document.getElementById('clearBtn');
+
+  var player = null;
+
+  function setStatus(text, cls){
+    statusEl.textContent = text;
+    statusEl.className = 'status' + (cls ? ' ' + cls : '');
+  }
+
+  function readFile(file){
+    return new Promise(function(resolve, reject){
+      var r = new FileReader();
+      r.onload = function(){ resolve({ name: file.name, text: r.result }); };
+      r.onerror = function(){ reject(new Error('failed to read ' + file.name)); };
+      r.readAsText(file);
+    });
+  }
+
+  function batchSortKey(name){
+    // Extract the millisecond timestamp embedded in `batch_<ms>.json`
+    var m = /batch_(\d+)\.json$/i.exec(name);
+    if (m) return parseInt(m[1], 10);
+    // Fallback: lex sort
+    return 0;
+  }
+
+  function renderMeta(meta){
+    metaGrid.innerHTML = '';
+    function row(label, val){
+      if (val === null || val === undefined || val === '') return;
+      var d = document.createElement('div');
+      d.innerHTML = '<strong>' + label + '</strong>' +
+                    String(val).replace(/[<>&]/g, function(c){
+                      return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];
+                    });
+      metaGrid.appendChild(d);
+    }
+    row('Session', meta.sessionId);
+    row('Started', meta.startedAt);
+    row('Page', meta.page);
+    row('Viewport', meta.viewport);
+    row('Screen', meta.screen);
+    row('Language', meta.language);
+    row('Timezone', meta.timezone);
+    row('Platform', meta.platform);
+    row('Referrer', meta.referrer);
+    row('User agent', meta.userAgent);
+    metaPanel.style.display = '';
+  }
+
+  function destroyPlayer(){
+    if (player) {
+      try { player.$destroy && player.$destroy(); } catch(e){}
+      player = null;
+    }
+    playerWrap.innerHTML = '';
+    playerWrap.style.display = 'none';
+    metaPanel.style.display = 'none';
+    rawDetails.style.display = 'none';
+  }
+
+  function startReplay(events, meta){
+    destroyPlayer();
+    if (!events.length){
+      setStatus('No events found in those files.', 'err');
+      return;
+    }
+    if (typeof rrwebPlayer === 'undefined'){
+      setStatus('rrweb-player failed to load from CDN. Check your connection.', 'err');
+      return;
+    }
+
+    playerWrap.style.display = '';
+    try {
+      // Size the player to roughly fit the visitor's viewport, capped to window
+      var maxW = Math.min(window.innerWidth - 80, 1180);
+      var maxH = Math.min(window.innerHeight - 280, 720);
+      var w = maxW, h = maxH;
+      if (meta && /\d+x\d+/.test(meta.viewport || '')) {
+        var parts = meta.viewport.split('x');
+        var vpW = parseInt(parts[0], 10), vpH = parseInt(parts[1], 10);
+        var scale = Math.min(maxW / vpW, maxH / vpH, 1);
+        w = Math.round(vpW * scale);
+        h = Math.round(vpH * scale);
+      }
+
+      player = new rrwebPlayer({
+        target: playerWrap,
+        props: {
+          events: events,
+          width: w,
+          height: h,
+          autoPlay: false,
+          showController: true,
+          speedOption: [1, 2, 4, 8]
+        }
+      });
+    } catch (e) {
+      setStatus('Replay failed: ' + e.message, 'err');
+      return;
+    }
+
+    var firstT = events[0].timestamp;
+    var lastT  = events[events.length - 1].timestamp;
+    var durMs  = lastT - firstT;
+    var minutes = Math.floor(durMs / 60000);
+    var seconds = Math.round((durMs % 60000) / 1000);
+    setStatus(
+      'Replaying ' + events.length.toLocaleString() + ' events · ' +
+      'duration ~' + minutes + 'm ' + seconds + 's',
+      'ok'
+    );
+
+    if (meta) renderMeta(meta);
+
+    // Raw stats
+    var counts = {};
+    events.forEach(function(e){ counts[e.type] = (counts[e.type]||0) + 1; });
+    var statsLines = ['event count: ' + events.length,
+                      'duration ms: ' + durMs,
+                      'first ts:   ' + new Date(firstT).toISOString(),
+                      'last ts:    ' + new Date(lastT).toISOString(),
+                      '',
+                      'event types:'];
+    Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; }).forEach(function(t){
+      statsLines.push('  type ' + t + ': ' + counts[t]);
+    });
+    rawText.textContent = statsLines.join('\n');
+    rawDetails.style.display = '';
+  }
+
+  function loadFiles(files){
+    if (!files || !files.length){
+      setStatus('No files picked.', 'warn');
+      return;
+    }
+    var jsonFiles = [].slice.call(files).filter(function(f){
+      return /\.json$/i.test(f.name);
+    });
+    if (!jsonFiles.length){
+      setStatus('No .json files in that selection.', 'err');
+      return;
+    }
+    setStatus('Reading ' + jsonFiles.length + ' files…');
+
+    Promise.all(jsonFiles.map(readFile)).then(function(loaded){
+      var metadata = null;
+      var batches = [];
+      var skipped = 0;
+
+      loaded.forEach(function(file){
+        var parsed;
+        try { parsed = JSON.parse(file.text); }
+        catch (e) { skipped++; return; }
+
+        if (/metadata\.json$/i.test(file.name) || (parsed && parsed.sessionId && parsed.startedAt && !Array.isArray(parsed))){
+          metadata = parsed;
+          return;
+        }
+        // Batch file — could be an array of events directly, or a {events:[]} envelope
+        var events = null;
+        if (Array.isArray(parsed)) events = parsed;
+        else if (parsed && Array.isArray(parsed.events)) events = parsed.events;
+        else if (parsed && parsed.metadata && Array.isArray(parsed.events)) {
+          events = parsed.events;
+          if (!metadata) metadata = parsed.metadata;
+        }
+        if (!events) { skipped++; return; }
+
+        batches.push({
+          sortKey: batchSortKey(file.name),
+          name: file.name,
+          events: events
+        });
+      });
+
+      if (!batches.length){
+        setStatus('Could not find any batch event files. ' +
+                  (skipped ? skipped + ' unreadable file(s) skipped.' : ''), 'err');
+        return;
+      }
+
+      batches.sort(function(a,b){ return a.sortKey - b.sortKey; });
+      var allEvents = [];
+      batches.forEach(function(b){ allEvents = allEvents.concat(b.events); });
+
+      // Defensive sort by timestamp in case batches were reordered
+      allEvents.sort(function(a,b){ return (a.timestamp||0) - (b.timestamp||0); });
+
+      startReplay(allEvents, metadata);
+    }).catch(function(err){
+      setStatus('Failed: ' + err.message, 'err');
+    });
+  }
+
+  folderInput.addEventListener('change', function(e){ loadFiles(e.target.files); });
+  filesInput .addEventListener('change', function(e){ loadFiles(e.target.files); });
+  clearBtn   .addEventListener('click', function(){
+    destroyPlayer();
+    folderInput.value = '';
+    filesInput.value  = '';
+    setStatus('Cleared.');
+  });
+
+  setStatus('Ready. Pick a session folder or batch files above.');
+})();
+</script>
+
+</body>
+</html>

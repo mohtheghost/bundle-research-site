@@ -34,6 +34,36 @@
     })(window,document,"clarity","script",CLARITY_ID);
   }
 
+  // Load the self-hosted rrweb session recorder (recorder.js). The recorder
+  // script attaches itself to window.__BundleRecorder. We call its init()
+  // after a short delay to let the page settle, then it loads rrweb from
+  // CDN and starts recording. Safe to call multiple times; it no-ops if
+  // already started.
+  function loadRecorder(){
+    var startWhenReady = function(){
+      try {
+        if (window.__BundleRecorder && typeof window.__BundleRecorder.init === 'function') {
+          window.__BundleRecorder.init();
+        }
+      } catch (e) {
+        try { console.warn('[Bundle Consent] recorder init failed:', e); } catch(_) {}
+      }
+    };
+    if (window.__BundleRecorder) {
+      // recorder.js already loaded — kick it off
+      startWhenReady();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = '/recorder.js';
+    s.async = true;
+    s.onload = startWhenReady;
+    s.onerror = function(){
+      try { console.warn('[Bundle Consent] failed to load /recorder.js'); } catch(_) {}
+    };
+    document.head.appendChild(s);
+  }
+
   // Google Apps Script Web App that logs each consent event into a
   // Google Sheet. Set up via https://sheets.google.com → Extensions →
   // Apps Script (deployed as Web App, "Anyone" access).
@@ -211,6 +241,7 @@
       try{ sessionStorage.setItem(CONSENT_KEY,'agree'); }catch(e){}
       b.remove();
       loadClarity();
+      loadRecorder();
       logConsentEvent('agreed');
     });
     b.querySelector('.consent-decline').addEventListener('click', function(){
@@ -226,6 +257,7 @@
     if(stored === 'agree'){
       // User already agreed in a previous visit — start tracking immediately
       loadClarity();
+      loadRecorder();
     } else if(stored !== 'decline'){
       // First visit (no stored choice) — show the banner
       showBanner();
