@@ -210,13 +210,27 @@
           autoPlay: false,         // user clicks play
           showController: true,    // built-in play/pause/speed controls
           speedOption: [1, 2, 4, 8],
-          skipInactive: false      // play every second — no fast-forwarding
-                                   // through "boring" idle parts. Critical
-                                   // for debugging: without this, a 14-s
-                                   // recording with little activity skips
-                                   // straight to the end and looks blank.
+          skipInactive: false,     // play every second — no fast-forwarding
+          // CRITICAL: rrweb's iframe is sandboxed `allow-same-origin` only by
+          // default, which blocks the script Replayer needs to inject to
+          // apply the captured DOM. Result: blank iframe. This option (badly
+          // named — it's not actually about canvas alone) adds `allow-scripts`
+          // to the sandbox so the Replayer can do its job.
+          UNSAFE_replayCanvas: true
         }
       });
+
+      // Belt-and-braces: even with UNSAFE_replayCanvas, ad-blocker /
+      // privacy extensions sometimes inject their own sandbox attribute
+      // after the iframe is created. Strip + reset it explicitly so the
+      // script-execution permission survives the extensions' meddling.
+      setTimeout(function(){
+        var ifr = playerWrap.querySelector('iframe');
+        if (ifr) {
+          ifr.setAttribute('sandbox',
+            'allow-scripts allow-same-origin allow-forms allow-popups');
+        }
+      }, 50);
     } catch (e) {
       setStatus('Replay failed: ' + e.message, 'err');
       return;
