@@ -35,11 +35,11 @@
   // the old v1 URL is now retired.
   var RECORDER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyzInKU7GhqMgvnJvX9zfOg17sPdiB3khXFE_aLV1yshNnSP7YlvClX-BMoP9ielnVf/exec';
 
-  // modern-screenshot library — pinned. Replaces html2canvas, which
-  // hit a fundamental speed wall on this site (~2s per snapshot on the
-  // homepage). modern-screenshot is typically 2-3x faster — same DOM →
-  // canvas approach but a more modern implementation.
-  var SCREENSHOT_CDN = 'https://cdn.jsdelivr.net/npm/modern-screenshot@4.5.5/dist/index.umd.js';
+  // html-to-image — a maintained dom-to-image fork. Has a proper UMD
+  // bundle (modern-screenshot only ships ESM). Uses SVG <foreignObject>
+  // internally → typically much faster than html2canvas's pixel-walking
+  // approach. Global is `window.htmlToImage`.
+  var SCREENSHOT_CDN = 'https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js';
 
   // Cadence + quality knobs (tune for size vs fidelity).
   //
@@ -241,8 +241,8 @@
       log('snapshot skipped: previous capture still in flight');
       return Promise.resolve();
     }
-    if (!window.modernScreenshot || !window.modernScreenshot.domToCanvas) {
-      log('snapshot skipped: modern-screenshot not loaded');
+    if (!window.htmlToImage || !window.htmlToImage.toCanvas) {
+      log('snapshot skipped: html-to-image not loaded');
       return Promise.resolve();
     }
     state.snapshotInFlight = true;
@@ -262,15 +262,20 @@
         '(scroll=' + snapMeta.scrollY + ', mouse=' +
         snapMeta.mouseX + ',' + snapMeta.mouseY + ')');
 
-    // modern-screenshot's domToCanvas captures the WHOLE element passed
-    // to it. We capture document.documentElement (the entire page) and
-    // then crop the resulting canvas to the viewport ourselves below.
-    // The crop is cheap (~1ms via drawImage) compared to the render.
-    return window.modernScreenshot.domToCanvas(document.documentElement, {
-      scale: SNAPSHOT_SCALE,
+    // html-to-image's toCanvas captures the WHOLE element passed to it.
+    // We capture document.documentElement (the entire page) and crop
+    // the resulting canvas to the viewport ourselves below. The crop
+    // (~1ms via drawImage) is negligible compared to the render time.
+    //
+    // pixelRatio is html-to-image's "scale" knob — it multiplies the
+    // canvas dimensions. We set it equal to SNAPSHOT_SCALE.
+    return window.htmlToImage.toCanvas(document.documentElement, {
+      pixelRatio: SNAPSHOT_SCALE,
       backgroundColor: '#ffffff',
-      // Skip elements that have rr-block class (future-proofing — we
-      // can add this class to noisy elements that misrender)
+      cacheBust: false,
+      skipAutoScale: true,
+      // Skip elements with rr-block class (escape hatch for future
+      // noisy elements that misrender in foreignObject mode)
       filter: function(node) {
         if (node && node.classList && node.classList.contains('rr-block')) {
           return false;
@@ -433,10 +438,10 @@
     if (shouldSkip()) return;
 
     loadScript(SCREENSHOT_CDN).then(function(){
-      log('modern-screenshot loaded, starting in ' + RECORD_START_DELAY_MS + 'ms');
+      log('html-to-image loaded, starting in ' + RECORD_START_DELAY_MS + 'ms');
       setTimeout(startRecording, RECORD_START_DELAY_MS);
     }).catch(function(err){
-      log('failed to load modern-screenshot:', err);
+      log('failed to load html-to-image:', err);
     });
   }
 
