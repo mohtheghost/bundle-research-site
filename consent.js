@@ -240,7 +240,13 @@
     b.querySelector('.consent-agree').addEventListener('click', function(){
       try{ sessionStorage.setItem(CONSENT_KEY,'agree'); }catch(e){}
       b.remove();
-      loadClarity();
+      // Clarity disabled — replaced by our own self-hosted rrweb recorder.
+      // Keeping the loadClarity() function around in case we want it back,
+      // but not calling it: running both at once causes the Replayer to see
+      // an inconsistent event stream (Clarity injects nodes faster than the
+      // recorder can stabilize, leading to "Node not found" errors at
+      // replay time).
+      // loadClarity();
       loadRecorder();
       logConsentEvent('agreed');
     });
@@ -255,8 +261,9 @@
     var stored;
     try{ stored = sessionStorage.getItem(CONSENT_KEY); }catch(e){ stored = null; }
     if(stored === 'agree'){
-      // User already agreed in a previous visit — start tracking immediately
-      loadClarity();
+      // User already agreed in a previous visit — start tracking immediately.
+      // Clarity disabled (see comment in the Agree handler above).
+      // loadClarity();
       loadRecorder();
     } else if(stored !== 'decline'){
       // First visit (no stored choice) — show the banner

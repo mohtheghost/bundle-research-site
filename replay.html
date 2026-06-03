@@ -140,10 +140,12 @@
   }
 
   function batchSortKey(name){
-    // Extract the millisecond timestamp embedded in `batch_<ms>.json`
-    var m = /batch_(\d+)\.json$/i.exec(name);
+    // Extract the millisecond timestamp embedded in `batch_<ms>.json` OR
+    // `batch_<ms>_<rand>.json` (the latter format is used by Apps Script
+    // when two batches collide on the same millisecond — see
+    // apps-script-recorder.gs). The regex matches both.
+    var m = /batch_(\d+)/i.exec(name);
     if (m) return parseInt(m[1], 10);
-    // Fallback: lex sort
     return 0;
   }
 
@@ -337,8 +339,10 @@
       var allEvents = [];
       batches.forEach(function(b){ allEvents = allEvents.concat(b.events); });
 
-      // Defensive sort by timestamp in case batches were reordered
-      allEvents.sort(function(a,b){ return (a.timestamp||0) - (b.timestamp||0); });
+      // Do NOT defensively re-sort events by timestamp. Within a batch the
+      // events are already in emit order from the recorder, and any in-place
+      // sort can reorder events that share a millisecond — which breaks the
+      // rrweb Replayer's reliance on add-before-remove ordering.
 
       startReplay(allEvents, metadata);
     }).catch(function(err){
