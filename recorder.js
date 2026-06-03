@@ -38,16 +38,29 @@
   // html2canvas library — pinned to a stable version.
   var HTML2CANVAS_CDN = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
 
-  // Cadence + quality knobs (tune for size vs fidelity)
-  var SNAPSHOT_INTERVAL_MS = 5000;   // capture every 5 s
+  // Cadence + quality knobs (tune for size vs fidelity).
+  //
+  // Frame rate budget for a 60s session:
+  //   Interval 5000ms → 12 frames × ~150 KB = ~1.8 MB
+  //   Interval 1000ms → 60 frames × ~150 KB = ~9 MB     (current)
+  //   Interval  500ms → 120 frames × ~150 KB = ~18 MB
+  //
+  // Reducing the interval too far also costs CPU on the visitor's machine
+  // (html2canvas takes 100–400 ms per snapshot on a complex page).
+  // 1 fps is a good balance of "smooth enough to understand visitor
+  // behaviour" without burning their battery.
+  var SNAPSHOT_INTERVAL_MS = 1000;   // 1 fps
   var SNAPSHOT_SCALE       = 0.75;   // 0.75 = 25% smaller than 1:1
   var JPEG_QUALITY         = 0.65;   // 0.65 = good balance of size + clarity
 
   // Events buffer + flush
   var EVENT_FLUSH_MS = 5000;
 
-  // Wait this long after consent before starting (page animations settle)
-  var RECORD_START_DELAY_MS = 2000;
+  // Wait this long after consent before starting. The old rrweb recorder
+  // needed 2 s to dodge a "mid-animation FullSnapshot" bug; html2canvas
+  // captures pixels and doesn't have that problem, so 800 ms (mostly for
+  // web-font loading via `document.fonts.ready`) is enough.
+  var RECORD_START_DELAY_MS = 800;
 
   // Skip recording on these hostnames (local dev)
   var SKIP_HOSTNAMES = ['localhost', '127.0.0.1', '0.0.0.0', ''];
