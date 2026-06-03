@@ -182,6 +182,7 @@
     <button class="filter" data-filter="ml">Machine Learning</button>
     <button class="filter" data-filter="climate">Climate &amp; Environment</button>
     <button class="filter" data-filter="tools">Tools</button>
+    <button class="filter" data-filter="hardware">Hardware</button>
     <button class="filter" data-filter="gamedev">Game Dev</button>
   </div>
 
@@ -287,19 +288,25 @@
       </div>
     </a>
 
-    <!-- JACK THE ROBOT -->
-    <a class="project-card" href="https://github.com/mohtheghost/jack-the-Robot-pr" data-tags="gamedev tools">
-      <div class="project-card-image" style="background:linear-gradient(135deg,#6d28d9 0%,#9333ea 100%)">J</div>
+    <!-- JACK THE ROBOT (hardware: ESP32 Arabic voice assistant) -->
+    <a class="project-card" href="jack-the-robot.html" data-tags="hardware tools">
+      <div class="project-card-image" style="background:linear-gradient(135deg,#0a1f2c 0%,#0e7490 60%,#22d3ee 100%);position:relative;overflow:hidden">
+        <span class="card-glyph" style="z-index:3">J</span>
+        <span style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(34,211,238,0.06) 0 2px,transparent 2px 8px);z-index:1"></span>
+        <span style="position:absolute;top:10px;right:14px;font-family:var(--font-mono);font-size:0.7rem;color:rgba(207,250,254,0.85);letter-spacing:0.1em;z-index:2">ESP32</span>
+        <span style="position:absolute;bottom:14px;left:14px;font-family:var(--font-mono);font-size:0.72rem;color:rgba(207,250,254,0.85);letter-spacing:0.1em;z-index:2">مساعد</span>
+      </div>
       <div class="project-card-body">
         <div class="project-card-tags">
-          <span class="tag">Game Dev</span>
-          <span class="tag">C# / Unity</span>
+          <span class="tag">Hardware</span>
+          <span class="tag">Voice AI</span>
+          <span class="tag">C++ / C#</span>
         </div>
         <h3 class="project-card-title">Jack the Robot</h3>
-        <p class="project-card-desc">A small game project: a robot that listens for your question and answers it. Built while learning Unity and C#.</p>
+        <p class="project-card-desc">A hand-built voice-assistant robot. Custom ESP32 firmware streams audio to a C# cloud relay; Whisper + GPT-4o + TTS handle Arabic end-to-end.</p>
         <div class="project-card-meta">
-          <span class="project-card-status"><span class="dot dot-paused"></span> Paused</span>
-          <span>2025</span>
+          <span class="project-card-status"><span class="dot dot-paused"></span> Paused for Desertflow</span>
+          <span>2025–2026</span>
         </div>
       </div>
     </a>

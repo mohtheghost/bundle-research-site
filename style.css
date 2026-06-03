@@ -2528,6 +2528,203 @@ footer {
   .audit-steps > li::before { width: 1.8rem; height: 1.8rem; font-size: 0.9rem; left: 0.85rem; }
 }
 
+/* ==========================================================================
+   v3.9 — Jack the Robot page (cyan/electric-blue hardware aesthetic)
+   ========================================================================== */
+
+/* ---------- v3.9a Cyan-themed hero + badge + spark ------------------ */
+.hero-project-robot {
+  background:
+    linear-gradient(180deg, rgba(8, 47, 73, 0.55), rgba(8, 47, 73, 0.92)),
+    linear-gradient(135deg, #0a1f2c 0%, #082f49 60%, #155e75 100%);
+}
+.hero-project-robot::after {
+  background:
+    radial-gradient(ellipse at center, transparent 35%, rgba(0, 0, 0, 0.4) 100%),
+    radial-gradient(circle at 70% 25%, rgba(34, 211, 238, 0.18) 0%, transparent 50%);
+}
+.badge-cyan {
+  background: linear-gradient(135deg, #0e7490 0%, #155e75 100%);
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: #cffafe;
+}
+.hero-spark-cyan {
+  background: linear-gradient(135deg, #cffafe 0%, #67e8f9 50%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 22px rgba(103, 232, 249, 0.45);
+}
+.dot-cyan {
+  background: #06b6d4 !important;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25) !important;
+  animation: pulse-dot-cyan 2.5s ease-in-out infinite !important;
+}
+@keyframes pulse-dot-cyan {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25); }
+  50%      { box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.08); }
+}
+.status-row-cyan {
+  background: linear-gradient(90deg, var(--card), #ecfeff);
+  border-color: #a5f3fc;
+}
+.status-row-cyan strong { color: #155e75; }
+
+/* ---------- v3.9b Cyan headline banner ------------------------------ */
+.headline-banner-robot {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(34, 211, 238, 0.18) 0%, transparent 45%),
+    linear-gradient(135deg, #082f49 0%, #0a1f2c 100%);
+  border-color: rgba(34, 211, 238, 0.35);
+}
+.headline-banner-robot::before {
+  background: radial-gradient(circle, rgba(14, 116, 144, 0.45) 0%, transparent 60%);
+}
+.headline-banner-num-cyan {
+  background: linear-gradient(135deg, #cffafe 0%, #67e8f9 30%, #22d3ee 60%, #0e7490 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ---------- v3.9c Cyan pillar + explainer variants ------------------ */
+.pillar-card-cyan { border-top-color: #06b6d4 !important; }
+.pillar-icon-cyan {
+  background: linear-gradient(135deg, #06b6d4, #67e8f9) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+.pillar-stat-cyan {
+  background: #ecfeff !important;
+  border-left-color: #06b6d4 !important;
+}
+.pillar-stat-cyan strong { color: #155e75 !important; }
+
+.explainer-card-cyan {
+  background: linear-gradient(135deg, var(--card) 0%, #ecfeff 100%) !important;
+  border-color: #a5f3fc !important;
+}
+.explainer-step-cyan {
+  color: #155e75 !important;
+  background: #fff !important;
+  border: 1px solid #a5f3fc;
+}
+.explainer-card-cyan strong { color: #155e75 !important; }
+.plain-english-tldr-cyan {
+  border-left-color: #67e8f9 !important;
+  background: #082f49 !important;
+}
+.plain-english-tldr-cyan strong { color: #67e8f9 !important; }
+
+/* ---------- v3.9d Robot photo gallery ------------------------------- */
+.robot-gallery {
+  margin: 3.5rem 0;
+}
+.robot-gallery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+.robot-photo {
+  margin: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--tx-base), box-shadow var(--tx-base);
+}
+.robot-photo:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+.robot-photo img {
+  display: block;
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  background: #0a1f2c;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.robot-photo:hover img {
+  transform: scale(1.03);
+}
+.robot-photo figcaption {
+  padding: 0.85rem 1.15rem 1rem;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--card), #f8fafc);
+}
+.robot-photo-large {
+  grid-column: span 2;
+}
+.robot-photo-large img {
+  height: 480px;
+}
+.robot-photo-large figcaption {
+  font-size: 0.95rem;
+  padding: 1rem 1.4rem 1.15rem;
+}
+
+/* ---------- v3.9e Hardware components grid -------------------------- */
+.hw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.15rem;
+  margin: 1.75rem 0 2rem;
+}
+.hw-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 3px solid #06b6d4;
+  border-radius: var(--r-md);
+  padding: 1.25rem 1.35rem;
+  transition: transform var(--tx-base), box-shadow var(--tx-base);
+}
+.hw-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.hw-card-name {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #155e75;
+  letter-spacing: 0.02em;
+}
+.hw-card-role {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0e7490;
+  background: #ecfeff;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  margin: 0.45rem 0 0.75rem;
+}
+.hw-card p {
+  font-size: 0.88rem !important;
+  color: var(--ink-soft) !important;
+  margin: 0 !important;
+  line-height: 1.55;
+}
+
+/* ---------- v3.9f Responsive for robot page ------------------------- */
+@media (max-width: 760px) {
+  .robot-gallery-grid { grid-template-columns: 1fr; }
+  .robot-photo-large { grid-column: span 1; }
+  .robot-photo img { height: 280px; }
+  .robot-photo-large img { height: 320px; }
+}
+
 /* ---------- v3.7h Responsive for desertflow rewrite ----------------- */
 @media (max-width: 920px) {
   .pillar-grid, .explainer-grid { grid-template-columns: 1fr; }

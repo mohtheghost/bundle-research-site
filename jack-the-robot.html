@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jack the Robot — Hand-Built Arabic Voice Assistant on ESP32</title>
+<meta name="description" content="A hand-built voice assistant robot. Custom ESP32 firmware streaming live audio over WebSocket to a Hostinger-hosted C# relay, with Whisper for Arabic STT, GPT-4o for response, and TTS playback back to the device.">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://bundle-research.xyz/jack-the-robot.html">
+<meta property="og:title" content="Jack the Robot — Hand-Built Arabic Voice Assistant">
+<meta property="og:description" content="ESP32 firmware + C# cloud relay + Whisper/GPT-4o/TTS pipeline. Full-duplex audio over WebSocket. Arabic-first design.">
+<meta property="og:site_name" content="Bundle Research">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jack the Robot — Hand-Built Arabic Voice Assistant">
+<meta name="twitter:description" content="ESP32 firmware + C# cloud relay + Whisper/GPT-4o/TTS pipeline.">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">Bundle Research</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="desertflow.html">Research</a></li>
+      <li><a href="/#projects" class="active">Projects</a></li>
+      <li><a href="publications.html">Publications</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="/#contact-footer">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero-project hero-project-robot">
+  <div class="container-narrow">
+    <span class="badge badge-mono badge-cyan">Hardware · ESP32 · Arabic Voice AI</span>
+    <h1>A hand-built voice assistant that <span class="hero-spark hero-spark-cyan">speaks Arabic</span></h1>
+    <p class="lede">Jack is a real robot — custom ESP32 firmware streaming live audio over WebSocket to a Hostinger-hosted C# relay, feeding into OpenAI Whisper for Arabic speech-to-text, GPT-4o for the response, and TTS for the spoken answer played back through the robot's speaker.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="#gallery">See the robot ↓</a>
+      <a class="btn btn-secondary" href="#architecture">How it works →</a>
+    </div>
+  </div>
+</header>
+
+<main class="container-narrow content">
+
+<div class="stats">
+  <div class="stat" data-reveal><div class="stat-num" data-counter-target="3">3</div><div class="stat-label">Custom hardware components</div></div>
+  <div class="stat" data-reveal data-reveal-delay="1"><div class="stat-num" data-counter-target="5">5</div><div class="stat-label">Cloud services in the pipeline</div></div>
+  <div class="stat" data-reveal data-reveal-delay="2"><div class="stat-num">16</div><div class="stat-label">kHz audio · 8 kHz mobile mode</div></div>
+  <div class="stat" data-reveal data-reveal-delay="3"><div class="stat-num">AR</div><div class="stat-label">Arabic-first design (مساعد)</div></div>
+</div>
+
+<div class="status-row status-row-cyan">
+  <span class="dot dot-cyan"></span>
+  <span><strong>Working hardware · Paused for desertification research</strong> · Active development resumes once Desertflow ships</span>
+</div>
+
+<!-- ★ HEADLINE BANNER -->
+<section class="headline-banner headline-banner-robot" id="headline" data-reveal>
+  <div class="headline-banner-eyebrow">
+    <span class="dot dot-cyan"></span>
+    What it does
+  </div>
+  <div class="headline-banner-main">
+    <div class="headline-banner-big">
+      <span class="headline-banner-num headline-banner-num-cyan">∞</span>
+      <span class="headline-banner-tag">Round trip</span>
+    </div>
+    <div class="headline-banner-text">
+      <h2 class="headline-banner-title">Microphone → cloud → GPT → speaker, all in one device</h2>
+      <p>Say the Arabic wake word <strong>"مصطفى"</strong>. The microphone captures your voice, the ESP32 streams 16-bit PCM audio over WebSocket to a VPS, the VPS routes it to a PC running voice-activity detection, the speech is transcribed by Whisper, sent to GPT-4o-mini for a reply, the reply is spoken by OpenAI TTS, and the resulting audio streams back through the same pipeline to play on the robot's speaker.</p>
+      <p class="headline-banner-fine">Every layer of that pipeline is custom code I wrote — firmware in C++, server in C#, hosted on a Hostinger VPS. The only thing I didn't build is the OpenAI models themselves.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ★ THREE PILLARS -->
+<section class="achievement-pillars" data-reveal>
+  <h2 class="section-title section-title-center">What makes this project</h2>
+  <div class="pillar-grid">
+
+    <article class="pillar-card pillar-card-cyan">
+      <div class="pillar-icon pillar-icon-cyan">⚡</div>
+      <h3 class="pillar-title">Hand-built hardware</h3>
+      <p>The chassis is cardboard and tape — but inside it's a real ESP32 with INMP441 I2S microphone and MAX98357A I2S amplifier. Soldering, wiring, GPIO mapping, dual-core RTOS task pinning — all of it done from scratch.</p>
+      <div class="pillar-stat pillar-stat-cyan"><strong>ESP32</strong><span> · INMP441 mic · MAX98357A amp · I2S audio bus</span></div>
+    </article>
+
+    <article class="pillar-card pillar-card-cyan">
+      <div class="pillar-icon pillar-icon-cyan">⇄</div>
+      <h3 class="pillar-title">Full-duplex audio over WebSocket</h3>
+      <p>Bidirectional streaming: the robot's microphone uploads audio continuously while the speaker simultaneously plays back TTS chunks as they arrive. Mic auto-pauses during TTS playback to prevent self-recording.</p>
+      <div class="pillar-stat pillar-stat-cyan"><strong>8 kHz</strong><span> mobile mode · 16 kHz quality mode · base64 PCM</span></div>
+    </article>
+
+    <article class="pillar-card pillar-card-cyan">
+      <div class="pillar-icon pillar-icon-cyan">ع</div>
+      <h3 class="pillar-title">Arabic-first design</h3>
+      <p>The wake word is Arabic ("مصطفى"). The Whisper STT call is locked to <code>language="ar"</code>. The GPT-4o-mini system prompt is in Arabic Fusha. The TTS voice ("onyx") handles Arabic phonemes. Not a translation layer — Arabic end-to-end.</p>
+      <div class="pillar-stat pillar-stat-cyan"><strong>مساعد</strong><span> · OpenAI Whisper · GPT-4o-mini · TTS</span></div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ★ PHOTO GALLERY -->
+<section class="robot-gallery" id="gallery" data-reveal>
+  <h2 class="section-title section-title-center">The robot, up close</h2>
+  <p class="section-subtitle section-subtitle-center">Five photos of the actual hardware — not a render, not a stock photo. Cardboard chassis, hand-wired ESP32, real working prototype.</p>
+
+  <div class="robot-gallery-grid">
+
+    <figure class="robot-photo robot-photo-large">
+      <img src="jack-photos/jack-01-full-body.jpg" alt="Jack the robot — full assembled body with cardboard chassis" loading="lazy">
+      <figcaption>The assembled robot: blue/yellow cardboard body, green head with hand-drawn eyes, red arms. Built by hand from cardboard and tape; the brains are inside.</figcaption>
+    </figure>
+
+    <figure class="robot-photo">
+      <img src="jack-photos/jack-02-chest-detail.jpg" alt="Detail of the chest panel with hand-drawn gear and eye symbols" loading="lazy">
+      <figcaption>The chest panel with hand-drawn gear/eye/star symbols. The yellow strip on the side is masking tape covering the speaker mount.</figcaption>
+    </figure>
+
+    <figure class="robot-photo">
+      <img src="jack-photos/jack-03-internals.jpg" alt="View of the internal wiring with ESP32 and jumper wires" loading="lazy">
+      <figcaption>The internals: ESP32 dev board mounted to the cardboard chassis with jumper wires running to the I2S microphone and speaker amp.</figcaption>
+    </figure>
+
+    <figure class="robot-photo">
+      <img src="jack-photos/jack-04-esp32-board.jpg" alt="Close-up of the ESP32 development board with multicolored jumper wires" loading="lazy">
+      <figcaption>Close-up of the ESP32 dev board. Green/red/black/white jumpers connect to the INMP441 microphone (I2S input) and the MAX98357A amplifier (I2S output).</figcaption>
+    </figure>
+
+    <figure class="robot-photo">
+      <img src="jack-photos/jack-05-wiring-detail.jpg" alt="Detail view of the jumper wiring inside the chassis" loading="lazy">
+      <figcaption>Wiring detail. The labeled ESP32 module at the top routes audio to / from the I2S bus, with the wiring channeled through cardboard cutouts.</figcaption>
+    </figure>
+
+  </div>
+</section>
+
+<!-- ★ PLAIN ENGLISH -->
+<section class="plain-english" data-reveal>
+  <h2 class="section-title section-title-center">How a conversation with Jack works</h2>
+  <div class="explainer-grid">
+
+    <div class="explainer-card explainer-card-cyan">
+      <div class="explainer-step explainer-step-cyan">Step 1</div>
+      <h3>You say "مصطفى"</h3>
+      <p>The INMP441 microphone captures your voice, the ESP32 batches 1500 samples at a time, base64-encodes them, and streams them via WebSocket to a Hostinger VPS that relays the audio to a PC.</p>
+    </div>
+
+    <div class="explainer-card explainer-card-cyan">
+      <div class="explainer-step explainer-step-cyan">Step 2</div>
+      <h3>The cloud transcribes and responds</h3>
+      <p>The PC runs auto-calibrating voice-activity detection, slices out the utterance, sends it to Whisper for Arabic transcription, checks for the wake word, and sends the rest to GPT-4o-mini with an Arabic system prompt.</p>
+    </div>
+
+    <div class="explainer-card explainer-card-cyan">
+      <div class="explainer-step explainer-step-cyan">Step 3</div>
+      <h3>Jack speaks the answer</h3>
+      <p>GPT's reply goes to OpenAI TTS, converts to 16 kHz PCM via FFmpeg, streams back to the ESP32 in 4 KB chunks. The robot pauses its mic during playback to avoid recording its own voice, and resumes listening after the last chunk.</p>
+    </div>
+
+  </div>
+  <p class="plain-english-tldr plain-english-tldr-cyan"><strong>TL;DR:</strong> You speak Arabic. The cardboard robot streams your voice to OpenAI, gets back a smart Arabic reply, and speaks it through its own speaker. End-to-end in one device.</p>
+</section>
+
+<!-- TOC -->
+<nav class="toc" aria-label="Page sections">
+  <div class="toc-title">On this page</div>
+  <ol>
+    <li><a href="#architecture">Architecture &amp; data flow</a></li>
+    <li><a href="#hardware">Hardware components</a></li>
+    <li><a href="#firmware">Firmware highlights (ESP32, C++)</a></li>
+    <li><a href="#server">Server highlights (C#, hosted on Hostinger)</a></li>
+    <li><a href="#stack">Technology stack</a></li>
+    <li><a href="#lessons">What I learned</a></li>
+    <li><a href="#future">Where it's going</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ol>
+</nav>
+
+<h2 id="architecture">Architecture &amp; data flow</h2>
+<p>Three machines in the pipeline: the <strong>ESP32</strong> on the robot, the <strong>Hostinger VPS</strong> as a WebSocket relay, and the <strong>PC</strong> doing the heavy lifting (VAD + STT + LLM + TTS). The VPS is intentionally dumb — it just routes JSON messages with <code>target: "pc"</code> or <code>target: "esp32"</code> between the two endpoints.</p>
+
+<div class="diagram">
+┌──────────────────────┐         ┌────────────────────┐         ┌──────────────────────┐
+│   ESP32 ROBOT        │ ⇄ WS ⇄  │  HOSTINGER VPS     │ ⇄ WS ⇄  │   PC BACKEND         │
+│                      │         │  72.62.149.38:8080 │         │                      │
+│ • INMP441 mic (I2S)  │         │                    │         │ • Auto-calibrating   │
+│ • MAX98357A amp (I2S)│         │  Just a relay —    │         │   VAD (3s baseline)  │
+│ • C++ firmware       │         │  routes JSON       │         │ • WAV recorder       │
+│ • Dual-core RTOS     │         │  by target id      │         │ • Whisper (Arabic)   │
+│ • 8 / 16 kHz PCM     │         │  ("pc" / "esp32")  │         │ • GPT-4o-mini        │
+│ • base64 over JSON   │         │                    │         │ • OpenAI TTS (onyx)  │
+│ • Wake-word beep     │         │                    │         │ • FFmpeg MP3 → PCM   │
+│ • Self-record guard  │         │                    │         │ • 4KB chunk streamer │
+└──────────────────────┘         └────────────────────┘         └──────────────────────┘
+        ▲                                                                  │
+        │                          🎵 TTS audio chunks                     │
+        └──────────────────────────────────────────────────────────────────┘
+</div>
+
+<p>This three-tier design means the robot itself can run on a cheap ESP32 (no on-device ML), and the PC backend is replaceable — I could swap GPT-4o for a local LLM, or Whisper for an on-device STT model, without touching the firmware.</p>
+
+<h2 id="hardware">Hardware components</h2>
+
+<div class="hw-grid">
+  <div class="hw-card">
+    <div class="hw-card-name">ESP32 dev board</div>
+    <div class="hw-card-role">Brain</div>
+    <p>Dual-core 240 MHz Xtensa, built-in WiFi. Runs the C++ firmware on FreeRTOS with separate tasks pinned to each core: microphone-send on core 0, speaker-playback on core 0 (priority 2), main loop + WiFi on core 1.</p>
+  </div>
+  <div class="hw-card">
+    <div class="hw-card-name">INMP441</div>
+    <div class="hw-card-role">Microphone</div>
+    <p>MEMS digital microphone with I2S output. 24-bit, configurable sample rate. Wired to ESP32 GPIO 25 (BCK), 27 (WS), 18 (DATA). 1.5× gain multiplier applied in software.</p>
+  </div>
+  <div class="hw-card">
+    <div class="hw-card-name">MAX98357A</div>
+    <div class="hw-card-role">Speaker amplifier</div>
+    <p>Class-D mono I2S amplifier, up to 3.2 W. Wired to ESP32 GPIO 12 (BCK), 14 (WS), 13 (DATA). 3× volume gain in software with clipping protection.</p>
+  </div>
+  <div class="hw-card">
+    <div class="hw-card-name">Cardboard chassis</div>
+    <div class="hw-card-role">Body</div>
+    <p>Hand-cut, painted, taped. Functional and durable enough for the prototype phase. A 3D-printed enclosure is on the roadmap; cardboard is fine for now.</p>
+  </div>
+</div>
+
+<h2 id="firmware">Firmware highlights (ESP32, C++)</h2>
+<p>The ESP32 firmware is ~700 lines of C++ targeting the Arduino-ESP32 framework with the WebSocketsClient library. The interesting parts:</p>
+
+<div class="module-grid">
+  <div class="module-group">
+    <div class="module-title">Audio pipeline</div>
+    <ul>
+      <li>I2S read at 16 kHz, 32-bit shifted to 16-bit</li>
+      <li>Batch 3 × 512 samples before sending (reduces JSON overhead)</li>
+      <li>Base64 encode via mbedtls (stack-allocated)</li>
+      <li>WebSocket text frames up to 24 KB</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Dual-core RTOS</div>
+    <ul>
+      <li>Core 0: mic-send task (priority 1) + speaker-playback (priority 2)</li>
+      <li>Core 1: main loop, WiFi, WebSocket events</li>
+      <li>FreeRTOS queues for mic chunks, TTS chunks, WS-send messages</li>
+      <li>Pinned tasks for deterministic audio scheduling</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Self-record prevention</div>
+    <ul>
+      <li>Mic pauses (<code>micEnabled = false</code>) when TTS playback starts</li>
+      <li>Resumes when the last chunk's I2S buffer drains</li>
+      <li>Stops the robot recording its own voice and triggering false wake words</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Heap-free JSON parse</div>
+    <ul>
+      <li>Custom lite parser for TTS chunks (avoids malloc per audio packet)</li>
+      <li>Fixed 12 KB working buffer for base64 staging</li>
+      <li>Hand-coded JSON escape handling (only what TTS needs)</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">User feedback</div>
+    <ul>
+      <li>Wake-word confirmation beep (1.2 kHz, 200 ms)</li>
+      <li>Speech-ended feedback (3 × 80 ms beeps at 1.1 kHz)</li>
+      <li>Periodic test beep (every 2 s, pauses during TTS)</li>
+      <li>LED status (on = disconnected, off = connected)</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Networking</div>
+    <ul>
+      <li>WebSocket heartbeat: 15 s interval, 30 s timeout, 3 pong retries</li>
+      <li>Auto-reconnect on disconnect (500 ms interval)</li>
+      <li>Mobile-hotspot mode: 8 kHz halves bandwidth</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="server">Server highlights (C#, hosted on Hostinger)</h2>
+<p>The backend is a C# console app (<code>ConsoleApp4</code>) running on a Hostinger VPS. It connects to the relay as the <code>"pc"</code> endpoint and does everything that needs real compute:</p>
+
+<div class="module-grid">
+  <div class="module-group">
+    <div class="module-title">Auto-calibrating VAD</div>
+    <ul>
+      <li>3-second background-noise calibration on startup</li>
+      <li>Median-of-samples noise floor (ignores outliers)</li>
+      <li>Speech threshold = 3 × noise floor (configurable)</li>
+      <li>State machine: 2 loud chunks = speech-start, 10 quiet = end</li>
+      <li>Min utterance 500 ms (filters cough/click)</li>
+      <li>Live RMS bar in console output</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Jitter buffer</div>
+    <ul>
+      <li>Detects WebSocket gaps &gt; 1.5× expected</li>
+      <li>Pads with silence for gaps &lt; 100 ms</li>
+      <li>Larger gaps logged as data loss</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">WAV recorder</div>
+    <ul>
+      <li>Speech-start opens a new WAV file with proper header</li>
+      <li>Speech-end finalizes header + closes file + triggers STT</li>
+      <li>Async write loop with <code>System.Threading.Channels</code></li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Whisper STT</div>
+    <ul>
+      <li>OpenAI <code>whisper-1</code> model, <code>language="ar"</code></li>
+      <li>Wake-word match: "مصطفى" or "robot"</li>
+      <li>Wake-word beep request sent to ESP32 (<code>type: "wake_beep"</code>)</li>
+      <li>Transcriptions saved to local folder + master log</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">GPT-4o reply</div>
+    <ul>
+      <li>Model: <code>gpt-4o-mini</code></li>
+      <li>Arabic system prompt: short replies (2–3 sentences), Fusha</li>
+      <li>Wake word stripped from input before sending</li>
+      <li>Console pretty-prints the reply in a bordered box</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">TTS + delivery</div>
+    <ul>
+      <li>OpenAI TTS-1, "onyx" voice (deep male, handles Arabic)</li>
+      <li>MP3 → FFmpeg → 16 kHz PCM mono</li>
+      <li>PCM streamed back in 4 KB base64-encoded chunks</li>
+      <li>Chunk envelope: <code>{target, type:"tts", chunk, total, data}</code></li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="stack">Technology stack</h2>
+<div class="chips">
+  <span class="chip">ESP32 (Arduino framework)</span>
+  <span class="chip">C++ (firmware)</span>
+  <span class="chip">FreeRTOS</span>
+  <span class="chip">I2S audio bus</span>
+  <span class="chip">INMP441 (digital mic)</span>
+  <span class="chip">MAX98357A (Class-D amp)</span>
+  <span class="chip">WebSocketsClient (ESP32)</span>
+  <span class="chip">mbedtls (base64)</span>
+  <span class="chip">C# / .NET</span>
+  <span class="chip">System.Net.WebSockets</span>
+  <span class="chip">System.Threading.Channels</span>
+  <span class="chip">OpenAI Whisper API</span>
+  <span class="chip">OpenAI GPT-4o-mini</span>
+  <span class="chip">OpenAI TTS (onyx)</span>
+  <span class="chip">FFmpeg</span>
+  <span class="chip">Hostinger VPS</span>
+</div>
+
+<h2 id="lessons">What I learned</h2>
+<p>The project taught me a stack I'd never touched in one piece before. Some of the things that turned out harder than they looked:</p>
+
+<ul>
+  <li><strong>I2S timing is unforgiving.</strong> The microphone and speaker run as I2S master on separate peripherals (I2S_NUM_0 and I2S_NUM_1). Getting both DMA buffer chains stable enough to not glitch took several iterations on buffer-count + buffer-length tradeoffs.</li>
+  <li><strong>You can't trust default JSON parsers on a microcontroller.</strong> ArduinoJson and similar libraries malloc per parse, and at 4 KB TTS chunks arriving every ~20 ms, the heap fragments within seconds. Replacing it with a hand-written lite parser fixed an entire class of stability bugs.</li>
+  <li><strong>The wake-word problem is recursive.</strong> Without the mic-pause-during-TTS guard, the robot hears itself say the wake word and triggers a new conversation with itself. Mic gating is the simplest fix; on-device wake-word detection would be cleaner but adds complexity I didn't need yet.</li>
+  <li><strong>Arabic TTS is harder than English TTS.</strong> The OpenAI TTS voices vary in how cleanly they pronounce Arabic phonemes. "Onyx" produces the most natural Fusha out of the six options; "alloy" sounds wrong on certain consonants.</li>
+  <li><strong>Mobile hotspots eat bandwidth fast.</strong> 16 kHz PCM = 32 KB/s upstream, which on a 4G hotspot adds up to ~115 MB/hour just from the mic stream. Switching to 8 kHz halves it, at the cost of slightly muddier audio. Worth it for testing on the go.</li>
+</ul>
+
+<h2 id="future">Where it's going</h2>
+<p>Jack is paused while I focus on Desertflow, but it's not abandoned. The planned next steps when I come back to it:</p>
+
+<div class="roadmap">
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Next — polish &amp; ergonomics</div>
+    <ul>
+      <li>3D-printed enclosure (replacing the cardboard)</li>
+      <li>On-device wake-word detection (porcupine or similar) — eliminates the need to send all audio to the cloud</li>
+      <li>Battery + buck converter (currently USB-powered)</li>
+      <li>Touch sensor as alternative to wake word</li>
+    </ul>
+  </div>
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Later — capability</div>
+    <ul>
+      <li>Local LLM fallback (Llama 3 / Phi-3 on a small Linux box) for offline operation</li>
+      <li>Conversation memory — short rolling context, persisted per-session</li>
+      <li>Camera + vision (ESP32-CAM or external) so it can see what you're asking about</li>
+      <li>English/French as secondary languages with auto-detection</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="faq">FAQ</h2>
+
+<details class="faq">
+  <summary>Why ESP32 instead of a Raspberry Pi?</summary>
+  <p>The Pi would have been easier — could run Whisper locally, no WebSocket relay needed. But the ESP32 is &lt;$10, runs for hours on a USB battery, and the constraint of "no on-device ML" forced a clean separation between hardware (the robot) and brain (the cloud backend). That separation makes it easier to swap pieces later — different LLM, different STT, different TTS — without re-flashing firmware.</p>
+</details>
+
+<details class="faq">
+  <summary>Why route through a VPS at all? Couldn't the ESP32 talk to the PC directly?</summary>
+  <p>The VPS is the only piece with a stable public IP. The ESP32 is behind a home router; the PC is behind the same router. Having both endpoints reach out to a VPS over WebSocket sidesteps NAT entirely. Same pattern any chat app uses.</p>
+</details>
+
+<details class="faq">
+  <summary>How does the robot handle the OpenAI API key without exposing it?</summary>
+  <p>The key never touches the ESP32 or the VPS. It lives in an environment variable (<code>OPENAI_API_KEY</code>) on the PC backend only. The robot sends audio bytes; the PC makes the API calls; the robot receives audio bytes back. The key never crosses the WebSocket.</p>
+</details>
+
+<details class="faq">
+  <summary>Why Arabic first instead of English?</summary>
+  <p>Most voice assistants treat Arabic as an afterthought — Alexa, Siri, and Google Assistant all support it, but their Arabic is noticeably worse than their English. Building one Arabic-first meant choosing the wake word, system prompt, TTS voice, and language flags for that target instead of bolting it on. The same code base trivially supports English by changing config; it just wasn't the priority.</p>
+</details>
+
+<details class="faq">
+  <summary>What's the round-trip latency?</summary>
+  <p>End-of-utterance to first-audio-chunk back is typically 2–4 seconds on a good connection. Most of that is the OpenAI API call sequence (Whisper transcription → GPT response → TTS generation). The audio streaming itself adds &lt;200 ms each way. Could be cut to ~1 s with a faster LLM or by running everything locally.</p>
+</details>
+
+<details class="faq">
+  <summary>Can I see the code?</summary>
+  <p>Yes — the firmware (ESP32 C++) and the server (C# console app) will both go on GitHub once the project resumes after Desertflow. For now, the headline code snippets are on this page; full source is in private repos.</p>
+</details>
+
+<h2>Get in touch</h2>
+<p>Questions about the hardware, the architecture, or replicating the design — <button class="copy-link" onclick="copyEmail(this)">bagbagig@bundle-research.xyz</button> <span style="color:var(--muted);font-size:.85rem">(click to copy)</span></p>
+<p>Code: <a href="https://github.com/mohtheghost">github.com/mohtheghost</a></p>
+
+<a href="/" class="back-link">← Back to all projects</a>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 Mohamed Benkaddour · Bundle Research · Independent Earth observation research</span>
+    <div class="footer-links">
+      <a href="https://github.com/mohtheghost">GitHub</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+</script>
+
+<!-- Scroll reveals + animated stat counters + nav-on-scroll shadow -->
+<script src="effects.js" defer></script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "4aaf0ee4234e476abf6fdd8727459ccf"}'></script>
+
+<!-- Consent banner + opt-in Microsoft Clarity -->
+<script src="consent.js" defer></script>
+
+</body>
+</html>
