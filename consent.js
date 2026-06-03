@@ -143,67 +143,25 @@
       } catch(e) {}
     }
 
-    // Best-effort geo enrichment.
-    // We race TWO services in parallel:
-    //   (a) ipapi.co       — rich data (country name, region, city, IP)
-    //                       but often blocked by Opera / Brave / uBlock
-    //   (b) Cloudflare cdn-cgi/trace — always works (Cloudflare runs huge
-    //                       swathes of the web), gives country code + IP
-    // We prefer (a) when it succeeds; we fall back to (b) when (a) is
-    // blocked or slow. We post whichever we have at the 1.5s mark.
-    var richGeo = null;
+    // Best-effort geo enrichment via Cloudflare's cdn-cgi/trace endpoint.
+    // (ipapi.co was removed — they tightened CORS and the request now
+    // fails with a noisy console error on every consent event. Cloudflare
+    // gives us country code + IP which is enough for analytics.)
     var basicGeo = null;
 
-    function bestGeoSoFar(){
-      // Prefer rich data (ipapi.co) when available; merge in IP/country
-      // from Cloudflare as fallback fields.
-      var out = {};
-      if (richGeo) {
-        out.country = richGeo.country || '';
-        out.country_code = richGeo.country_code || '';
-        out.region = richGeo.region || '';
-        out.city = richGeo.city || '';
-        out.ip = richGeo.ip || '';
-        out._geo_source = 'ipapi.co';
-      } else if (basicGeo) {
-        out.country_code = basicGeo.country_code || '';
-        out.ip = basicGeo.ip || '';
-        out._geo_source = 'cloudflare-trace';
-      }
-      return out;
-    }
-
     function postWithBestGeo(){
-      var geo = bestGeoSoFar();
-      for (var k in geo) { payload[k] = geo[k]; }
+      if (basicGeo) {
+        payload.country_code = basicGeo.country_code || '';
+        payload.ip = basicGeo.ip || '';
+        payload._geo_source = 'cloudflare-trace';
+      }
       postOnce(payload);
     }
 
-    // Hard timeout: post whatever we have after 1.5s
-    var geoTimer = setTimeout(postWithBestGeo, 1500);
+    // Hard timeout: post whatever we have after 1.2s
+    var geoTimer = setTimeout(postWithBestGeo, 1200);
 
-    // (a) ipapi.co — preferred
-    try {
-      fetch('https://ipapi.co/json/', {cache: 'no-store'})
-        .then(function(r){ return r.ok ? r.json() : null; })
-        .catch(function(){ return null; })
-        .then(function(geo){
-          if (geo && !geo.error) {
-            richGeo = {
-              country: geo.country_name || '',
-              country_code: geo.country_code || '',
-              region: geo.region || '',
-              city: geo.city || '',
-              ip: geo.ip || ''
-            };
-            // ipapi succeeded — post immediately with rich data
-            clearTimeout(geoTimer);
-            postWithBestGeo();
-          }
-        });
-    } catch(e) {}
-
-    // (b) Cloudflare cdn-cgi/trace — fallback, always works
+    // Cloudflare cdn-cgi/trace — gets country code + IP, always reachable
     try {
       fetch('https://www.cloudflare.com/cdn-cgi/trace', {cache: 'no-store'})
         .then(function(r){ return r.ok ? r.text() : ''; })
@@ -219,8 +177,9 @@
             country_code: info.loc || '',
             ip: info.ip || ''
           };
-          // Don't post yet — keep waiting in case ipapi.co also returns
-          // (richer data). The geoTimer will fire if ipapi doesn't show up.
+          // Cloudflare returned — post immediately (no other source to wait for)
+          clearTimeout(geoTimer);
+          postWithBestGeo();
         });
     } catch(e) {}
   }
