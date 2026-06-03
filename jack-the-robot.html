@@ -149,6 +149,53 @@
   </div>
 </section>
 
+<!-- ★ SCHOOL PRESENTATION + COMMUNITY IMPACT -->
+<section class="school-impact" id="school" data-reveal>
+  <h2 class="section-title section-title-center">From prototype to school stage</h2>
+  <p class="section-subtitle section-subtitle-center">After the build, Jack went from a project on my desk to a presentation in front of the entire school — and a teaching opportunity with other students.</p>
+
+  <!-- Live demo video -->
+  <figure class="school-video">
+    <video controls preload="none" poster="jack-photos/jack-01-full-body.jpg" playsinline>
+      <source src="jack-photos/jack-demo.mp4" type="video/mp4">
+      Your browser doesn't support inline video. <a href="jack-photos/jack-demo.mp4">Download the demo video</a>.
+    </video>
+    <figcaption>
+      <span class="school-video-badge">Live demo</span>
+      The robot answering an Arabic question end-to-end — wake word, voice capture, cloud round-trip, spoken response through the on-board speaker. Click play to watch.
+    </figcaption>
+  </figure>
+
+  <!-- Recognition + Impact two-column -->
+  <div class="school-impact-grid">
+
+    <div class="school-impact-col school-impact-recognition">
+      <div class="school-impact-eyebrow">
+        <span class="dot dot-cyan"></span> Recognition
+      </div>
+      <h3>Selected for the school morning broadcast</h3>
+      <p>The project was chosen for the <strong>إذاعة</strong> (the school's morning assembly broadcast) — a presentation slot typically reserved for top student work. I stood in front of the entire student body and teaching staff to walk them through what Jack does and how it was built.</p>
+      <p>It was recognized as the <strong>first project of its kind</strong> to be presented at the assembly — combining custom hardware (ESP32, I2S audio), cloud infrastructure (WebSocket relay, OpenAI APIs), and Arabic-language voice AI in a single end-to-end build.</p>
+      <p>Following the presentation, I led <strong>informal teaching sessions</strong> with classmates on how the system actually works — from soldering and GPIO mapping on the ESP32 side, to WebSocket streaming and OpenAI API integration on the server side.</p>
+    </div>
+
+    <div class="school-impact-col school-impact-community">
+      <div class="school-impact-eyebrow">
+        <span class="dot dot-cyan"></span> Community impact
+      </div>
+      <h3>What this changed for the people around me</h3>
+      <ul class="impact-bullets">
+        <li><strong>Raised expectations</strong> for what a student-led technical project can be. Hardware + cloud + AI integration is no longer treated as "out of reach" at the school.</li>
+        <li><strong>Sparked interest in embedded systems</strong> — several students started asking about ESP32 boards and where to buy the components after the presentation.</li>
+        <li><strong>Showed Arabic-language AI as a real engineering target.</strong> Most voice-assistant demos students see are English-only; the wake word "مصطفى" and the Arabic responses changed how they think about what's possible in their own language.</li>
+        <li><strong>Created a knowledge-transfer loop</strong> — what started as one student's side project became a small teaching effort: hardware basics, networking, API design, and how to debug all three at once.</li>
+        <li><strong>Demonstrated that small-scale, low-cost hardware</strong> (an ESP32 board, a microphone, and an amplifier — under $20 in parts) can serve as the body for a serious AI system. Removes the "I can't afford to build this" excuse.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
 <!-- ★ PLAIN ENGLISH -->
 <section class="plain-english" data-reveal>
   <h2 class="section-title section-title-center">How a conversation with Jack works</h2>
@@ -180,6 +227,7 @@
 <nav class="toc" aria-label="Page sections">
   <div class="toc-title">On this page</div>
   <ol>
+    <li><a href="#school">School presentation &amp; community impact</a></li>
     <li><a href="#architecture">Architecture &amp; data flow</a></li>
     <li><a href="#hardware">Hardware components</a></li>
     <li><a href="#firmware">Firmware highlights (ESP32, C++)</a></li>

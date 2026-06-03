@@ -2725,6 +2725,149 @@ footer {
   .robot-photo-large img { height: 320px; }
 }
 
+/* ---------- v3.9g School presentation + community impact ------------ */
+.school-impact {
+  margin: 3.5rem 0;
+  padding: 2.5rem 0 0;
+}
+
+/* Video player — full-width, responsive, cinematic */
+.school-video {
+  margin: 2rem 0 2.75rem;
+  background: var(--dark-bg);
+  border: 1px solid var(--dark-line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(10, 31, 28, 0.25);
+  position: relative;
+}
+.school-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 75vh;
+  background: #000;
+  cursor: pointer;
+}
+.school-video figcaption {
+  padding: 1.1rem 1.4rem 1.2rem;
+  background: linear-gradient(180deg, #082f49 0%, #0a1f2c 100%);
+  color: var(--on-dark);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  border-top: 1px solid rgba(34, 211, 238, 0.2);
+}
+.school-video-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #082f49;
+  background: linear-gradient(135deg, #67e8f9, #22d3ee);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  margin-right: 0.75rem;
+  box-shadow: 0 0 14px rgba(34, 211, 238, 0.35);
+  vertical-align: middle;
+}
+
+/* Two-column recognition + impact grid */
+.school-impact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0 0;
+}
+.school-impact-col {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 1.65rem 1.75rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--tx-base), box-shadow var(--tx-base);
+}
+.school-impact-col:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+.school-impact-recognition {
+  border-left: 4px solid #06b6d4;
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+}
+.school-impact-community {
+  border-left: 4px solid #67e8f9;
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+}
+.school-impact-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #155e75;
+  background: #ecfeff;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+.school-impact-col h3 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 0.85rem;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+.school-impact-col p {
+  margin: 0 0 0.85rem !important;
+  font-size: 0.97rem !important;
+  color: var(--ink-soft) !important;
+  line-height: 1.6;
+}
+.school-impact-col strong { color: var(--ink); }
+.school-impact-col p:last-child { margin-bottom: 0 !important; }
+
+/* Impact bullets list */
+.impact-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+.impact-bullets li {
+  padding-left: 1.85rem;
+  position: relative;
+  font-size: 0.96rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.impact-bullets li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #06b6d4;
+  font-weight: 700;
+  font-size: 1.1rem;
+  width: 1.4rem;
+  text-align: center;
+}
+.impact-bullets strong { color: var(--ink); }
+
+/* Responsive */
+@media (max-width: 760px) {
+  .school-impact-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+  .school-video video { max-height: 60vh; }
+}
+
 /* ---------- v3.7h Responsive for desertflow rewrite ----------------- */
 @media (max-width: 920px) {
   .pillar-grid, .explainer-grid { grid-template-columns: 1fr; }
