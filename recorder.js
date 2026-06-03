@@ -31,8 +31,9 @@
   // ===== CONFIGURATION ====================================================
 
   // Apps Script URL — must accept the new {type:'snapshot'|'events'|'meta'}
-  // payload shape (see apps-script-recorder.gs).
-  var RECORDER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzskiaWYsnKu3aHwmyzsOzvldc3HwKK52nJY1SoTNUzb2ICHKEzCyDO3njZnaKYmURD/exec';
+  // payload shape (see apps-script-recorder.gs). This is the v2 deployment;
+  // the old v1 URL is now retired.
+  var RECORDER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyzInKU7GhqMgvnJvX9zfOg17sPdiB3khXFE_aLV1yshNnSP7YlvClX-BMoP9ielnVf/exec';
 
   // html2canvas library — pinned to a stable version.
   var HTML2CANVAS_CDN = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
