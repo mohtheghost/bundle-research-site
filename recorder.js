@@ -33,8 +33,10 @@
   // The Apps Script writes batches into Mohamed's BundleRecorder Drive folder.
   var RECORDER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzskiaWYsnKu3aHwmyzsOzvldc3HwKK52nJY1SoTNUzb2ICHKEzCyDO3njZnaKYmURD/exec';
 
-  // rrweb library version (pinned for reproducibility)
-  var RRWEB_CDN = 'https://cdn.jsdelivr.net/npm/rrweb@2.0.0-alpha.4/dist/rrweb.min.js';
+  // rrweb library version (pinned for reproducibility).
+  // Using the stable v1 line — battle-tested in production for years.
+  // Paired with rrweb-player@0.7.14 in replay.html.
+  var RRWEB_CDN = 'https://cdn.jsdelivr.net/npm/rrweb@1.1.3/dist/rrweb.min.js';
 
   // Batch every N events OR every N ms, whichever comes first
   var BATCH_EVENT_LIMIT = 200;
@@ -202,11 +204,11 @@
           flush(false);
         }
       },
-      // Compact options to save bandwidth
-      recordCanvas: false,
-      collectFonts: false,
-      inlineStylesheet: true,
-      maskTextSelector: 'input[type="password"], input[type="email"], input[type="tel"]',
+      // Capture options
+      recordCanvas: false,        // we have no canvas content
+      collectFonts: false,        // saves bandwidth; fonts re-load at replay
+      inlineStylesheet: true,     // inline same-origin CSS so replay is styled
+      inlineImages: false,        // saves bandwidth; images re-load via URL
       maskAllInputs: false,
       sampling: {
         mousemove: 50,
