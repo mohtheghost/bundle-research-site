@@ -49,9 +49,15 @@
   // page like Desertflow. At a 500 ms interval some snapshots will be
   // skipped (snapshotInFlight guard) — that's fine and self-regulating.
   // The effective rate becomes whatever the CPU can sustain.
-  var SNAPSHOT_INTERVAL_MS = 500;    // attempt ~2 fps (real rate gated by html2canvas speed)
-  var SNAPSHOT_SCALE       = 0.5;    // smaller = faster capture AND smaller upload
-  var JPEG_QUALITY         = 0.6;    // good balance of size + clarity
+  // Aggressively tuned for FRAME COUNT over quality. User explicitly
+  // wants more frames, accepts blurrier snapshots.
+  //
+  // At scale 0.35 the canvas is roughly 672×378 (vs 960×540 at scale 0.5),
+  // which html2canvas can render ~2x faster — getting us closer to a real
+  // 2 fps capture rate on the homepage.
+  var SNAPSHOT_INTERVAL_MS = 250;    // attempt 4 fps (still gated by html2canvas)
+  var SNAPSHOT_SCALE       = 0.35;   // ~50% less pixel area than scale 0.5
+  var JPEG_QUALITY         = 0.45;   // visible JPEG artifacts but text still readable
 
   // Events buffer + flush
   var EVENT_FLUSH_MS = 5000;
