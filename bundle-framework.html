@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bundle Framework — The Desktop Tool Behind Desertflow</title>
+<meta name="description" content="Open-source PySide6 desktop GUI for leakage-audited per-region machine learning. The tool used to build the 93%-accurate Desertflow NDVI forecasting framework — now packaged for anyone.">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://bundle-research.xyz/bundle-framework.html">
+<meta property="og:title" content="Bundle Framework — Per-Region ML Without the Pipeline Code">
+<meta property="og:description" content="The PySide6 desktop tool used to build the 93%-accurate Desertflow framework. Schema-agnostic, Wave-parallel, leakage-audit built in.">
+<meta property="og:site_name" content="Bundle Research">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bundle Framework — Per-Region ML Without the Pipeline Code">
+<meta name="twitter:description" content="The PySide6 desktop tool used to build the 93%-accurate Desertflow framework.">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">Bundle Research</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="desertflow.html">Research</a></li>
+      <li><a href="/#projects" class="active">Projects</a></li>
+      <li><a href="publications.html">Publications</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="/#contact-footer">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero-project hero-project-tool">
+  <div class="container-narrow">
+    <span class="badge badge-mono">Open-source · PySide6 · Pre-release</span>
+    <h1>Per-region ML without the <span class="hero-spark">pipeline code</span></h1>
+    <p class="lede">Bundle Framework is the desktop tool that produced the <a href="desertflow.html" style="color:inherit;text-decoration:underline">93%-accurate Desertflow framework</a> — now being packaged so anyone can run leakage-audited per-region machine learning on their own regions and drivers, without writing the pipeline plumbing.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="#features">See the features ↓</a>
+      <a class="btn btn-secondary" href="https://github.com/mohtheghost">GitHub →</a>
+    </div>
+  </div>
+</header>
+
+<main class="container-narrow content">
+
+<div class="stats">
+  <div class="stat" data-reveal><div class="stat-num" data-counter-target="89">89</div><div class="stat-label">Specialists trained in one click</div></div>
+  <div class="stat" data-reveal data-reveal-delay="1"><div class="stat-num" data-counter-target="133">133</div><div class="stat-label">Regions supported per Wave run</div></div>
+  <div class="stat" data-reveal data-reveal-delay="2"><div class="stat-num" data-counter-target="5">5</div><div class="stat-label">ML algorithms supported (CatBoost / XGBoost / LightGBM / RF / ElasticNet)</div></div>
+  <div class="stat" data-reveal data-reveal-delay="3"><div class="stat-num" data-counter-target="0">0</div><div class="stat-label">Lines of pipeline code to write</div></div>
+</div>
+
+<div class="status-row">
+  <span class="dot"></span>
+  <span><strong>Pre-release · Active development</strong> · Internal use complete on the Desertflow bundle · Open-source release planned alongside the EarthArXiv preprint (Q4 2026 / Q1 2027)</span>
+</div>
+
+<!-- ★ HEADLINE ACHIEVEMENT — what the tool does in one image -->
+<section class="headline-banner headline-banner-tool" id="headline" data-reveal>
+  <div class="headline-banner-eyebrow">
+    <span class="dot"></span>
+    What it does
+  </div>
+  <div class="headline-banner-main">
+    <div class="headline-banner-big">
+      <span class="headline-banner-num">1</span>
+      <span class="headline-banner-tag">Workflow</span>
+    </div>
+    <div class="headline-banner-text">
+      <h2 class="headline-banner-title">From raw parquet to leakage-audited predictions — without writing pipeline code</h2>
+      <p>Point the GUI at your per-region data files. Pick which features to use (the schema widget tells you which ones are leaky). Hit <strong>Wave</strong>. The tool trains a specialist per region, calibrates the router, evaluates on a held-out test split, and writes a bundle artifact you can load anywhere.</p>
+      <p class="headline-banner-fine">The same tool produced every number on the <a href="desertflow.html" style="color:#f9d976">Desertflow page</a>. Re-running it on different regions or different drivers is a Wave configuration change — not a code change.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ★ THREE PILLARS — what's distinctive about the tool -->
+<section class="achievement-pillars" data-reveal>
+  <h2 class="section-title section-title-center">What makes it different from a notebook</h2>
+  <div class="pillar-grid">
+
+    <article class="pillar-card pillar-card-2">
+      <div class="pillar-icon">⚙</div>
+      <h3 class="pillar-title">Schema-agnostic</h3>
+      <p>The Bundle Core doesn't hardcode columns. Bring your own regions, your own driver matrix, your own target. The schema widget reads your parquet headers, classifies each column as <strong>feature / target / identifier / leakage-flagged</strong>, and you click through to confirm.</p>
+      <div class="pillar-stat"><strong>0</strong><span> framework files to edit when your schema changes</span></div>
+    </article>
+
+    <article class="pillar-card pillar-card-1">
+      <div class="pillar-icon">⌘</div>
+      <h3 class="pillar-title">Wave workflow</h3>
+      <p>One <strong>Wave</strong> configuration fans out across hundreds of regions, training years, and calibration windows in a single deterministic pipeline run. Per-specialist crash recovery: if specialist #47 dies, you re-run just that one — the other 88 stay trained.</p>
+      <div class="pillar-stat"><strong>3</strong><span> time windows (train / cal / predict) configurable per Wave</span></div>
+    </article>
+
+    <article class="pillar-card pillar-card-3">
+      <div class="pillar-icon">🔍</div>
+      <h3 class="pillar-title">Leakage audit built in</h3>
+      <p>Every column is checked against the published <code>leakage_features.yaml</code> at training time. Matched columns are auto-set to <em>"(ignore)"</em> with a FAIL-2030 marker, and a banner alerts you. The same <strong>V/O/C/P audit</strong> that runs in Desertflow ships as a first-class GUI feature.</p>
+      <div class="pillar-stat"><strong>4</strong><span> leakage channels caught automatically (V/O/C/P)</span></div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ★ WHO IT'S FOR -->
+<section class="world-impact" data-reveal>
+  <h2 class="section-title section-title-center">Who it's for</h2>
+  <p class="section-subtitle section-subtitle-center">Anyone running per-region prediction problems where one global model would smooth over what's actually happening in each place.</p>
+
+  <div class="impact-grid">
+    <div class="impact-stat">
+      <div class="impact-num">EO</div>
+      <div class="impact-label">Remote-sensing researchers studying vegetation, fire, soil moisture, surface temperature, or any per-region variable</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num">ML</div>
+      <div class="impact-label">Practitioners working on geographic prediction problems who need leakage-safe cross-region validation</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num">EDU</div>
+      <div class="impact-label">Students learning per-region modeling who want a teaching tool that enforces methodology, not just metrics</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num">REPRO</div>
+      <div class="impact-label">Reviewers and replication researchers verifying Desertflow's results — the tool is the same one we used</div>
+    </div>
+  </div>
+
+  <div class="impact-why">
+    <h3>What this replaces</h3>
+    <ul>
+      <li><strong>Ad-hoc Jupyter notebooks</strong> that train one specialist at a time, accumulate state across cells, and silently leak features between train and test splits.</li>
+      <li><strong>One-off training scripts</strong> with hardcoded column names that break the moment your driver list changes.</li>
+      <li><strong>Pipeline orchestration boilerplate</strong> — task graphs, retries, partial-failure recovery — that every team writes from scratch.</li>
+      <li><strong>Manual leakage checking</strong> — the kind of audit that gets skipped under deadline pressure and ends up in published papers as inflated R² values.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ★ PLAIN-ENGLISH HOW IT WORKS -->
+<section class="plain-english" data-reveal>
+  <h2 class="section-title section-title-center">How a Wave runs, end to end</h2>
+  <div class="explainer-grid">
+
+    <div class="explainer-card">
+      <div class="explainer-step">Step 1</div>
+      <h3>Load your data</h3>
+      <p>Point the streaming file loader at a folder of parquet files (one per region, or one big file with a region column). It handles hundreds of files without memory blowup. The schema widget shows what's there.</p>
+    </div>
+
+    <div class="explainer-card">
+      <div class="explainer-step">Step 2</div>
+      <h3>Configure the Wave</h3>
+      <p>Pick your train years, calibration years, and prediction years (three separate windows). Pick your base learner (CatBoost / XGBoost / LightGBM / RF / ElasticNet). Pick your hyperparameters — or hit <strong>Auto-tune</strong> and let Optuna run ~30 trials per region.</p>
+    </div>
+
+    <div class="explainer-card">
+      <div class="explainer-step">Step 3</div>
+      <h3>Hit Wave, get a bundle</h3>
+      <p>The tool trains each specialist in isolation, saves them incrementally (so a crash on region 47 doesn't kill the other 88), calibrates the router, runs the leakage audit, evaluates on the held-out test split, and writes a single <code>.bundle</code> file you can load anywhere.</p>
+    </div>
+
+  </div>
+  <p class="plain-english-tldr"><strong>TL;DR:</strong> Drop parquet in. Click which features to use. Hit Wave. Get a leakage-audited per-region ML system in one artifact — no pipeline code written.</p>
+</section>
+
+<!-- TABLE OF CONTENTS (simple list, not the circular revolver) -->
+<nav class="toc" aria-label="Page sections">
+  <div class="toc-title">On this page</div>
+  <ol>
+    <li><a href="#features">Feature overview</a></li>
+    <li><a href="#tabs">GUI layout (the tabs)</a></li>
+    <li><a href="#wave">The Wave workflow in detail</a></li>
+    <li><a href="#schema">Schema-agnostic Bundle Core</a></li>
+    <li><a href="#audit">Leakage audit integration</a></li>
+    <li><a href="#stack">Technology stack</a></li>
+    <li><a href="#release">Release status &amp; roadmap</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ol>
+</nav>
+
+<h2 id="features">Feature overview</h2>
+<p>Bundle Framework v0.5 (the current internal build) wraps the per-region ML workflow that Desertflow's methodology requires. The headline features:</p>
+
+<div class="module-grid">
+  <div class="module-group">
+    <div class="module-title">Data loading</div>
+    <ul>
+      <li>Streaming parquet loader (handles 100s of files / 100s of GB)</li>
+      <li>Auto-detection of region column, year column, target column</li>
+      <li>Schema widget with leakage-flag warnings</li>
+      <li>Custom driver YAML per region</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Training</div>
+    <ul>
+      <li>CatBoost / XGBoost / LightGBM / Random Forest / ElasticNet</li>
+      <li>Full hyperparameter control (CatBoost: all 30+ params exposed)</li>
+      <li>Optuna auto-tune (~30 trials per region, parallel-safe)</li>
+      <li>Memory-safe per-region training (no 26+ GiB OOM)</li>
+      <li>Per-specialist incremental save (crash recovery)</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Wave workflow</div>
+    <ul>
+      <li>Three independent time windows: train / cal / predict</li>
+      <li>Fan out across N regions in one config</li>
+      <li>Per-region progress + status streaming</li>
+      <li>Resume-from-checkpoint after partial failure</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Validation &amp; audit</div>
+    <ul>
+      <li>Leakage-features YAML auto-applied at training time</li>
+      <li>FAIL-2030 marker on auto-ignored columns</li>
+      <li>Per-cell + per-region R² / MAE reporting</li>
+      <li>Cross-continental held-out evaluation harness</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">UX</div>
+    <ul>
+      <li>Dark mode</li>
+      <li>Scrollable tabs · opens maximized</li>
+      <li>Live training progress + log streaming</li>
+      <li>No internet required at training time</li>
+    </ul>
+  </div>
+  <div class="module-group">
+    <div class="module-title">Output</div>
+    <ul>
+      <li>Single <code>.bundle</code> artifact: weights + router + metadata</li>
+      <li>Loadable into a 3-line Python <code>predict()</code> call</li>
+      <li>Reproducible from a single Wave config file</li>
+      <li>Versioned metadata (schema spec, audit results, training time)</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="tabs">GUI layout — the tabs</h2>
+<p>The desktop app is organized as five tabs, each one a discrete phase of the workflow. You can jump between them, but the natural flow is left-to-right:</p>
+
+<div class="diagram">
+┌──────────┬──────────┬──────────┬──────────┬──────────┐
+│  Schema  │  Train   │   Wave   │ Predict  │  Audit   │
+├──────────┼──────────┼──────────┼──────────┼──────────┤
+│ Load     │ Single-  │ Multi-   │ Apply a  │ Inspect  │
+│ parquet  │ region   │ region   │ trained  │ leakage  │
+│ files,   │ training │ training │ bundle   │ checks,  │
+│ classify │ + hyper- │ across   │ to new   │ verify   │
+│ columns, │ param    │ regions, │ data &   │ feature  │
+│ flag     │ tuning,  │ years,   │ get NDVI │ inclusion│
+│ leaky    │ Optuna   │ windows  │ forecast │ decisions│
+│ ones     │ search   │ in one   │          │          │
+│          │          │ click    │          │          │
+└──────────┴──────────┴──────────┴──────────┴──────────┘
+</div>
+
+<p>Each tab persists its state, so you can configure a Schema in tab 1, train one specialist in tab 2 to sanity-check, then jump to tab 3 to fan out across all regions.</p>
+
+<h2 id="wave">The Wave workflow in detail</h2>
+<p>The Wave tab is the centerpiece. A single Wave run encodes a complete experiment:</p>
+
+<ol>
+  <li><strong>Pick the regions.</strong> All of them (89 trained), a biome subset (e.g., "all arid regions"), or a single region for fast iteration.</li>
+  <li><strong>Pick the three time windows.</strong> Train years (e.g., 2002–2018), calibration years (e.g., 2019–2021), prediction year (e.g., 2022). These are independent so you can stress-test temporal generalization.</li>
+  <li><strong>Pick the base learner.</strong> CatBoost is the default (matches Desertflow). Switch to XGBoost / LightGBM / RF / ElasticNet for ablations.</li>
+  <li><strong>Pick hyperparameters or auto-tune.</strong> Either lock the hyperparameters globally, or let Optuna search per-region. Auto-tune adds ~30 trials × N regions but typically lifts R² by 0.02–0.05.</li>
+  <li><strong>Hit Wave.</strong> The tool sequentially trains each specialist, saves it to disk immediately (no in-memory accumulation), calibrates the router, runs the audit, and evaluates on the held-out test split.</li>
+  <li><strong>Inspect the bundle.</strong> Per-region R², MAE, and audit-skip log all stream live during the run. The final <code>.bundle</code> artifact lands in your output folder.</li>
+</ol>
+
+<div class="highlight">
+  <strong>Crash recovery.</strong> If region 47 fails (data corruption, hyperparameter divergence, you ran out of disk), the other 88 stay trained. Re-running the Wave skips already-trained specialists by default — you can iterate on the broken one without recomputing the entire bundle.
+</div>
+
+<h2 id="schema">Schema-agnostic Bundle Core</h2>
+<p>The framework's design constraint is that <strong>no column name is hardcoded anywhere except in the YAML metadata</strong>. You describe your schema in a one-page YAML file:</p>
+
+<div class="diagram">
+# bundle_schema.yaml
+target:        V11_mean_ndvi
+identifier:    [cell_id, year]
+features:
+  climate:
+    - era5_tmean
+    - era5_precip
+    - chirps_precip
+  soil:
+    - soilgrids_sand
+    - soilgrids_clay
+    - smap_sm_top
+  topo:
+    - srtm_elev
+    - srtm_slope
+leakage_flagged:
+  - lai_mean       # NDVI-derived
+  - fpar_mean      # NDVI-derived
+  - gpp_mean       # NDVI-derived
+  - landcover_pct  # MODIS-classifier-derived
+</div>
+
+<p>The Bundle Core reads this schema and routes columns through the training pipeline accordingly. Switching from NDVI forecasting to (say) soil-moisture forecasting is a schema swap, not a code change.</p>
+
+<h2 id="audit">Leakage audit integration</h2>
+<p>The audit isn't a separate post-hoc check — it's a gate at the start of every training run. The framework loads <code>leakage_features.yaml</code> (the canonical V/O/C/P channel list documented on the <a href="desertflow.html#leakage">Desertflow page</a>), matches it against your schema, and:</p>
+
+<ul>
+  <li>Sets any matched column to <strong>"(ignore)"</strong> with a <code>FAIL-2030</code> marker.</li>
+  <li>Logs the exclusion in the training metadata (so reviewers can verify what was skipped).</li>
+  <li>Shows an in-app banner with the count of auto-ignored columns and the option to override (with a confirmation prompt — overriding the audit requires explicit user action).</li>
+</ul>
+
+<p>The <code>leakage_features.yaml</code> file ships with the framework and is versioned. As new leakage channels are discovered, the file is updated and all subsequent training runs benefit automatically.</p>
+
+<h2 id="stack">Technology stack</h2>
+<div class="chips">
+  <span class="chip">Python 3.11</span>
+  <span class="chip">PySide6 (Qt for Python)</span>
+  <span class="chip">CatBoost</span>
+  <span class="chip">XGBoost</span>
+  <span class="chip">LightGBM</span>
+  <span class="chip">scikit-learn (Random Forest, ElasticNet, Bayesian Ridge)</span>
+  <span class="chip">Optuna (hyperparameter search)</span>
+  <span class="chip">pyarrow / parquet</span>
+  <span class="chip">joblib (specialist serialization)</span>
+  <span class="chip">YAML (schema + audit configs)</span>
+  <span class="chip">PowerShell / bash (Wave runners)</span>
+</div>
+
+<p>The desktop app is bundled as a single Python package; the trained <code>.bundle</code> artifacts have a much smaller runtime dependency (CatBoost + numpy + scikit-learn).</p>
+
+<h2 id="release">Release status &amp; roadmap</h2>
+
+<div class="roadmap">
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Now — v0.5 (internal use)</div>
+    <ul>
+      <li>All five tabs functional (Schema, Train, Wave, Predict, Audit)</li>
+      <li>Memory-safe per-region training ✓</li>
+      <li>Per-specialist incremental save ✓</li>
+      <li>Optuna auto-tune ✓</li>
+      <li>Streaming file loader (100s of files) ✓</li>
+      <li>Currently powering the Desertflow training runs</li>
+    </ul>
+  </div>
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Q3 2026 — v0.6 (release-candidate)</div>
+    <ul>
+      <li>Leakage-features YAML autoload + SchemaWidget integration</li>
+      <li>Bundle metadata schema spec finalized</li>
+      <li>Documentation: getting-started, schema-spec, audit-reference</li>
+      <li>Cross-platform packaging (Windows + macOS + Linux)</li>
+    </ul>
+  </div>
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Q4 2026 / Q1 2027 — v1.0 (public release)</div>
+    <ul>
+      <li>Open-source release alongside the <a href="desertflow.html">Desertflow EarthArXiv preprint</a></li>
+      <li>License: Apache 2.0</li>
+      <li>PyPI / installer packages</li>
+      <li>Companion tutorial: "Reproduce the 93% Desertflow result on your machine"</li>
+    </ul>
+  </div>
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">2027 — v1.x (extensions)</div>
+    <ul>
+      <li>Cloud-runner mode (run a Wave on a remote machine, get results back)</li>
+      <li>Plugin SDK for custom routers</li>
+      <li>Web-based viewer for <code>.bundle</code> artifacts (drag-and-drop inspection)</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="faq">FAQ</h2>
+
+<details class="faq">
+  <summary>How is this different from sklearn / PyCaret / AutoML tools?</summary>
+  <p>Most AutoML tools train one model on one dataset. Bundle Framework is built around the <strong>per-region</strong> case: one specialist per region, combined by a router that handles new regions. It also enforces a leakage audit by default, which AutoML tools generally don't. If your problem is "one model, one dataset," you don't need this — use sklearn. If your problem is "133 regions, each with its own response curve, and I need it to generalize to a 134th region," this is what you want.</p>
+</details>
+
+<details class="faq">
+  <summary>Do I need Google Earth Engine to use it?</summary>
+  <p>No. Earth Engine is only used to <em>fetch</em> the per-region driver data in the Desertflow project. Once you have parquet files (from any source — EE, your own sensors, a public dataset), the framework runs entirely offline. You only need EE if you want to reproduce Desertflow's exact data pipeline.</p>
+</details>
+
+<details class="faq">
+  <summary>Can I use it for problems other than NDVI?</summary>
+  <p>Yes — that's the schema-agnostic design's whole point. The framework doesn't know what NDVI is; it knows what a target column is. Soil moisture, surface temperature, fire risk, crop yield — anything where per-region specialists make sense as a modeling approach.</p>
+</details>
+
+<details class="faq">
+  <summary>What hardware does it need?</summary>
+  <p>The Desertflow Wave (89 specialists × 22 years × ~33 features) trains in a few hours on a laptop with 16 GB RAM. Auto-tune (Optuna ~30 trials per specialist) takes substantially longer — typically overnight. The framework is memory-safe; it streams data per-region rather than loading everything at once.</p>
+</details>
+
+<details class="faq">
+  <summary>When can I download it?</summary>
+  <p>Open-source release is planned for Q4 2026 / Q1 2027, alongside the Desertflow EarthArXiv preprint. If you're a researcher who wants early access for a specific replication or extension, email <button class="copy-link" onclick="copyEmail(this)">bagbagig@bundle-research.xyz</button> and I'll arrange it.</p>
+</details>
+
+<details class="faq">
+  <summary>Is it stable enough to bet a paper on?</summary>
+  <p>The internal v0.5 has been used to produce every number on the <a href="desertflow.html">Desertflow page</a>, including the 93% headline. The API surface will stabilize in v0.6; v1.0 will be the version we recommend for external replication. Until then, treat it as research-grade software: it works, but expect rough edges.</p>
+</details>
+
+<h2>Get in touch</h2>
+<p>Questions about the tool, early-access requests, or replication offers — <button class="copy-link" onclick="copyEmail(this)">bagbagig@bundle-research.xyz</button> <span style="color:var(--muted);font-size:.85rem">(click to copy)</span></p>
+<p>Code: <a href="https://github.com/mohtheghost">github.com/mohtheghost</a></p>
+
+<a href="/" class="back-link">← Back to all projects</a>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 Mohamed Benkaddour · Bundle Research · Independent Earth observation research</span>
+    <div class="footer-links">
+      <a href="https://github.com/mohtheghost">GitHub</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+</script>
+
+<!-- Scroll reveals + animated stat counters + nav-on-scroll shadow -->
+<script src="effects.js" defer></script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "4aaf0ee4234e476abf6fdd8727459ccf"}'></script>
+
+<!-- Consent banner + opt-in Microsoft Clarity -->
+<script src="consent.js" defer></script>
+
+</body>
+</html>
