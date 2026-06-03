@@ -50,8 +50,8 @@
   // skipped (snapshotInFlight guard) — that's fine and self-regulating.
   // The effective rate becomes whatever the CPU can sustain.
   var SNAPSHOT_INTERVAL_MS = 500;    // attempt ~2 fps (real rate gated by html2canvas speed)
-  var SNAPSHOT_SCALE       = 0.6;    // smaller = faster capture AND smaller upload
-  var JPEG_QUALITY         = 0.65;   // good balance of size + clarity
+  var SNAPSHOT_SCALE       = 0.5;    // smaller = faster capture AND smaller upload
+  var JPEG_QUALITY         = 0.6;    // good balance of size + clarity
 
   // Events buffer + flush
   var EVENT_FLUSH_MS = 5000;
@@ -233,7 +233,7 @@
 
   function captureSnapshot(useBeacon) {
     if (state.snapshotInFlight) {
-      log('snapshot skipped: previous still in flight');
+      log('snapshot skipped: previous capture still in flight');
       return Promise.resolve();
     }
     if (!window.html2canvas) {
@@ -277,22 +277,38 @@
         canvas.toBlob(resolve, 'image/jpeg', JPEG_QUALITY);
       });
     }).then(function(blob){
+      // CAPTURE IS DONE — release the lock NOW so the next snapshot can
+      // start immediately. The upload runs in the background (fire-and-
+      // forget); we don't wait for Apps Script to finish writing the
+      // file before allowing the next capture. This decouples the capture
+      // rate (gated by html2canvas speed) from the upload rate (gated by
+      // Apps Script speed), and is what stops the recorder from getting
+      // wedged when uploads are slow.
+      state.snapshotInFlight = false;
+
       if (!blob) {
         log('snapshot ' + snapMeta.index + ' toBlob returned null');
-        return null;
+        return;
       }
       log('snapshot ' + snapMeta.index + ' blob size ' +
-          Math.round(blob.size / 1024) + ' KB');
-      return blobToBase64(blob);
-    }).then(function(b64){
-      if (!b64) return;
-      return sendSnapshot(b64, snapMeta, !!useBeacon);
-    }).then(function(){
-      var totalMs = Date.now() - startWall;
-      log('snapshot ' + snapMeta.index + ' UPLOADED in ' + totalMs + 'ms total');
+          Math.round(blob.size / 1024) + ' KB (uploading in background)');
+
+      // Background upload — don't await. Errors are logged but don't
+      // affect future captures.
+      blobToBase64(blob)
+        .then(function(b64){ return sendSnapshot(b64, snapMeta, !!useBeacon); })
+        .then(function(){
+          var totalMs = Date.now() - startWall;
+          log('snapshot ' + snapMeta.index + ' UPLOADED in ' + totalMs + 'ms total');
+        })
+        .catch(function(err){
+          log('snapshot ' + snapMeta.index + ' UPLOAD FAILED:',
+              err && err.message ? err.message : err);
+        });
     }).catch(function(err){
-      log('snapshot ' + snapMeta.index + ' FAILED:', err && err.message ? err.message : err);
-    }).then(function(){
+      log('snapshot ' + snapMeta.index + ' CAPTURE FAILED:',
+          err && err.message ? err.message : err);
+      // Capture failed — release the lock so the next attempt can try
       state.snapshotInFlight = false;
     });
   }
