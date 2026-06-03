@@ -49,17 +49,12 @@
   // page like Desertflow. At a 500 ms interval some snapshots will be
   // skipped (snapshotInFlight guard) — that's fine and self-regulating.
   // The effective rate becomes whatever the CPU can sustain.
-  // Extreme low-quality / high-frame-rate mode. User explicitly
-  // wants more frames, accepts heavily compressed snapshots.
-  //
-  //   - SCALE 0.25 → canvas 480×270 (vs 960×540 at scale 0.5). About 4×
-  //     fewer pixels to render means roughly 4× faster html2canvas.
-  //   - JPEG_QUALITY 0.4 → noticeable artifacts, still readable.
-  //   - INTERVAL 200ms → attempt 5 fps. snapshotInFlight will still cap
-  //     the real rate at whatever the visitor's CPU sustains.
-  var SNAPSHOT_INTERVAL_MS = 200;
-  var SNAPSHOT_SCALE       = 0.25;
-  var JPEG_QUALITY         = 0.4;
+  // Low-quality / high-frame-rate mode. foreignObjectRendering was
+  // attempted as a 3-8x speedup but broke the capture on this site
+  // (1 KB blobs = empty canvas, AND 6s render times). Reverted.
+  var SNAPSHOT_INTERVAL_MS = 300;
+  var SNAPSHOT_SCALE       = 0.3;
+  var JPEG_QUALITY         = 0.45;
 
   // Events buffer + flush
   var EVENT_FLUSH_MS = 5000;
@@ -275,14 +270,13 @@
       scale: SNAPSHOT_SCALE,
       logging: false,
       useCORS: true,
-      // KEY SPEEDUP: use SVG <foreignObject> rendering instead of the
-      // default pixel-by-pixel canvas rasterization. The browser does
-      // the layout natively which is typically 3–8× faster on text-heavy
-      // pages. Tradeoff: some advanced CSS features (filter:..., certain
-      // backdrop-filter variants, complex SVG masks) may not render
-      // perfectly. Acceptable for "see what the visitor was doing".
-      foreignObjectRendering: true,
-      imageTimeout: 1500,
+      // foreignObjectRendering: true was 3-8x faster on simple pages
+      // but on THIS site it failed silently (1 KB blobs, 6s renders).
+      // The Google Fonts + topographic SVG + filter:warp combination
+      // breaks the SVG <foreignObject> path. Reverted to the slower
+      // but reliable canvas-rasterization path.
+      foreignObjectRendering: false,
+      imageTimeout: 2000,
       removeContainer: true
     }).then(function(canvas){
       var renderMs = Date.now() - startWall;
