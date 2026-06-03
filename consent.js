@@ -23,7 +23,7 @@
   var CONSENT_KEY = 'br_analytics_consent';
   // Microsoft Clarity Project ID — Bundle Research project.
   // Dashboard: https://clarity.microsoft.com
-  var CLARITY_ID = 'x0x4wc5l93';
+  var CLARITY_ID = 'x17ya9p9jx';
 
   function loadClarity(){
     if(!CLARITY_ID || CLARITY_ID === 'YOUR_CLARITY_ID') return;
