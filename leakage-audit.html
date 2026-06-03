@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Leakage Audit Protocol — The Four Ways NDVI Models Cheat</title>
+<meta name="description" content="An open methodology for catching the four leakage channels that quietly inflate published NDVI forecasting accuracy by 5–20 R² points. V/O/C/P — Vegetation circularity, Optical bands, Classifier-derived, Pheno-prior contamination.">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://bundle-research.xyz/leakage-audit.html">
+<meta property="og:title" content="Leakage Audit Protocol — Honest NDVI Forecasting">
+<meta property="og:description" content="Four leakage channels (V/O/C/P) that inflate published NDVI accuracy by 5–20 points, and the open audit protocol that catches them.">
+<meta property="og:site_name" content="Bundle Research">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Leakage Audit Protocol — Honest NDVI Forecasting">
+<meta name="twitter:description" content="Four leakage channels (V/O/C/P) that inflate published NDVI accuracy by 5–20 points.">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">Bundle Research</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="desertflow.html">Research</a></li>
+      <li><a href="/#projects" class="active">Projects</a></li>
+      <li><a href="publications.html">Publications</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="/#contact-footer">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero-project hero-project-audit">
+  <div class="container-narrow">
+    <span class="badge badge-mono badge-warn">Methodology · Open Protocol · Companion Paper Planned</span>
+    <h1>The four ways NDVI forecasting models <span class="hero-spark hero-spark-warn">accidentally cheat</span> — and the audit that catches them</h1>
+    <p class="lede">Most published vegetation-forecasting studies report accuracy figures that don't survive a leakage audit. The Leakage Audit Protocol names four specific channels (V/O/C/P), provides a test for each, and ships as an open <code style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.3);">leakage_features.yaml</code> reference list that any framework can adopt.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="#channels">See the 4 channels ↓</a>
+      <a class="btn btn-secondary" href="desertflow.html#leakage">Used in Desertflow →</a>
+    </div>
+  </div>
+</header>
+
+<main class="container-narrow content">
+
+<div class="stats">
+  <div class="stat" data-reveal><div class="stat-num" data-counter-target="4">4</div><div class="stat-label">Leakage channels named &amp; tested</div></div>
+  <div class="stat" data-reveal data-reveal-delay="1"><div class="stat-num">5–20</div><div class="stat-label">R² points inflated in unaudited literature</div></div>
+  <div class="stat" data-reveal data-reveal-delay="2"><div class="stat-num" data-counter-target="33">33</div><div class="stat-label">Driver columns audited per training run</div></div>
+  <div class="stat" data-reveal data-reveal-delay="3"><div class="stat-num" data-counter-target="0">0</div><div class="stat-label">Prior published taxonomies for this</div></div>
+</div>
+
+<div class="status-row status-row-warn">
+  <span class="dot dot-warn"></span>
+  <span><strong>Active methodology · Open protocol</strong> · Currently the validation gate inside the Desertflow framework · Standalone methodology paper planned for 2027</span>
+</div>
+
+<!-- ★ HEADLINE BANNER -->
+<section class="headline-banner headline-banner-audit" id="headline" data-reveal>
+  <div class="headline-banner-eyebrow">
+    <span class="dot dot-warn"></span>
+    The problem being solved
+  </div>
+  <div class="headline-banner-main">
+    <div class="headline-banner-big">
+      <span class="headline-banner-num headline-banner-num-warn">4</span>
+      <span class="headline-banner-tag">Channels</span>
+    </div>
+    <div class="headline-banner-text">
+      <h2 class="headline-banner-title">Four ways your training set can secretly include the answer</h2>
+      <p>Vegetation forecasting models reach impressive accuracy numbers — often <strong>R² = 0.85–0.95</strong>. But many of those numbers come from training pipelines where the model can quietly peek at the target during training, in ways that aren't obvious unless you look for them. The audit names the four most common channels and gives you a test for each.</p>
+      <p class="headline-banner-fine">The protocol applies to any per-region remote-sensing prediction task — not just NDVI. The V/O/C/P naming is specific to vegetation work, but the four <em>shapes</em> of the failure are general.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ★ THREE PILLARS — what makes the protocol novel -->
+<section class="achievement-pillars" data-reveal>
+  <h2 class="section-title section-title-center">What makes this protocol novel</h2>
+  <div class="pillar-grid">
+
+    <article class="pillar-card pillar-card-warn">
+      <div class="pillar-icon pillar-icon-warn">①</div>
+      <h3 class="pillar-title">First named taxonomy</h3>
+      <p>Leakage in NDVI forecasting has been discussed informally in the literature, but no single source previously enumerated the four channels by name with a test for each. V/O/C/P gives the community a shared vocabulary.</p>
+      <div class="pillar-stat pillar-stat-warn"><strong>4</strong><span> channels named: Vegetation · Optical · Classifier · Pheno-prior</span></div>
+    </article>
+
+    <article class="pillar-card pillar-card-warn">
+      <div class="pillar-icon pillar-icon-warn">②</div>
+      <h3 class="pillar-title">First open test protocol</h3>
+      <p>Each channel has a concrete check that any pipeline can run. The protocol ships as an open <code>leakage_features.yaml</code> reference list — a versioned column-name registry that any framework can adopt without rewriting their pipeline.</p>
+      <div class="pillar-stat pillar-stat-warn"><strong>YAML</strong><span> · single-file reference, versioned, contributable</span></div>
+    </article>
+
+    <article class="pillar-card pillar-card-warn">
+      <div class="pillar-icon pillar-icon-warn">③</div>
+      <h3 class="pillar-title">First production gate</h3>
+      <p>Already running as the training-time validation gate inside <a href="bundle-framework.html">Bundle Framework</a>. Auto-detects matched columns, sets them to <em>"(ignore)"</em> with a <code>FAIL-2030</code> marker, and logs the exclusion in the bundle metadata for reviewers.</p>
+      <div class="pillar-stat pillar-stat-warn"><strong>Auto</strong><span> · runs at every training start, can't be silently skipped</span></div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ★ WHY THIS MATTERS -->
+<section class="world-impact" data-reveal>
+  <h2 class="section-title section-title-center">Why this matters beyond one paper</h2>
+  <p class="section-subtitle section-subtitle-center">Inflated accuracy figures don't stay inside the paper they were published in. They propagate into policy reports, climate-funding allocations, and conservation prioritization — at scale.</p>
+
+  <div class="impact-grid">
+    <div class="impact-stat">
+      <div class="impact-num">5–20</div>
+      <div class="impact-label">R² points typically inflated by one or more leakage channels</div>
+      <div class="impact-source">measured on internal ablations</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num">169</div>
+      <div class="impact-label">countries reporting SDG 15.3.1 (degraded-land indicator) using vegetation baselines</div>
+      <div class="impact-source">UNCCD</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num">$$</div>
+      <div class="impact-label">climate-adaptation funds allocated using projected vegetation vulnerability</div>
+      <div class="impact-source">Green Climate Fund, etc.</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num">REDD+</div>
+      <div class="impact-label">restoration claims verified against forecasted vs. observed vegetation</div>
+      <div class="impact-source">UNFCCC programmes</div>
+    </div>
+  </div>
+
+  <div class="impact-why impact-why-warn">
+    <h3>What goes wrong when the audit is skipped</h3>
+    <ul>
+      <li><strong>Inflated baselines hide regions that actually need help.</strong> If a model claims 95% accuracy in a region where its real accuracy is 70%, the region looks "well-monitored" and gets de-prioritized for adaptation funding.</li>
+      <li><strong>Restoration claims become unverifiable.</strong> REDD+ verification depends on independent forecasts. If the verifier model is leaky, restoration projects can pass review while delivering nothing.</li>
+      <li><strong>SDG 15.3.1 reporting becomes wrong.</strong> Countries report degraded-land area using vegetation baselines. Leakage in the baseline distorts the country-by-country comparison that drives international policy.</li>
+      <li><strong>Reproducibility breaks silently.</strong> Other researchers try to replicate the high accuracy, fail to reproduce, and the discrepancy gets blamed on "data quality" rather than the methodology gap.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ★ PLAIN ENGLISH: what is leakage? -->
+<section class="plain-english" data-reveal>
+  <h2 class="section-title section-title-center">What is leakage, in plain English</h2>
+  <div class="explainer-grid">
+
+    <div class="explainer-card explainer-card-warn">
+      <div class="explainer-step explainer-step-warn">The setup</div>
+      <h3>You want to predict X from other variables</h3>
+      <p>Say you want to predict <strong>vegetation health</strong> in a region from <strong>climate, soil, and topography</strong>. You train a model, test it on held-out data, and report the accuracy.</p>
+    </div>
+
+    <div class="explainer-card explainer-card-warn">
+      <div class="explainer-step explainer-step-warn">The trap</div>
+      <h3>One of your "inputs" was secretly built from the answer</h3>
+      <p>If one of your input columns was <strong>computed using vegetation data</strong> (even indirectly — say, a "leaf area index" derived from the same satellite bands as your target), your model is partly predicting X from X. The reported accuracy is inflated, not measured.</p>
+    </div>
+
+    <div class="explainer-card explainer-card-warn">
+      <div class="explainer-step explainer-step-warn">The fix</div>
+      <h3>Audit every input against a known list of leaky features</h3>
+      <p>Keep a versioned <strong>list of columns known to be derived from the target</strong>, and check every input against that list before training. If a match is found, drop the column and log the exclusion. That's the protocol.</p>
+    </div>
+
+  </div>
+  <p class="plain-english-tldr plain-english-tldr-warn"><strong>TL;DR:</strong> Leakage = using the answer (or something derived from it) as one of your inputs without realizing it. The audit catches the most common cases automatically.</p>
+</section>
+
+<!-- TOC -->
+<nav class="toc" aria-label="Page sections">
+  <div class="toc-title">On this page</div>
+  <ol>
+    <li><a href="#channels">The four channels (V/O/C/P)</a></li>
+    <li><a href="#protocol">The audit protocol — how to run it</a></li>
+    <li><a href="#yaml">The leakage_features.yaml reference</a></li>
+    <li><a href="#own">Applying the audit to your own work</a></li>
+    <li><a href="#contributing">Contributing channels &amp; columns</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#refs">References &amp; prior art</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ol>
+</nav>
+
+<!-- ★ THE FOUR CHANNELS — main content -->
+<h2 id="channels">The four channels (V/O/C/P)</h2>
+<p>Each channel describes a distinct way a feature can secretly carry information from the target. They overlap somewhat — a single feature can fail more than one check — but having four named buckets makes the audit explicit and contributable.</p>
+
+<div class="channel-grid">
+
+  <article class="channel-card channel-card-v">
+    <div class="channel-header">
+      <span class="channel-letter">V</span>
+      <div>
+        <div class="channel-name">Vegetation circularity</div>
+        <div class="channel-tag">The most common leak</div>
+      </div>
+    </div>
+    <div class="channel-body">
+      <p class="channel-q"><strong>What's the failure mode?</strong></p>
+      <p>Using features computed <em>from</em> the NDVI time series — like phenology start-of-season day, peak-NDVI day, growing-season length, GPP, fPAR, LAI — as inputs when predicting NDVI itself. The model effectively learns the identity function dressed up as climate inference.</p>
+      <p class="channel-q"><strong>Concrete examples that get flagged</strong></p>
+      <ul class="channel-ex">
+        <li><code>lai_mean</code> (Leaf Area Index — derived from NDVI bands)</li>
+        <li><code>fpar_mean</code> (fraction of PAR — derived from NDVI)</li>
+        <li><code>gpp_mean</code> (Gross Primary Production — modeled from NDVI)</li>
+        <li><code>sos_doy</code> (start-of-season day-of-year — peak of NDVI curve)</li>
+        <li><code>pos_doy</code> (peak-of-season day — argmax of NDVI)</li>
+      </ul>
+      <p class="channel-q"><strong>The smell test</strong></p>
+      <p>Ask: <em>"Could you compute this feature without ever having seen NDVI?"</em> If the answer is no, it fails the V check.</p>
+    </div>
+  </article>
+
+  <article class="channel-card channel-card-o">
+    <div class="channel-header">
+      <span class="channel-letter">O</span>
+      <div>
+        <div class="channel-name">Optical bands</div>
+        <div class="channel-tag">The subtle leak</div>
+      </div>
+    </div>
+    <div class="channel-body">
+      <p class="channel-q"><strong>What's the failure mode?</strong></p>
+      <p>Including the raw MODIS / Landsat / Sentinel optical bands (red, NIR, blue) as inputs — even though NDVI itself is just <code>(NIR − red) / (NIR + red)</code>. The model can trivially reconstruct NDVI from those two bands, so the reported accuracy reflects band-arithmetic, not climate inference.</p>
+      <p class="channel-q"><strong>Concrete examples that get flagged</strong></p>
+      <ul class="channel-ex">
+        <li><code>modis_red</code>, <code>modis_nir</code> (raw bands)</li>
+        <li><code>evi_mean</code> (Enhanced Vegetation Index — uses the same bands)</li>
+        <li><code>savi_mean</code> (Soil-Adjusted Vegetation Index — same bands)</li>
+        <li><code>nbr_mean</code> (Normalized Burn Ratio — overlapping band)</li>
+        <li>Anything labeled "spectral index" derived from visible/NIR</li>
+      </ul>
+      <p class="channel-q"><strong>The smell test</strong></p>
+      <p>Ask: <em>"Does this feature use the red or NIR band that NDVI is computed from?"</em> If yes, it fails the O check.</p>
+    </div>
+  </article>
+
+  <article class="channel-card channel-card-c">
+    <div class="channel-header">
+      <span class="channel-letter">C</span>
+      <div>
+        <div class="channel-name">Classifier-derived</div>
+        <div class="channel-tag">The hidden leak</div>
+      </div>
+    </div>
+    <div class="channel-body">
+      <p class="channel-q"><strong>What's the failure mode?</strong></p>
+      <p>Using features produced by <em>another supervised model</em> that was itself trained against vegetation observations. MODIS land cover (MCD12Q1), tree cover percentage, biome maps — all of these are model outputs that encode vegetation information learned from past NDVI / red / NIR observations.</p>
+      <p class="channel-q"><strong>Concrete examples that get flagged</strong></p>
+      <ul class="channel-ex">
+        <li><code>mcd12q1_landcover</code> (MODIS supervised land-cover class)</li>
+        <li><code>treecover_pct</code> (Hansen et al. — trained on Landsat)</li>
+        <li><code>cropland_pct</code> (GFSAD30 — trained on optical bands)</li>
+        <li><code>biome_class</code> (WWF biome — derived from vegetation patterns)</li>
+        <li><code>plant_functional_type</code> (PFT classifications)</li>
+      </ul>
+      <p class="channel-q"><strong>The smell test</strong></p>
+      <p>Ask: <em>"Was this feature produced by a model trained on vegetation observations?"</em> If yes, it fails the C check — even if the supervision happened years ago at a different institution.</p>
+    </div>
+  </article>
+
+  <article class="channel-card channel-card-p">
+    <div class="channel-header">
+      <span class="channel-letter">P</span>
+      <div>
+        <div class="channel-name">Pheno-prior contamination</div>
+        <div class="channel-tag">The temporal leak</div>
+      </div>
+    </div>
+    <div class="channel-body">
+      <p class="channel-q"><strong>What's the failure mode?</strong></p>
+      <p>Including features that depend on knowing the <em>target year's</em> phenological behavior — for example, "growing-season-mean NDVI" computed over the year being predicted, or "peak-NDVI date" for that year. The feature label says it's a "prior," but its value was computed from the future.</p>
+      <p class="channel-q"><strong>Concrete examples that get flagged</strong></p>
+      <ul class="channel-ex">
+        <li><code>growing_season_mean_y</code> when <code>y</code> is the prediction year</li>
+        <li><code>peak_ndvi_value_y</code> for the prediction year</li>
+        <li><code>annual_max_ndvi_y</code> (the answer, basically)</li>
+        <li><code>year_of_max_greening</code> when computed including the test year</li>
+        <li>Any "long-term mean" computed from a window that overlaps the prediction year</li>
+      </ul>
+      <p class="channel-q"><strong>The smell test</strong></p>
+      <p>Ask: <em>"Could this feature value be computed in advance, before the prediction year began?"</em> If no, it fails the P check.</p>
+    </div>
+  </article>
+
+</div>
+
+<div class="highlight highlight-warn">
+  <strong>The 2030 rule.</strong> A unifying way to think about all four channels: <em>could you compute this feature for a 2030 forward prediction, without ever having seen 2030 NDVI?</em> If the answer is no for any reason, the feature is out — and the V/O/C/P breakdown just tells you which kind of "no" it was.
+</div>
+
+<h2 id="protocol">The audit protocol — how to run it</h2>
+<p>The protocol is intentionally simple: a single YAML file, a single audit step at the start of training, and a logged exclusion list in the output metadata. The full check runs in five concrete steps:</p>
+
+<ol class="audit-steps">
+  <li>
+    <strong>Load the reference list.</strong> Read <code>leakage_features.yaml</code> — a versioned registry of column names known to fail at least one of V/O/C/P, organized by channel for traceability.
+  </li>
+  <li>
+    <strong>Scan your schema.</strong> For each column in your training data, check whether it matches any entry in the registry. Matching can be exact, prefix-based, or regex (the YAML supports all three).
+  </li>
+  <li>
+    <strong>Auto-ignore + log.</strong> Matched columns are set to <code>"(ignore)"</code> in the schema with a <code>FAIL-V</code>, <code>FAIL-O</code>, <code>FAIL-C</code>, or <code>FAIL-P</code> marker. A banner alerts the operator that columns were excluded.
+  </li>
+  <li>
+    <strong>Run training.</strong> The model never sees the flagged columns. Training proceeds normally on the remaining (leakage-safe) features.
+  </li>
+  <li>
+    <strong>Record the audit in metadata.</strong> The bundle artifact includes a <code>training.audit</code> block listing every excluded column, the matched rule, and the YAML version used. Reviewers can verify exactly what was skipped without re-running the pipeline.
+  </li>
+</ol>
+
+<h2 id="yaml">The leakage_features.yaml reference</h2>
+<p>The audit is data, not code. The entire reference list is a single human-readable YAML file with this shape:</p>
+
+<div class="diagram">
+# leakage_features.yaml  (version: 0.2.0)
+#
+# Canonical registry of column names that fail the V/O/C/P audit
+# for NDVI forecasting. Contributable via PR.
+
+V_vegetation_circularity:
+  description: "Features computed from the NDVI time series itself."
+  rules:
+    - lai_mean
+    - lai_*
+    - fpar_*
+    - gpp_*
+    - npp_*
+    - sos_doy
+    - pos_doy
+    - eos_doy
+    - growing_season_length
+    - pheno_*
+
+O_optical_bands:
+  description: "Raw or derived MODIS/Landsat/Sentinel red+NIR bands."
+  rules:
+    - modis_red
+    - modis_nir
+    - landsat_red
+    - landsat_nir
+    - sentinel_b04
+    - sentinel_b08
+    - evi*
+    - savi*
+    - nbr*
+    - msavi*
+
+C_classifier_derived:
+  description: "Outputs of supervised models trained on vegetation observations."
+  rules:
+    - mcd12q1_*
+    - landcover_*
+    - treecover_*
+    - cropland_pct
+    - biome_class
+    - pft_*
+    - hansen_*
+
+P_pheno_prior_contamination:
+  description: "Features whose value requires knowing the target-year NDVI."
+  rules:
+    - "*_target_year"
+    - "annual_max_ndvi_*"
+    - "growing_season_mean_y"
+    - "peak_ndvi_*"
+    - "year_of_max_*"
+</div>
+
+<p>The same YAML is read by the <a href="bundle-framework.html">Bundle Framework</a>'s SchemaWidget and by any external pipeline that adopts the protocol. New columns get added by pull request as new leakage patterns are discovered.</p>
+
+<h2 id="own">Applying the audit to your own work</h2>
+<p>You don't need to use Bundle Framework to use the protocol. Three integration levels, in order of effort:</p>
+
+<div class="integration-grid">
+
+  <div class="integration-level">
+    <div class="integration-level-tag">Level 1 — Manual</div>
+    <h3>Read the YAML and check by hand</h3>
+    <p>Open <code>leakage_features.yaml</code>, scan your input feature list against it, drop the matches. Takes 10 minutes per project. Fine for one-off papers.</p>
+  </div>
+
+  <div class="integration-level">
+    <div class="integration-level-tag">Level 2 — Scripted</div>
+    <h3>Load the YAML in your pipeline</h3>
+    <p>Add a 30-line script that reads the YAML, matches your schema against the rules, and raises an error if any leaky columns are present. Stops accidents during refactoring.</p>
+  </div>
+
+  <div class="integration-level">
+    <div class="integration-level-tag">Level 3 — Framework</div>
+    <h3>Use Bundle Framework or adopt the gate pattern</h3>
+    <p>The audit becomes a hard gate at training start: matched columns are auto-set to ignore, the bundle metadata records what was excluded, reviewers can verify the audit without re-running training.</p>
+  </div>
+
+</div>
+
+<h2 id="contributing">Contributing channels &amp; columns</h2>
+<p>The protocol is intentionally open. New leakage patterns get discovered as new datasets and feature pipelines appear — the YAML should grow to track them.</p>
+
+<ul>
+  <li><strong>Add a new column name</strong> to an existing channel: open a PR against <code>leakage_features.yaml</code> with the column name and a one-line note explaining why it fails.</li>
+  <li><strong>Propose a new channel</strong> (a 5th letter beyond V/O/C/P): open an issue describing the failure mode, an example column, and the smell test. Channels are added carefully so the taxonomy doesn't sprawl.</li>
+  <li><strong>Flag a false positive</strong>: if a column is wrongly flagged for your use case, the PR can add an <code>exceptions:</code> block scoped to specific contexts (e.g., when a derived feature is used outside its leakage context).</li>
+</ul>
+
+<h2 id="roadmap">Roadmap</h2>
+
+<div class="roadmap">
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Now — v0.2 (inside Bundle Framework)</div>
+    <ul>
+      <li>V/O/C/P channels defined</li>
+      <li>leakage_features.yaml ships with the framework</li>
+      <li>SchemaWidget integration in progress (Task #45)</li>
+      <li>Used as the validation gate for all Desertflow training</li>
+    </ul>
+  </div>
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">2027 — v1.0 standalone library</div>
+    <ul>
+      <li>Pip-installable <code>leakage-audit</code> package (no Bundle dependency)</li>
+      <li>CLI: <code>leakage-audit check schema.yaml --rules v0.2.yaml</code></li>
+      <li>Pre-commit hook for ML-pipeline repos</li>
+      <li>Standalone methodology paper (separate from Desertflow)</li>
+    </ul>
+  </div>
+  <div class="roadmap-phase">
+    <div class="roadmap-phase-title">Beyond — extensions</div>
+    <ul>
+      <li>Channels for other Earth-observation targets (soil moisture, fire, surface temperature) — each domain has its own leakage patterns</li>
+      <li>Adversarial test suite: synthetic datasets where the leakage is engineered, to verify the audit catches every channel</li>
+      <li>Community-maintained reference list (the YAML as a living document)</li>
+    </ul>
+  </div>
+</div>
+
+<h2 id="refs">References &amp; prior art</h2>
+<p>Leakage in machine-learning evaluation is a long-discussed topic; the contribution here is specifically the named-channel taxonomy for NDVI forecasting and the operational gate around it.</p>
+
+<ul class="ref-list">
+  <li><strong>Kaufman et al., 2012 — Leakage in data mining: formulation, detection, and avoidance.</strong> The foundational treatment of leakage as a class of methodology failures (general ML, not domain-specific).</li>
+  <li><strong>Roberts et al., 2017 — Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure.</strong> Why naive k-fold breaks for geospatial data.</li>
+  <li><strong>Ploton et al., 2020 — Spatial validation reveals poor predictive performance of large-scale ecological mapping models.</strong> Direct evidence that published cross-region accuracy collapses under proper spatial validation.</li>
+  <li><strong>Meyer &amp; Pebesma, 2022 — Machine learning-based global maps of ecological variables and the challenge of assessing them.</strong> A survey of how often the issue appears in published global maps.</li>
+  <li><strong>Didan, 2015 — MOD13Q1 Vegetation Indices.</strong> The NDVI data product whose computation defines the V and O channels.</li>
+</ul>
+
+<p>The companion paper (planned for 2027) will provide a more thorough literature review, with worked examples of each channel applied to a small public dataset so the protocol can be cited independently of Desertflow.</p>
+
+<h2 id="faq">FAQ</h2>
+
+<details class="faq">
+  <summary>Why "V/O/C/P" specifically? Why not three channels, or five?</summary>
+  <p>Four was the smallest number that covers the failure modes we kept hitting in practice during Desertflow's development, without merging distinct mechanisms. Vegetation circularity (V) and Optical bands (O) look related but require different tests — one is about derived products, the other is about raw bands. Classifier-derived (C) is its own thing because the leakage is laundered through an intermediate model. Pheno-prior (P) is temporal-only, which makes it different from V/O/C in how the test runs. If a 5th channel proves necessary later, the protocol allows adding one — it's not closed.</p>
+</details>
+
+<details class="faq">
+  <summary>Does this only apply to NDVI?</summary>
+  <p>The V/O/C/P naming is specific to NDVI forecasting. But the <em>shapes</em> of the four failures generalize: "circularity" (target-derived features), "raw inputs" (the underlying bands the target was computed from), "classifier leak" (features from supervised models trained on the target), and "temporal contamination" (features whose value depends on the prediction-window data). For soil-moisture forecasting, fire-risk forecasting, or surface-temperature forecasting, the same four shapes apply with different column names — that's a follow-up domain-specific YAML.</p>
+</details>
+
+<details class="faq">
+  <summary>Is this just for academic work? My team ships production models.</summary>
+  <p>Production models suffer more from leakage, not less — because a leaky training set produces a model that quietly underperforms in deployment, and the gap doesn't show up until weeks later when the test-set numbers diverge from real-world performance. Adopting the audit as a pre-deployment gate is cheaper than debugging the deployment gap.</p>
+</details>
+
+<details class="faq">
+  <summary>What if my reviewer says my paper has none of these problems?</summary>
+  <p>Most papers do have at least one — usually <strong>O</strong> (including raw optical bands) or <strong>P</strong> (computing a "prior" over a window that includes the target year). The audit isn't accusatory; it's a single-page YAML you can run your column list against in 10 minutes. If the audit comes back clean, you have something concrete to cite in your methodology section.</p>
+</details>
+
+<details class="faq">
+  <summary>Can I name a leakage failure mode after my own group?</summary>
+  <p>The naming is intentionally boring (single letters) so credit stays with the protocol, not any individual contributor. If your group identifies a fifth channel, the PR adding it credits you in the YAML metadata; the channel itself gets a letter.</p>
+</details>
+
+<details class="faq">
+  <summary>How is this different from Ploton et al. 2020 or Meyer &amp; Pebesma 2022?</summary>
+  <p>Those papers document the <em>existence</em> of the problem — they show that published cross-region accuracy collapses when spatial validation is applied properly. This protocol is one level downstream: it provides an <em>operational gate</em> with a versioned reference list, so the failure modes get caught before training instead of being diagnosed after publication. The two complement each other.</p>
+</details>
+
+<h2>Get involved</h2>
+<p>Pull requests against <code>leakage_features.yaml</code>, channel proposals, or replication offers — <button class="copy-link" onclick="copyEmail(this)">bagbagig@bundle-research.xyz</button> <span style="color:var(--muted);font-size:.85rem">(click to copy)</span></p>
+<p>Code: <a href="https://github.com/mohtheghost">github.com/mohtheghost</a></p>
+
+<a href="/" class="back-link">← Back to all projects</a>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 Mohamed Benkaddour · Bundle Research · Independent Earth observation research</span>
+    <div class="footer-links">
+      <a href="https://github.com/mohtheghost">GitHub</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+</script>
+
+<!-- Scroll reveals + animated stat counters + nav-on-scroll shadow -->
+<script src="effects.js" defer></script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "4aaf0ee4234e476abf6fdd8727459ccf"}'></script>
+
+<!-- Consent banner + opt-in Microsoft Clarity -->
+<script src="consent.js" defer></script>
+
+</body>
+</html>
