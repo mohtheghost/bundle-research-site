@@ -29,9 +29,9 @@
   // ===== CONFIGURATION ====================================================
 
   // Apps Script URL for receiving session batches. Deploy your own — see
-  // RECORDER_SETUP.md. This URL is PUBLIC (any visitor's browser can read it).
-  // PLACEHOLDER — REPLACE WITH YOUR DEPLOYED RECORDER APPS SCRIPT URL.
-  var RECORDER_ENDPOINT = 'PASTE_RECORDER_APPS_SCRIPT_URL_HERE';
+  // apps-script-recorder.gs. This URL is PUBLIC (visitor's browser sees it).
+  // The Apps Script writes batches into Mohamed's BundleRecorder Drive folder.
+  var RECORDER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzskiaWYsnKu3aHwmyzsOzvldc3HwKK52nJY1SoTNUzb2ICHKEzCyDO3njZnaKYmURD/exec';
 
   // rrweb library version (pinned for reproducibility)
   var RRWEB_CDN = 'https://cdn.jsdelivr.net/npm/rrweb@2.0.0-alpha.4/dist/rrweb.min.js';
