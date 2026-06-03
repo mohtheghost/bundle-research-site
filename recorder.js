@@ -1,46 +1,52 @@
-/* recorder.js — Self-hosted session recorder.
+/* recorder.js — Snapshot-based session recorder (v2, html2canvas + JPEG).
  *
- * Uses the open-source rrweb library (MIT-licensed) to capture the visitor's
- * session as a stream of DOM mutation + event records. Batches are POSTed to
- * a Google Apps Script every 5 seconds, which writes them to a Google Drive
- * folder. A local replay.html tool plays them back.
+ * Replaces the earlier rrweb DOM-mutation recorder, which kept producing
+ * "Node not found" errors at replay time on this site's animated content.
  *
- * Privacy:
- * - Only runs AFTER the visitor agrees to the consent banner (consent.js).
- * - Skipped on localhost / dev domains.
- * - Skipped if the visitor has the Do-Not-Track header set.
- * - Skipped if `localStorage.session_recording_opt_out === '1'` is set
- *   (visitor can opt out by setting this in DevTools).
- * - No keystroke capture on password / email / tel inputs (rrweb default).
- * - All credentials in the script are PUBLIC (visitor's browser sees them).
- *   The Apps Script endpoint should be deployed with "anyone" access but
- *   write to a private Drive folder you control.
+ * How it works:
+ *   - After consent, loads html2canvas from CDN.
+ *   - Every SNAPSHOT_INTERVAL_MS, renders the current viewport to a
+ *     canvas, converts to JPEG (quality JPEG_QUALITY), and POSTs the
+ *     base64-encoded JPEG to the recorder Apps Script.
+ *   - Tracks mouse position + scroll continuously; each snapshot
+ *     payload includes the current values so the replay can draw a
+ *     cursor dot and show the page at the right scroll position.
+ *   - Also snapshots on every click (so we never miss a moment of
+ *     interaction even between scheduled snapshots).
  *
- * Performance:
- * - rrweb loaded lazily from jsdelivr CDN (~50 KB gzipped).
- * - Batches every 5 s OR every 200 events, whichever first.
- * - Mouse moves sampled every 50 ms (not every frame).
- * - Final flush on `pagehide` uses `navigator.sendBeacon` (reliable).
- * - Network failures are silent — never break the page.
+ * Privacy / safety:
+ *   - Only runs after the visitor agrees to the consent banner.
+ *   - Skipped on localhost, when DNT is set, or when the visitor sets
+ *     localStorage.session_recording_opt_out = '1'.
+ *   - Never breaks the page on failure (every async path is try/catch'd
+ *     and silent if the upload fails).
+ *
+ * Bandwidth budget for a typical 60s session:
+ *   - 12 snapshots (every 5s) × ~150 KB JPEG = ~1.8 MB
+ *   - Plus ~2 KB of events (mouse/scroll/click metadata)
  */
 (function(){
   'use strict';
 
   // ===== CONFIGURATION ====================================================
 
-  // Apps Script URL for receiving session batches. Deploy your own — see
-  // apps-script-recorder.gs. This URL is PUBLIC (visitor's browser sees it).
-  // The Apps Script writes batches into Mohamed's BundleRecorder Drive folder.
+  // Apps Script URL — must accept the new {type:'snapshot'|'events'|'meta'}
+  // payload shape (see apps-script-recorder.gs).
   var RECORDER_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzskiaWYsnKu3aHwmyzsOzvldc3HwKK52nJY1SoTNUzb2ICHKEzCyDO3njZnaKYmURD/exec';
 
-  // rrweb library version (pinned for reproducibility).
-  // Using the stable v1 line — battle-tested in production for years.
-  // Paired with rrweb-player@0.7.14 in replay.html.
-  var RRWEB_CDN = 'https://cdn.jsdelivr.net/npm/rrweb@1.1.3/dist/rrweb.min.js';
+  // html2canvas library — pinned to a stable version.
+  var HTML2CANVAS_CDN = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
 
-  // Batch every N events OR every N ms, whichever comes first
-  var BATCH_EVENT_LIMIT = 200;
-  var BATCH_INTERVAL_MS = 5000;
+  // Cadence + quality knobs (tune for size vs fidelity)
+  var SNAPSHOT_INTERVAL_MS = 5000;   // capture every 5 s
+  var SNAPSHOT_SCALE       = 0.75;   // 0.75 = 25% smaller than 1:1
+  var JPEG_QUALITY         = 0.65;   // 0.65 = good balance of size + clarity
+
+  // Events buffer + flush
+  var EVENT_FLUSH_MS = 5000;
+
+  // Wait this long after consent before starting (page animations settle)
+  var RECORD_START_DELAY_MS = 2000;
 
   // Skip recording on these hostnames (local dev)
   var SKIP_HOSTNAMES = ['localhost', '127.0.0.1', '0.0.0.0', ''];
@@ -73,11 +79,9 @@
   }
 
   function makeSessionId() {
-    // Prefer crypto.randomUUID if available
     if (window.crypto && typeof window.crypto.randomUUID === 'function') {
       return 'rec_' + crypto.randomUUID();
     }
-    // Fallback to timestamp + random
     return 'rec_' + Date.now().toString(36) + '_' +
            Math.random().toString(36).slice(2, 10);
   }
@@ -98,7 +102,10 @@
         : null,
       timezone: Intl && Intl.DateTimeFormat
         ? Intl.DateTimeFormat().resolvedOptions().timeZone
-        : null
+        : null,
+      snapshotInterval: SNAPSHOT_INTERVAL_MS,
+      snapshotScale: SNAPSHOT_SCALE,
+      jpegQuality: JPEG_QUALITY
     };
   }
 
@@ -113,36 +120,53 @@
     });
   }
 
+  function blobToBase64(blob) {
+    return new Promise(function(resolve, reject){
+      var r = new FileReader();
+      r.onload = function(){
+        // r.result is "data:image/jpeg;base64,<...>", strip prefix
+        var s = r.result;
+        var i = s.indexOf(',');
+        resolve(i >= 0 ? s.substring(i + 1) : s);
+      };
+      r.onerror = function(){ reject(new Error('read failed')); };
+      r.readAsDataURL(blob);
+    });
+  }
+
   // ===== STATE ============================================================
 
   var state = {
     sessionId: null,
     metadata: null,
-    eventBuffer: [],
-    stopFn: null,
-    flushTimer: null,
-    flushInFlight: false,
     metadataSent: false,
+    snapshotIndex: 0,
+    snapshotInFlight: false,
+    snapshotTimer: null,
+    eventBuffer: [],
+    eventFlushTimer: null,
+    lastMouseX: 0,
+    lastMouseY: 0,
     started: false
   };
 
   // ===== NETWORK ==========================================================
 
+  // POST any JSON payload to the Apps Script. Uses no-cors so Apps Script
+  // doesn't need to answer CORS preflight; we don't read the response.
   function postJson(payload, useBeacon) {
-    var body = JSON.stringify(payload);
+    var body;
+    try { body = JSON.stringify(payload); }
+    catch (e) { log('json stringify failed:', e); return Promise.resolve({ ok: false }); }
+
     if (useBeacon && navigator.sendBeacon) {
       try {
-        // sendBeacon: best-effort POST during unload. Doesn't return a result.
         var blob = new Blob([body], { type: 'text/plain;charset=UTF-8' });
         navigator.sendBeacon(RECORDER_ENDPOINT, blob);
         return Promise.resolve({ ok: true, viaBeacon: true });
-      } catch (e) {
-        // Fall through to fetch
-      }
+      } catch (e) { /* fall through */ }
     }
-    // Use no-cors to avoid CORS preflight failures (Apps Script doesn't
-    // return the right headers for preflight). We won't see the response,
-    // but the request still hits the server.
+
     return fetch(RECORDER_ENDPOINT, {
       method: 'POST',
       mode: 'no-cors',
@@ -154,136 +178,210 @@
       .catch(function(err){ log('post failed:', err); return { ok: false }; });
   }
 
-  function flush(useBeacon) {
-    if (state.flushInFlight && !useBeacon) return Promise.resolve();
-    if (state.eventBuffer.length === 0 && state.metadataSent) {
-      return Promise.resolve();
-    }
-    state.flushInFlight = true;
-
-    var payload = {
+  function sendMetadataOnce() {
+    if (state.metadataSent) return Promise.resolve();
+    state.metadataSent = true;
+    return postJson({
       sessionId: state.sessionId,
-      batchTime: Date.now()
+      type: 'meta',
+      metadata: state.metadata
+    }, false);
+  }
+
+  function sendSnapshot(jpegBase64, snapMeta, useBeacon) {
+    return postJson({
+      sessionId: state.sessionId,
+      type: 'snapshot',
+      index: snapMeta.index,
+      timestamp: snapMeta.timestamp,
+      scrollY: snapMeta.scrollY,
+      scrollX: snapMeta.scrollX,
+      mouseX: snapMeta.mouseX,
+      mouseY: snapMeta.mouseY,
+      viewport: snapMeta.viewport,
+      jpeg: jpegBase64
+    }, !!useBeacon);
+  }
+
+  function flushEvents(useBeacon) {
+    if (state.eventBuffer.length === 0) return Promise.resolve();
+    var batch = state.eventBuffer.splice(0);
+    return postJson({
+      sessionId: state.sessionId,
+      type: 'events',
+      events: batch
+    }, !!useBeacon);
+  }
+
+  // ===== SNAPSHOTTING =====================================================
+
+  function captureSnapshot(useBeacon) {
+    if (state.snapshotInFlight) return Promise.resolve();
+    if (!window.html2canvas) return Promise.resolve();
+    state.snapshotInFlight = true;
+
+    var snapMeta = {
+      index: state.snapshotIndex++,
+      timestamp: Date.now(),
+      scrollY: window.scrollY || window.pageYOffset || 0,
+      scrollX: window.scrollX || window.pageXOffset || 0,
+      mouseX: state.lastMouseX,
+      mouseY: state.lastMouseY,
+      viewport: window.innerWidth + 'x' + window.innerHeight
     };
 
-    // Send metadata on the first batch only
-    if (!state.metadataSent) {
-      payload.metadata = state.metadata;
-      state.metadataSent = true;
-    }
-
-    if (state.eventBuffer.length > 0) {
-      payload.events = state.eventBuffer.splice(0);
-    }
-
-    return postJson(payload, !!useBeacon).then(function(res){
-      state.flushInFlight = false;
-      return res;
+    // Capture the visible viewport (not the full document) — this keeps
+    // each JPEG small and matches what the visitor actually saw.
+    return window.html2canvas(document.body, {
+      x: snapMeta.scrollX,
+      y: snapMeta.scrollY,
+      width: window.innerWidth,
+      height: window.innerHeight,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+      scale: SNAPSHOT_SCALE,
+      logging: false,
+      useCORS: true,
+      foreignObjectRendering: false,
+      imageTimeout: 4000,
+      removeContainer: true
+    }).then(function(canvas){
+      return new Promise(function(resolve){
+        canvas.toBlob(resolve, 'image/jpeg', JPEG_QUALITY);
+      });
+    }).then(function(blob){
+      if (!blob) return null;
+      return blobToBase64(blob);
+    }).then(function(b64){
+      if (!b64) return;
+      return sendSnapshot(b64, snapMeta, !!useBeacon);
+    }).catch(function(err){
+      log('snapshot failed (index ' + snapMeta.index + '):', err);
+    }).then(function(){
+      state.snapshotInFlight = false;
     });
   }
 
-  // ===== rrweb HOOK =======================================================
+  // ===== EVENT TRACKING ===================================================
+
+  function pushEvent(ev) {
+    state.eventBuffer.push(ev);
+    // Cap buffer so it doesn't grow unbounded if the network is down
+    if (state.eventBuffer.length > 500) {
+      state.eventBuffer = state.eventBuffer.slice(-500);
+    }
+  }
+
+  function attachEventListeners() {
+    // Mouse position — updated synchronously, sent as part of the next snapshot
+    window.addEventListener('mousemove', function(e){
+      state.lastMouseX = e.clientX;
+      state.lastMouseY = e.clientY;
+    }, { passive: true });
+
+    // Click — append to event log AND take a snapshot immediately
+    window.addEventListener('click', function(e){
+      pushEvent({
+        t: Date.now(),
+        type: 'click',
+        x: e.clientX,
+        y: e.clientY,
+        target: (e.target && e.target.tagName) ? e.target.tagName : null
+      });
+      // Fire-and-forget snapshot of the click
+      captureSnapshot(false);
+    }, { passive: true });
+
+    // Scroll — coalesce into 250ms ticks so we don't spam the buffer
+    var scrollTimer = null;
+    window.addEventListener('scroll', function(){
+      if (scrollTimer) return;
+      scrollTimer = setTimeout(function(){
+        scrollTimer = null;
+        pushEvent({
+          t: Date.now(),
+          type: 'scroll',
+          y: window.scrollY || window.pageYOffset || 0
+        });
+      }, 250);
+    }, { passive: true });
+  }
+
+  // ===== LIFECYCLE ========================================================
 
   function startRecording() {
-    if (!window.rrweb || typeof window.rrweb.record !== 'function') {
-      log('rrweb not loaded, aborting');
-      return;
-    }
     if (state.started) return;
     state.started = true;
 
     state.sessionId = makeSessionId();
     state.metadata = getMetadata(state.sessionId);
 
-    log('starting session', state.sessionId);
+    log('starting session', state.sessionId,
+        '· interval', SNAPSHOT_INTERVAL_MS + 'ms',
+        '· scale', SNAPSHOT_SCALE,
+        '· jpeg quality', JPEG_QUALITY);
 
-    state.stopFn = window.rrweb.record({
-      emit: function(event) {
-        state.eventBuffer.push(event);
-        if (state.eventBuffer.length >= BATCH_EVENT_LIMIT) {
-          flush(false);
-        }
-      },
-      // Capture options
-      recordCanvas: false,        // we have no canvas content
-      collectFonts: false,        // saves bandwidth; fonts re-load at replay
-      inlineStylesheet: true,     // inline same-origin CSS so replay is styled
-      inlineImages: false,        // saves bandwidth; images re-load via URL
-      maskAllInputs: false,
-      // Skip noisy decorative elements that mutate rapidly without
-      // contributing to "what the user did". Any element with the
-      // `rr-block` class will be recorded as an opaque rectangle.
-      blockClass: 'rr-block',
-      // Slim the DOM snapshot: drop comments, script tags, and useless
-      // <head> meta tags. Smaller snapshot, less noise, faster replay.
-      slimDOMOptions: {
-        script: true,
-        comment: true,
-        headFavicon: true,
-        headWhitespace: true,
-        headMetaSocial: true,
-        headMetaRobots: true,
-        headMetaHttpEquiv: true,
-        headMetaAuthorship: true,
-        headMetaVerification: true
-      },
-      sampling: {
-        mousemove: 50,
-        scroll: 150,
-        input: 'last'
-      }
+    attachEventListeners();
+
+    // Send metadata FIRST (so the Drive folder exists with metadata.json)
+    sendMetadataOnce().then(function(){
+      // Initial snapshot
+      captureSnapshot(false);
     });
 
-    // Periodic flush
-    state.flushTimer = setInterval(function(){ flush(false); }, BATCH_INTERVAL_MS);
+    // Periodic snapshots
+    state.snapshotTimer = setInterval(function(){
+      captureSnapshot(false);
+    }, SNAPSHOT_INTERVAL_MS);
 
-    // Final flush on page hide (covers tab-close, navigation, mobile background)
-    window.addEventListener('pagehide', function(){ flush(true); }, { capture: true });
-    // Belt-and-braces for browsers that fire visibilitychange but not pagehide
+    // Periodic event flush
+    state.eventFlushTimer = setInterval(function(){
+      flushEvents(false);
+    }, EVENT_FLUSH_MS);
+
+    // Final flush on tab close. Note: html2canvas is async and won't
+    // complete during pagehide, so the final snapshot is best-effort.
+    // The events flush IS reliable via sendBeacon.
+    var onPageHide = function(){
+      flushEvents(true);
+      captureSnapshot(true);  // probably won't land, but try
+    };
+    window.addEventListener('pagehide', onPageHide, { capture: true });
     document.addEventListener('visibilitychange', function(){
-      if (document.visibilityState === 'hidden') flush(true);
+      if (document.visibilityState === 'hidden') onPageHide();
     });
   }
 
   // ===== ENTRY POINT (called by consent.js) ==============================
 
-  // How long to wait after init before starting rrweb.record().
-  //
-  // The page has several animations running on load:
-  //   - effects.js animates stat counters (60 fps × 1.4 s × 4 counters =
-  //     ~336 mutations during animation)
-  //   - effects.js applies scroll-reveal classes via IntersectionObserver
-  //   - hero topo SVG has a 60s drift transform
-  //
-  // If rrweb.record() runs WHILE these animations are firing, the
-  // FullSnapshot captures the page in mid-animation, and concurrent
-  // mutations reference text nodes that may not be in the snapshot yet.
-  // Result: "Node with id X not found" errors at replay time, blank DOM.
-  //
-  // Solution: wait 2 seconds for the page to stabilize before recording.
-  // We lose ~2 s of visitor activity post-consent (they just clicked
-  // Agree — they're not reading anything important yet) and gain a clean
-  // event stream that actually replays.
-  var RECORD_START_DELAY_MS = 2000;
-
   function init() {
     if (shouldSkip()) return;
 
-    loadScript(RRWEB_CDN).then(function(){
-      log('rrweb loaded, settling page for ' + RECORD_START_DELAY_MS + 'ms');
-      setTimeout(startRecording, RECORD_START_DELAY_MS);
+    loadScript(HTML2CANVAS_CDN).then(function(){
+      log('html2canvas loaded, settling page for ' +
+          RECORD_START_DELAY_MS + 'ms');
+
+      // Also wait for fonts so snapshots aren't using fallback typefaces
+      var fontsReady = document.fonts && document.fonts.ready
+                        ? document.fonts.ready
+                        : Promise.resolve();
+
+      Promise.all([
+        fontsReady,
+        new Promise(function(r){ setTimeout(r, RECORD_START_DELAY_MS); })
+      ]).then(startRecording);
     }).catch(function(err){
-      log('failed to load rrweb:', err);
+      log('failed to load html2canvas:', err);
     });
   }
 
-  // Expose globally so consent.js can call it after the user agrees
   window.__BundleRecorder = {
     init: init,
     stop: function(){
-      if (state.stopFn) try { state.stopFn(); } catch (e) {}
-      if (state.flushTimer) clearInterval(state.flushTimer);
-      flush(true);
+      if (state.snapshotTimer) clearInterval(state.snapshotTimer);
+      if (state.eventFlushTimer) clearInterval(state.eventFlushTimer);
+      flushEvents(true);
+      captureSnapshot(true);
       state.started = false;
     },
     state: state

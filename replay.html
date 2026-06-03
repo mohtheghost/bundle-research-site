@@ -6,65 +6,96 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 
-<!-- rrweb player — stable v0.7 line, paired with rrweb@1.1.3 in recorder.js -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@0.7.14/dist/style.css">
-<script src="https://cdn.jsdelivr.net/npm/rrweb-player@0.7.14/dist/index.js"></script>
-
 <style>
   :root{
     --bg:#0a1f1c; --card:#0f2a25; --line:#1f3a35;
-    --ink:#e8f3f1; --muted:#a3b8b4; --accent:#22d3ee; --accent2:#67e8f9;
-    --warn:#fcd34d; --err:#fca5a5;
+    --ink:#e8f3f1; --muted:#a3b8b4;
+    --accent:#22d3ee; --accent2:#67e8f9;
+    --err:#fca5a5; --warn:#fcd34d; --ok:#86efac;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
     font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
     line-height:1.5;font-size:14px}
-  header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--line);background:#082019}
-  header h1{margin:0 0 .25rem;font-size:1.15rem;font-weight:600}
-  header p{margin:0;color:var(--muted);font-size:.85rem}
-  header .badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  header{padding:1.1rem 1.4rem;border-bottom:1px solid var(--line);background:#082019}
+  header h1{margin:0 0 .15rem;font-size:1.1rem;font-weight:600}
+  header p{margin:0;color:var(--muted);font-size:.82rem}
+  header .badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.66rem;
     letter-spacing:.12em;text-transform:uppercase;color:#082f49;
     background:linear-gradient(135deg,var(--accent2),var(--accent));
-    padding:.25rem .6rem;border-radius:999px;margin-left:.5rem;vertical-align:middle}
-  main{padding:1.25rem 1.5rem;max-width:1240px;margin:0 auto}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem 1.25rem;margin:0 0 1rem}
-  .panel h2{margin:0 0 .5rem;font-size:.95rem;font-weight:600;letter-spacing:-.01em}
-  .panel p{margin:0 0 .5rem;color:var(--muted);font-size:.85rem}
-  .panel code{background:#0a1f1c;color:var(--accent2);padding:.15rem .4rem;border-radius:3px;
-    font-family:'JetBrains Mono',monospace;font-size:.78rem}
-  .controls{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;margin:.75rem 0 .25rem}
-  .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1rem;
+    padding:.22rem .55rem;border-radius:999px;margin-left:.45rem;vertical-align:middle}
+  main{padding:1.1rem 1.4rem;max-width:1320px;margin:0 auto}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:8px;
+    padding:.95rem 1.2rem;margin:0 0 .9rem}
+  .panel h2{margin:0 0 .45rem;font-size:.9rem;font-weight:600}
+  .panel p{margin:0 0 .4rem;color:var(--muted);font-size:.82rem}
+  .panel code{background:#0a1f1c;color:var(--accent2);padding:.12rem .35rem;
+    border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.76rem}
+  .controls{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin:.6rem 0 .2rem}
+  .btn{display:inline-flex;align-items:center;gap:.35rem;padding:.5rem .95rem;
     background:linear-gradient(135deg,var(--accent),#0e7490);color:#fff;border:none;
-    border-radius:5px;font-weight:500;cursor:pointer;font-family:inherit;font-size:.88rem;
+    border-radius:5px;font-weight:500;cursor:pointer;font-family:inherit;font-size:.85rem;
     transition:transform .15s,box-shadow .15s}
   .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(34,211,238,.25)}
   .btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line)}
   .btn.secondary:hover{border-color:var(--accent)}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
   .fileinput{display:none}
-  .status{margin:.5rem 0;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--muted)}
-  .status.ok{color:var(--accent2)}
-  .status.err{color:var(--err)}
-  .status.warn{color:var(--warn)}
-  details{background:#082019;border:1px solid var(--line);border-radius:5px;padding:.6rem .85rem;margin:.5rem 0}
-  details summary{cursor:pointer;font-size:.82rem;color:var(--muted)}
-  details pre{margin:.6rem 0 0;font-family:'JetBrains Mono',monospace;font-size:.72rem;
-    color:var(--ink);overflow:auto;max-height:160px;background:#0a1f1c;padding:.6rem;border-radius:4px}
-  .player-wrap{background:#000;border:1px solid var(--line);border-radius:8px;
-    padding:.6rem;margin:.6rem 0;min-height:200px;overflow:hidden}
+  .status{margin:.4rem 0;font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--muted)}
+  .status.ok{color:var(--ok)} .status.err{color:var(--err)} .status.warn{color:var(--warn)}
+
+  /* ============== Player ============== */
+  .stage{
+    background:#000;border:1px solid var(--line);border-radius:8px;
+    padding:.5rem;margin:.6rem 0;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    min-height:200px;overflow:hidden;
+  }
+  .stage canvas{display:block;max-width:100%;height:auto;border-radius:4px;
+    box-shadow:0 12px 40px rgba(0,0,0,.6)}
+  .playbar{
+    display:grid;grid-template-columns:auto 1fr auto auto;gap:.6rem;align-items:center;
+    background:#082019;border:1px solid var(--line);border-radius:6px;
+    padding:.5rem .75rem;margin-top:.5rem;
+    font-family:'JetBrains Mono',monospace;font-size:.78rem;
+  }
+  .playbar button{background:transparent;color:var(--ink);border:1px solid var(--line);
+    border-radius:4px;padding:.3rem .6rem;cursor:pointer;font-family:inherit;font-size:.78rem}
+  .playbar button:hover{border-color:var(--accent);color:var(--accent2)}
+  .playbar .scrub{appearance:none;-webkit-appearance:none;background:transparent;
+    width:100%;height:18px;cursor:pointer}
+  .playbar .scrub::-webkit-slider-runnable-track{
+    background:var(--line);height:4px;border-radius:2px}
+  .playbar .scrub::-webkit-slider-thumb{
+    appearance:none;-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+    background:var(--accent);margin-top:-5px;cursor:pointer;
+    box-shadow:0 0 8px rgba(34,211,238,.5)}
+  .speed{display:inline-flex;gap:.25rem;border:1px solid var(--line);border-radius:4px;
+    padding:.18rem .22rem}
+  .speed button{border:none;padding:.18rem .42rem;border-radius:3px;color:var(--muted);font-size:.72rem}
+  .speed button.active{background:var(--accent);color:#082f49;font-weight:700}
+
+  /* Metadata + stats */
   .meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-    gap:.5rem;font-size:.8rem;margin-top:.5rem}
-  .meta-grid div{background:#082019;padding:.45rem .65rem;border-radius:4px;
+    gap:.45rem;font-size:.78rem;margin-top:.5rem}
+  .meta-grid div{background:#082019;padding:.42rem .6rem;border-radius:4px;
     border-left:2px solid var(--accent)}
   .meta-grid strong{color:var(--accent2);font-family:'JetBrains Mono',monospace;
-    font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:.15rem}
+    font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;display:block;
+    margin-bottom:.12rem}
+  details{background:#082019;border:1px solid var(--line);border-radius:5px;
+    padding:.55rem .8rem;margin:.45rem 0}
+  details summary{cursor:pointer;font-size:.8rem;color:var(--muted)}
+  details pre{margin:.55rem 0 0;font-family:'JetBrains Mono',monospace;font-size:.7rem;
+    color:var(--ink);overflow:auto;max-height:200px;background:#0a1f1c;
+    padding:.55rem;border-radius:4px}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Session Replay <span class="badge">Local Tool</span></h1>
-  <p>Drop a session folder (or its batch_*.json files) to replay what the visitor saw.</p>
+  <h1>Session Replay <span class="badge">Snapshot Slideshow</span></h1>
+  <p>Pick a session folder. JPEG snapshots + sidecar JSON play as a timed slideshow with a cursor overlay.</p>
 </header>
 
 <main>
@@ -72,22 +103,15 @@
   <div class="panel">
     <h2>Load a session</h2>
     <p>
-      Recordings live in Google Drive under the folder you configured in your recorder Apps Script.
-      Each session has its own subfolder (e.g. <code>rec_a1b2c3d4-…</code>) containing
-      <code>metadata.json</code> and many <code>batch_&lt;timestamp&gt;.json</code> files.
-    </p>
-    <p>
-      <strong>Easiest path:</strong> install Google Drive Desktop so the recordings folder syncs to your
-      machine, then click <em>"Pick session folder"</em> below and select the session's subfolder.
+      Pick the <code>rec_&lt;uuid&gt;/</code> folder for the session you want.
+      Should contain <code>metadata.json</code>, <code>snap_*.jpg</code>, and <code>snap_*.json</code> files.
     </p>
 
     <div class="controls">
       <label class="btn" for="folderInput">Pick session folder</label>
       <input class="fileinput" id="folderInput" type="file" webkitdirectory directory multiple>
-
-      <label class="btn secondary" for="filesInput">…or pick batch files</label>
-      <input class="fileinput" id="filesInput" type="file" multiple accept=".json,application/json">
-
+      <label class="btn secondary" for="filesInput">…or pick files</label>
+      <input class="fileinput" id="filesInput" type="file" multiple accept=".jpg,.jpeg,.json,.jsonl">
       <button class="btn secondary" id="clearBtn" type="button">Clear</button>
     </div>
 
@@ -99,10 +123,24 @@
     <div class="meta-grid" id="metaGrid"></div>
   </div>
 
-  <div class="player-wrap" id="playerWrap" style="display:none"></div>
+  <div class="stage" id="stage" style="display:none">
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <div class="playbar" id="playbar" style="display:none">
+    <button id="playBtn" type="button">▶  Play</button>
+    <input type="range" class="scrub" id="scrub" min="0" max="0" value="0" step="1">
+    <span id="timeLabel">0 / 0</span>
+    <span class="speed">
+      <button data-speed="0.5" type="button">0.5×</button>
+      <button data-speed="1" class="active" type="button">1×</button>
+      <button data-speed="2" type="button">2×</button>
+      <button data-speed="4" type="button">4×</button>
+    </span>
+  </div>
 
   <details id="rawDetails" style="display:none">
-    <summary>Show raw event stats</summary>
+    <summary>Show raw session stats</summary>
     <pre id="rawText"></pre>
   </details>
 
@@ -112,25 +150,48 @@
 (function(){
   'use strict';
 
-  var statusEl  = document.getElementById('status');
-  var metaPanel = document.getElementById('metaPanel');
-  var metaGrid  = document.getElementById('metaGrid');
-  var playerWrap = document.getElementById('playerWrap');
+  // ============= DOM refs =============
+  var statusEl   = document.getElementById('status');
+  var metaPanel  = document.getElementById('metaPanel');
+  var metaGrid   = document.getElementById('metaGrid');
+  var stage      = document.getElementById('stage');
+  var canvas     = document.getElementById('canvas');
+  var ctx        = canvas.getContext('2d');
+  var playbar    = document.getElementById('playbar');
+  var playBtn    = document.getElementById('playBtn');
+  var scrub      = document.getElementById('scrub');
+  var timeLabel  = document.getElementById('timeLabel');
   var rawDetails = document.getElementById('rawDetails');
   var rawText    = document.getElementById('rawText');
 
   var folderInput = document.getElementById('folderInput');
   var filesInput  = document.getElementById('filesInput');
   var clearBtn    = document.getElementById('clearBtn');
+  var speedBtns   = document.querySelectorAll('.speed button');
 
-  var player = null;
+  // ============= state =============
+  var snaps = [];           // sorted: [{index, timestamp, image, sidecar}]
+  var events = [];          // sorted: [{t, type, ...}]
+  var metadata = null;
+  var currentIdx = 0;
+  var playing = false;
+  var playSpeed = 1;
+  var playTimer = null;
+  var startWallTime = 0;
+  var startRecTime = 0;
 
+  // ============= helpers =============
   function setStatus(text, cls){
     statusEl.textContent = text;
     statusEl.className = 'status' + (cls ? ' ' + cls : '');
   }
-
-  function readFile(file){
+  function fmtMs(ms){
+    var s = Math.max(0, Math.round(ms / 1000));
+    var m = Math.floor(s / 60);
+    s = s - m * 60;
+    return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function readText(file){
     return new Promise(function(resolve, reject){
       var r = new FileReader();
       r.onload = function(){ resolve({ name: file.name, text: r.result }); };
@@ -138,231 +199,319 @@
       r.readAsText(file);
     });
   }
-
-  function batchSortKey(name){
-    // Extract the millisecond timestamp embedded in `batch_<ms>.json` OR
-    // `batch_<ms>_<rand>.json` (the latter format is used by Apps Script
-    // when two batches collide on the same millisecond — see
-    // apps-script-recorder.gs). The regex matches both.
-    var m = /batch_(\d+)/i.exec(name);
-    if (m) return parseInt(m[1], 10);
-    return 0;
+  function readImageAsURL(file){
+    return new Promise(function(resolve, reject){
+      var r = new FileReader();
+      r.onload = function(){ resolve({ name: file.name, url: r.result }); };
+      r.onerror = function(){ reject(new Error('failed to read ' + file.name)); };
+      r.readAsDataURL(file);
+    });
+  }
+  function loadImage(url){
+    return new Promise(function(resolve, reject){
+      var img = new Image();
+      img.onload = function(){ resolve(img); };
+      img.onerror = function(){ reject(new Error('image load failed')); };
+      img.src = url;
+    });
   }
 
-  function renderMeta(meta){
+  // ============= file loading =============
+  function loadFiles(fileList){
+    if (!fileList || !fileList.length){
+      setStatus('No files picked.', 'warn'); return;
+    }
+    var files = [].slice.call(fileList);
+    var jpgs = files.filter(function(f){ return /\.jpe?g$/i.test(f.name); });
+    var jsons = files.filter(function(f){
+      return /\.json$/i.test(f.name) || /\.jsonl$/i.test(f.name);
+    });
+
+    if (!jpgs.length && !jsons.length){
+      setStatus('No .jpg or .json files in selection.', 'err'); return;
+    }
+
+    setStatus('Reading ' + jpgs.length + ' images + ' + jsons.length +
+              ' json files…');
+
+    var jpgPromises = jpgs.map(function(f){
+      return readImageAsURL(f).then(function(r){ return { file: f, url: r.url }; });
+    });
+    var jsonPromises = jsons.map(function(f){
+      return readText(f).then(function(r){ return { file: f, text: r.text }; });
+    });
+
+    Promise.all([Promise.all(jpgPromises), Promise.all(jsonPromises)])
+      .then(function(results){
+        var loadedJpgs = results[0];
+        var loadedJsons = results[1];
+
+        // Parse JSON files: separate metadata, sidecars, event batches
+        metadata = null;
+        events = [];
+        var sidecarByName = {};
+
+        loadedJsons.forEach(function(j){
+          if (/metadata\.json$/i.test(j.file.name)){
+            try { metadata = JSON.parse(j.text); } catch (e) {}
+            return;
+          }
+          if (/^events_/i.test(j.file.name) || /\.jsonl$/i.test(j.file.name)){
+            // JSONL — one event per line
+            j.text.split('\n').forEach(function(line){
+              line = line.trim();
+              if (!line) return;
+              try {
+                var ev = JSON.parse(line);
+                if (ev && typeof ev.t === 'number') events.push(ev);
+              } catch (e) {}
+            });
+            return;
+          }
+          if (/^snap_/i.test(j.file.name) && /\.json$/i.test(j.file.name)){
+            // Sidecar for a snapshot
+            try {
+              var sc = JSON.parse(j.text);
+              var base = j.file.name.replace(/\.json$/i, '');
+              sidecarByName[base] = sc;
+            } catch (e) {}
+            return;
+          }
+        });
+
+        events.sort(function(a, b){ return a.t - b.t; });
+
+        // Build the snapshot list. We need to load each image to know dims.
+        var imageLoads = loadedJpgs.map(function(j){
+          return loadImage(j.url).then(function(img){
+            var base = j.file.name.replace(/\.jpe?g$/i, '');
+            var sc = sidecarByName[base] || {};
+            // Pull index + timestamp from filename if sidecar is missing
+            var m = /snap_(\d+)_(\d+)\.jpe?g$/i.exec(j.file.name);
+            var fnIdx = m ? parseInt(m[1], 10) : 0;
+            var fnTs  = m ? parseInt(m[2], 10) : 0;
+            return {
+              index: typeof sc.index === 'number' ? sc.index : fnIdx,
+              timestamp: typeof sc.timestamp === 'number' ? sc.timestamp : fnTs,
+              scrollX: sc.scrollX || 0,
+              scrollY: sc.scrollY || 0,
+              mouseX: sc.mouseX || 0,
+              mouseY: sc.mouseY || 0,
+              viewport: sc.viewport || '',
+              image: img
+            };
+          }).catch(function(){ return null; });
+        });
+
+        Promise.all(imageLoads).then(function(snapList){
+          snaps = snapList.filter(Boolean);
+          snaps.sort(function(a, b){
+            return (a.timestamp - b.timestamp) || (a.index - b.index);
+          });
+
+          if (!snaps.length){
+            setStatus('No snapshot images loaded.', 'err'); return;
+          }
+
+          // Render the first frame and enable controls
+          currentIdx = 0;
+          showFrame(0);
+          renderMeta();
+          renderStats();
+
+          var dur = snaps.length > 1
+            ? snaps[snaps.length - 1].timestamp - snaps[0].timestamp
+            : 0;
+          setStatus(
+            'Loaded ' + snaps.length + ' snapshots, ' + events.length +
+            ' events, duration ' + fmtMs(dur) + '. Click play.',
+            'ok'
+          );
+
+          scrub.max = String(snaps.length - 1);
+          scrub.value = '0';
+          stage.style.display = '';
+          playbar.style.display = '';
+        });
+      })
+      .catch(function(err){
+        setStatus('Failed to load: ' + err.message, 'err');
+      });
+  }
+
+  // ============= playback =============
+  function showFrame(i){
+    if (i < 0) i = 0;
+    if (i >= snaps.length) i = snaps.length - 1;
+    currentIdx = i;
+    var snap = snaps[i];
+
+    // Size canvas to match the snapshot image
+    canvas.width = snap.image.naturalWidth;
+    canvas.height = snap.image.naturalHeight;
+    ctx.drawImage(snap.image, 0, 0);
+
+    // Draw cursor overlay at the mouse position recorded with this snap.
+    // mouseX/mouseY are in CSS pixels of the visitor's viewport (before
+    // SNAPSHOT_SCALE). Snapshot is at scale 0.75, so we multiply.
+    var scale = 1;
+    if (metadata && metadata.snapshotScale){
+      scale = metadata.snapshotScale;
+    } else {
+      // Best-effort: infer from snapshot dims vs sidecar viewport
+      if (snap.viewport){
+        var vp = snap.viewport.split('x');
+        var vpW = parseInt(vp[0], 10);
+        if (vpW && canvas.width) scale = canvas.width / vpW;
+      }
+    }
+
+    var cx = snap.mouseX * scale;
+    var cy = snap.mouseY * scale;
+
+    // Cursor: filled circle + ring
+    ctx.save();
+    ctx.fillStyle = 'rgba(34, 211, 238, 0.55)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 16, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(34, 211, 238, 1)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    // Scrub + time label
+    scrub.value = String(i);
+    var t0 = snaps[0].timestamp;
+    var elapsed = snap.timestamp - t0;
+    var total = snaps[snaps.length - 1].timestamp - t0;
+    timeLabel.textContent = fmtMs(elapsed) + ' / ' + fmtMs(total) +
+                            ' · frame ' + (i + 1) + '/' + snaps.length;
+  }
+
+  function stopPlay(){
+    playing = false;
+    playBtn.textContent = '▶  Play';
+    if (playTimer){ clearTimeout(playTimer); playTimer = null; }
+  }
+
+  function scheduleNextFrame(){
+    if (!playing) return;
+    if (currentIdx >= snaps.length - 1){
+      // End of playback
+      stopPlay();
+      return;
+    }
+    var current = snaps[currentIdx];
+    var next = snaps[currentIdx + 1];
+    var gapMs = (next.timestamp - current.timestamp) / playSpeed;
+    // Clamp the gap so very long idle stretches don't make playback feel frozen
+    gapMs = Math.max(150, Math.min(gapMs, 15000));
+    playTimer = setTimeout(function(){
+      showFrame(currentIdx + 1);
+      scheduleNextFrame();
+    }, gapMs);
+  }
+
+  function startPlay(){
+    if (!snaps.length) return;
+    if (currentIdx >= snaps.length - 1) currentIdx = 0;
+    playing = true;
+    playBtn.textContent = '⏸  Pause';
+    showFrame(currentIdx);
+    scheduleNextFrame();
+  }
+
+  // ============= metadata + stats panels =============
+  function renderMeta(){
     metaGrid.innerHTML = '';
+    if (!metadata){
+      metaPanel.style.display = 'none';
+      return;
+    }
     function row(label, val){
       if (val === null || val === undefined || val === '') return;
       var d = document.createElement('div');
       d.innerHTML = '<strong>' + label + '</strong>' +
-                    String(val).replace(/[<>&]/g, function(c){
-                      return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];
-                    });
+        String(val).replace(/[<>&]/g, function(c){
+          return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];
+        });
       metaGrid.appendChild(d);
     }
-    row('Session', meta.sessionId);
-    row('Started', meta.startedAt);
-    row('Page', meta.page);
-    row('Viewport', meta.viewport);
-    row('Screen', meta.screen);
-    row('Language', meta.language);
-    row('Timezone', meta.timezone);
-    row('Platform', meta.platform);
-    row('Referrer', meta.referrer);
-    row('User agent', meta.userAgent);
+    row('Session', metadata.sessionId);
+    row('Started', metadata.startedAt);
+    row('Page', metadata.page);
+    row('URL', metadata.url);
+    row('Viewport', metadata.viewport);
+    row('Screen', metadata.screen);
+    row('Language', metadata.language);
+    row('Timezone', metadata.timezone);
+    row('Platform', metadata.platform);
+    row('Referrer', metadata.referrer);
+    row('User agent', metadata.userAgent);
+    if (metadata.snapshotInterval) row('Snapshot every',
+      (metadata.snapshotInterval / 1000) + ' s');
+    if (metadata.jpegQuality) row('JPEG quality', metadata.jpegQuality);
     metaPanel.style.display = '';
   }
 
-  function destroyPlayer(){
-    if (player) {
-      try { player.$destroy && player.$destroy(); } catch(e){}
-      player = null;
-    }
-    playerWrap.innerHTML = '';
-    playerWrap.style.display = 'none';
-    metaPanel.style.display = 'none';
-    rawDetails.style.display = 'none';
-  }
-
-  function startReplay(events, meta){
-    destroyPlayer();
-    if (!events.length){
-      setStatus('No events found in those files.', 'err');
-      return;
-    }
-    if (typeof rrwebPlayer === 'undefined'){
-      setStatus('rrweb-player failed to load from CDN. Check your connection.', 'err');
-      return;
-    }
-
-    playerWrap.style.display = '';
-    try {
-      // Size the player generously — let rrweb-player auto-scale the iframe
-      // content to fit. Smaller player = harder to see; we err on the side
-      // of using as much screen real estate as the window allows.
-      var w = Math.min(window.innerWidth - 80, 1400);
-      var h = Math.min(window.innerHeight - 240, 800);
-
-      player = new rrwebPlayer({
-        target: playerWrap,
-        props: {
-          events: events,
-          width: w,
-          height: h,
-          autoPlay: false,         // user clicks play
-          showController: true,    // built-in play/pause/speed controls
-          speedOption: [1, 2, 4, 8],
-          skipInactive: false,     // play every second — no fast-forwarding
-          // CRITICAL: rrweb's iframe is sandboxed `allow-same-origin` only by
-          // default, which blocks the script Replayer needs to inject to
-          // apply the captured DOM. Result: blank iframe. This option (badly
-          // named — it's not actually about canvas alone) adds `allow-scripts`
-          // to the sandbox so the Replayer can do its job.
-          UNSAFE_replayCanvas: true,
-          // Don't spam the console with "Node with id X not found" lines
-          // for every dropped mutation. If a few mutations don't apply
-          // cleanly (e.g. because the recorder caught mid-animation state)
-          // we still get a useful replay — these warnings are noise.
-          showWarning: false,
-          showDebug: false
-        }
+  function renderStats(){
+    if (!snaps.length){ rawDetails.style.display = 'none'; return; }
+    var dur = snaps[snaps.length - 1].timestamp - snaps[0].timestamp;
+    var lines = [
+      'snapshots:  ' + snaps.length,
+      'events:     ' + events.length,
+      'duration:   ' + fmtMs(dur) + ' (' + dur + ' ms)',
+      'first ts:   ' + new Date(snaps[0].timestamp).toISOString(),
+      'last ts:    ' + new Date(snaps[snaps.length - 1].timestamp).toISOString(),
+      ''
+    ];
+    if (events.length){
+      var counts = {};
+      events.forEach(function(e){ counts[e.type] = (counts[e.type] || 0) + 1; });
+      lines.push('event types:');
+      Object.keys(counts).sort().forEach(function(t){
+        lines.push('  ' + t + ': ' + counts[t]);
       });
-
-      // Belt-and-braces: even with UNSAFE_replayCanvas, ad-blocker /
-      // privacy extensions sometimes inject their own sandbox attribute
-      // after the iframe is created. Strip + reset it explicitly so the
-      // script-execution permission survives the extensions' meddling.
-      setTimeout(function(){
-        var ifr = playerWrap.querySelector('iframe');
-        if (ifr) {
-          ifr.setAttribute('sandbox',
-            'allow-scripts allow-same-origin allow-forms allow-popups');
-        }
-      }, 50);
-    } catch (e) {
-      setStatus('Replay failed: ' + e.message, 'err');
-      return;
     }
-
-    var firstT = events[0].timestamp;
-    var lastT  = events[events.length - 1].timestamp;
-    var durMs  = lastT - firstT;
-    var minutes = Math.floor(durMs / 60000);
-    var seconds = Math.round((durMs % 60000) / 1000);
-    setStatus(
-      'Replaying ' + events.length.toLocaleString() + ' events · ' +
-      'duration ~' + minutes + 'm ' + seconds + 's',
-      'ok'
-    );
-
-    if (meta) renderMeta(meta);
-
-    // Raw stats with human-readable event type names so we can spot
-    // missing snapshot events at a glance.
-    var TYPE_NAMES = {
-      0: 'DomContentLoaded',
-      1: 'Load',
-      2: 'FullSnapshot',         // ← MUST be present, else iframe is blank
-      3: 'IncrementalSnapshot',  // ← all the DOM mutations + interactions
-      4: 'Meta',                 // ← MUST come first (page metadata)
-      5: 'Custom',
-      6: 'Plugin'
-    };
-    var counts = {};
-    events.forEach(function(e){ counts[e.type] = (counts[e.type]||0) + 1; });
-    var statsLines = ['event count: ' + events.length,
-                      'duration ms: ' + durMs,
-                      'first ts:   ' + new Date(firstT).toISOString(),
-                      'last ts:    ' + new Date(lastT).toISOString(),
-                      '',
-                      'event types (must include type 2 FullSnapshot' +
-                      ' and type 4 Meta):'];
-    Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; }).forEach(function(t){
-      var name = TYPE_NAMES[t] || ('unknown_' + t);
-      statsLines.push('  type ' + t + ' (' + name + '): ' + counts[t]);
-    });
-    statsLines.push('', 'first event:');
-    statsLines.push('  ' + JSON.stringify(events[0]).substring(0, 240));
-    statsLines.push('second event:');
-    statsLines.push('  ' + JSON.stringify(events[1] || {}).substring(0, 240));
-    rawText.textContent = statsLines.join('\n');
+    rawText.textContent = lines.join('\n');
     rawDetails.style.display = '';
-    rawDetails.open = true;  // auto-open so user sees diagnostics
   }
 
-  function loadFiles(files){
-    if (!files || !files.length){
-      setStatus('No files picked.', 'warn');
-      return;
-    }
-    var jsonFiles = [].slice.call(files).filter(function(f){
-      return /\.json$/i.test(f.name);
-    });
-    if (!jsonFiles.length){
-      setStatus('No .json files in that selection.', 'err');
-      return;
-    }
-    setStatus('Reading ' + jsonFiles.length + ' files…');
-
-    Promise.all(jsonFiles.map(readFile)).then(function(loaded){
-      var metadata = null;
-      var batches = [];
-      var skipped = 0;
-
-      loaded.forEach(function(file){
-        var parsed;
-        try { parsed = JSON.parse(file.text); }
-        catch (e) { skipped++; return; }
-
-        if (/metadata\.json$/i.test(file.name) || (parsed && parsed.sessionId && parsed.startedAt && !Array.isArray(parsed))){
-          metadata = parsed;
-          return;
-        }
-        // Batch file — could be an array of events directly, or a {events:[]} envelope
-        var events = null;
-        if (Array.isArray(parsed)) events = parsed;
-        else if (parsed && Array.isArray(parsed.events)) events = parsed.events;
-        else if (parsed && parsed.metadata && Array.isArray(parsed.events)) {
-          events = parsed.events;
-          if (!metadata) metadata = parsed.metadata;
-        }
-        if (!events) { skipped++; return; }
-
-        batches.push({
-          sortKey: batchSortKey(file.name),
-          name: file.name,
-          events: events
-        });
-      });
-
-      if (!batches.length){
-        setStatus('Could not find any batch event files. ' +
-                  (skipped ? skipped + ' unreadable file(s) skipped.' : ''), 'err');
-        return;
-      }
-
-      batches.sort(function(a,b){ return a.sortKey - b.sortKey; });
-      var allEvents = [];
-      batches.forEach(function(b){ allEvents = allEvents.concat(b.events); });
-
-      // Do NOT defensively re-sort events by timestamp. Within a batch the
-      // events are already in emit order from the recorder, and any in-place
-      // sort can reorder events that share a millisecond — which breaks the
-      // rrweb Replayer's reliance on add-before-remove ordering.
-
-      startReplay(allEvents, metadata);
-    }).catch(function(err){
-      setStatus('Failed: ' + err.message, 'err');
-    });
-  }
-
+  // ============= event wiring =============
   folderInput.addEventListener('change', function(e){ loadFiles(e.target.files); });
   filesInput .addEventListener('change', function(e){ loadFiles(e.target.files); });
   clearBtn   .addEventListener('click', function(){
-    destroyPlayer();
-    folderInput.value = '';
-    filesInput.value  = '';
+    stopPlay();
+    snaps = []; events = []; metadata = null;
+    stage.style.display = 'none';
+    playbar.style.display = 'none';
+    metaPanel.style.display = 'none';
+    rawDetails.style.display = 'none';
+    canvas.width = 0; canvas.height = 0;
+    folderInput.value = ''; filesInput.value = '';
     setStatus('Cleared.');
+  });
+
+  playBtn.addEventListener('click', function(){
+    if (playing) stopPlay(); else startPlay();
+  });
+
+  scrub.addEventListener('input', function(){
+    stopPlay();
+    showFrame(parseInt(scrub.value, 10));
+  });
+
+  speedBtns.forEach(function(b){
+    b.addEventListener('click', function(){
+      speedBtns.forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      playSpeed = parseFloat(b.getAttribute('data-speed'));
+    });
   });
 
   setStatus('Ready. Pick a session folder or batch files above.');
