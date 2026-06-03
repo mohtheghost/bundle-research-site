@@ -2917,3 +2917,118 @@ footer {
   .results-table { font-size: 0.82rem; }
   .results-table th, .results-table td { padding: 0.55rem 0.6rem; }
 }
+
+/* ==========================================================================
+   v3.10 — Community impact section (homepage)
+   ========================================================================== */
+
+.community-impact-section {
+  padding: 2.5rem 0 3rem;
+}
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.75rem;
+}
+.community-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 1.5rem 1.6rem 1.4rem;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--tx-base), box-shadow var(--tx-base), border-color var(--tx-base);
+}
+.community-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  opacity: 0;
+  transition: opacity var(--tx-base);
+}
+.community-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+}
+.community-card:hover::before {
+  opacity: 1;
+}
+
+/* Big serif number, gradient per card so the four read as a sequence */
+.community-card-num {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+  display: inline-block;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.community-card-1 .community-card-num {
+  background: linear-gradient(135deg, #b8860b, #f4c430);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.community-card-2 .community-card-num {
+  background: linear-gradient(135deg, #0e7490, #67e8f9);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.community-card-3 .community-card-num {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.community-card-4 .community-card-num {
+  background: linear-gradient(135deg, #d97706, #fcd34d);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.community-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 0.6rem;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+.community-card-desc {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  margin: 0 0 0.95rem;
+  line-height: 1.55;
+  flex: 1;
+}
+.community-card-link {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color var(--tx-fast);
+}
+.community-card:hover .community-card-link {
+  color: var(--accent-dark);
+}
+
+@media (max-width: 760px) {
+  .community-impact-section { padding: 1.75rem 0 2rem; }
+  .community-grid { gap: 1rem; }
+  .community-card { padding: 1.25rem 1.35rem 1.2rem; }
+}
