@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Bundle Research — Mohamed Benkaddour</title>
-<meta name="description" content="Independent research and projects by Mohamed Benkaddour. Earth observation, machine learning, and reproducible tools for satellite-based environmental forecasting.">
+<meta name="description" content="Projects, research and papers by Mohamed Benkaddour: machine learning for environmental forecasting, and Jack, an Arabic-speaking robot.">
 
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -12,16 +12,16 @@
 <!-- Open Graph (Facebook, LinkedIn, etc) -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://bundle-research.xyz/">
-<meta property="og:title" content="Bundle Research — Independent Earth Observation Research">
-<meta property="og:description" content="Per-region NDVI forecasting across 133 ecoregions. Cross-continental R² ≈ 0.93 with leakage-audited methodology.">
+<meta property="og:title" content="Bundle Research — Mohamed Benkaddour">
+<meta property="og:description" content="A forecasting engine for five environmental problems, Jack the Robot, and a published preprint on EarthArXiv.">
 <meta property="og:site_name" content="Bundle Research">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Bundle Research — Independent Earth Observation Research">
-<meta name="twitter:description" content="Per-region NDVI forecasting across 133 ecoregions. Cross-continental R² ≈ 0.93 with leakage-audited methodology.">
+<meta name="twitter:title" content="Bundle Research — Mohamed Benkaddour">
+<meta name="twitter:description" content="A forecasting engine for five environmental problems, Jack the Robot, and a published preprint on EarthArXiv.">
 
-<!-- URL Redirect: ?go=X jumps to a project. Plain URL = portfolio (no redirect). -->
+<!-- URL Redirect: ?go=X jumps to a page. Plain URL = home (no redirect). -->
 <script>
 (function(){
   var params = new URLSearchParams(window.location.search);
@@ -29,10 +29,12 @@
   var map = {
     'desertflow': '/desertflow.html',
     'bundle': '/desertflow.html',
-    'research': '/desertflow.html',
-    'paper': '/desertflow.html',
+    'research': '/research.html',
+    'paper': '/publications.html',
+    'papers': '/publications.html',
+    'projects': '/#projects',
     'about': '/about.html',
-    'jack': 'https://github.com/mohtheghost/jack-the-Robot-pr'
+    'jack': '/jack-the-robot.html'
   };
   if (go && map[go]) {
     window.location.replace(map[go]);
@@ -54,9 +56,9 @@
     <a href="/" class="nav-brand">Bundle Research</a>
     <ul class="nav-links">
       <li><a href="/" class="active">Home</a></li>
-      <li><a href="desertflow.html">Research</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="publications.html">Publications</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="research.html">Research</a></li>
+      <li><a href="publications.html">Papers</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="#contact-footer" onclick="document.getElementById('contact-footer').scrollIntoView({behavior:'smooth'});return false;">Contact</a></li>
     </ul>
@@ -64,7 +66,7 @@
 </nav>
 
 <section class="hero-home container-narrow">
-  <!-- Decorative topographic background — research/satellite aesthetic -->
+  <!-- Decorative topographic background -->
   <div class="hero-topo-bg" aria-hidden="true">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid slice">
       <defs>
@@ -84,34 +86,120 @@
       </g>
     </svg>
   </div>
-  <span class="badge badge-mono" data-reveal>Earth Observation · Machine Learning · Environmental Forecasting</span>
-  <h1 data-reveal data-reveal-delay="1">Independent research and projects by <span class="accent">Mohamed Benkaddour</span></h1>
-  <p class="lede" data-reveal data-reveal-delay="2">Independent Earth observation researcher focused on NDVI dynamics. Per-region forecasting, leakage-aware validation, and reproducible remote-sensing pipelines. Open code, honest evaluation, and a methods preprint in preparation for EarthArXiv.</p>
+  <span class="badge badge-mono" data-reveal>Projects · Research · Papers</span>
+  <h1 data-reveal data-reveal-delay="1">Hi, I'm <span class="accent">Mohamed Benkaddour</span>. I build forecasting tools for the environment.</h1>
+  <p class="lede" data-reveal data-reveal-delay="2">Machine learning for nature's hardest forecasts — and a robot that speaks Arabic.</p>
   <div class="ctas" data-reveal data-reveal-delay="3">
-    <a class="btn btn-primary" href="desertflow.html">Featured Research →</a>
-    <a class="btn btn-secondary" href="#projects">All Projects ↓</a>
+    <a class="btn btn-primary" href="#projects">See my projects ↓</a>
+    <a class="btn btn-secondary" href="#papers">Research papers ↓</a>
   </div>
-  <!-- Achievement strip: compact credibility row -->
+  <!-- Achievement strip -->
   <div class="achievement-strip" data-reveal data-reveal-delay="4">
-    <span><strong>133</strong> ecoregions</span>
+    <span><strong>1</strong> published preprint</span>
     <span class="dot-sep"></span>
-    <span><strong>22</strong> years</span>
+    <span><strong>2</strong> projects</span>
     <span class="dot-sep"></span>
-    <span><strong>45+</strong> drivers</span>
+    <span><strong>5</strong> environmental problems</span>
     <span class="dot-sep"></span>
-    <span><strong>89</strong> specialist models</span>
-    <span class="dot-sep"></span>
-    <span><strong>5</strong> ML algorithms</span>
+    <span><strong>Open</strong> source</span>
   </div>
 </section>
 
-<!-- COMMUNITY IMPACT — gold title on left, horizontal card row on right -->
+<!-- PROJECTS — small photo cards, the first thing a visitor sees (grid has room for more) -->
+<section class="container home-section" id="projects">
+  <h2 class="section-title">Projects</h2>
+
+  <div class="card-grid">
+
+    <a class="photo-card" href="https://github.com/bundle-labs/treeroute-v1" target="_blank" rel="noopener" data-reveal>
+      <div class="photo-card-media" aria-hidden="true" style="background:radial-gradient(circle at 50% 50%, #143027 0%, #0a1f1c 75%)">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#14a08c" stroke-width="1.6" opacity="0.8" fill="none">
+            <line class="engine-flow" x1="200" y1="128" x2="200" y2="48"/>
+            <line class="engine-flow" x1="200" y1="128" x2="330" y2="100"/>
+            <line class="engine-flow" x1="200" y1="128" x2="282" y2="192"/>
+            <line class="engine-flow" x1="200" y1="128" x2="118" y2="192"/>
+            <line class="engine-flow" x1="200" y1="128" x2="70" y2="100"/>
+          </g>
+          <circle cx="200" cy="48" r="16" fill="#88b04b"/>
+          <circle cx="330" cy="100" r="16" fill="#ff7f6e"/>
+          <circle cx="282" cy="192" r="16" fill="#9fb4d8"/>
+          <circle cx="118" cy="192" r="16" fill="#2e8b57"/>
+          <circle cx="70" cy="100" r="16" fill="#f4a340"/>
+          <g font-family="Inter, sans-serif" font-size="13" font-weight="600" fill="#ffffff" text-anchor="middle">
+            <text x="200" y="22">Vegetation</text>
+            <text x="330" y="132">Coral reefs</text>
+            <text x="282" y="226">Air quality</text>
+            <text x="118" y="226">Forests</text>
+            <text x="70" y="132">Wildfire</text>
+          </g>
+          <circle cx="200" cy="128" r="30" fill="#0f7b6c" stroke="#f4c430" stroke-width="2.5"/>
+          <text x="200" y="132" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="1.2">ENGINE</text>
+        </svg>
+      </div>
+      <div class="photo-card-body">
+        <span class="photo-card-kicker">Open source · v1.0.0</span>
+        <h3 class="photo-card-title">Forecasting Engine</h3>
+        <p class="photo-card-line">One engine, five environmental problems.</p>
+        <span class="photo-card-cta">View on GitHub ↗</span>
+      </div>
+    </a>
+
+    <a class="photo-card" href="jack-the-robot.html" data-reveal data-reveal-delay="1">
+      <div class="photo-card-media">
+        <img src="jack-photos/jack-home.jpg" alt="Jack the Robot: a hand-built robot covered in colored paper" width="675" height="900" loading="lazy" style="object-position:50% 30%">
+      </div>
+      <div class="photo-card-body">
+        <span class="photo-card-kicker">Hardware · Voice AI</span>
+        <h3 class="photo-card-title">Jack the Robot</h3>
+        <p class="photo-card-line">A hand-built robot that talks in Arabic.</p>
+        <span class="photo-card-cta">Meet Jack →</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- RESEARCH PAPERS — same photo-card design as the projects -->
+<section class="container home-section" id="papers">
+  <h2 class="section-title">Research papers</h2>
+
+  <div class="card-grid">
+
+    <a class="photo-card" href="https://doi.org/10.31223/X5VR7D" target="_blank" rel="noopener" data-reveal>
+      <div class="photo-card-media">
+        <span class="photo-card-badge">Published</span>
+        <img src="images/paper-forecast.jpg" alt="Poster: Forecast today, save tomorrow — AI forecasting wildfires, deforestation, desertification and coral bleaching" width="800" height="450" loading="lazy">
+      </div>
+      <div class="photo-card-body">
+        <span class="photo-card-kicker">Preprint · EarthArXiv · Nov 2026</span>
+        <h3 class="photo-card-title is-long">Ridge weighting of other regions’ regression trees, anchored to the seasonal normal: a temporal hold-out test on five environmental forecasting problems</h3>
+        <span class="photo-card-cta">Read the preprint ↗</span>
+      </div>
+    </a>
+
+    <a class="photo-card" href="research.html" data-reveal data-reveal-delay="1">
+      <div class="photo-card-media">
+        <span class="photo-card-badge is-prep">In preparation</span>
+        <img src="images/paper-ndvi.jpg" alt="Pixel map in greens and browns, in the style of a satellite vegetation map" width="800" height="500" loading="lazy">
+      </div>
+      <div class="photo-card-body">
+        <span class="photo-card-kicker">Paper · 2026–2027</span>
+        <h3 class="photo-card-title is-long">A leakage-aware per-region framework for NDVI forecasting across 133 global ecoregions</h3>
+        <span class="photo-card-cta">About this research →</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- COMMUNITY IMPACT -->
 <section class="container team-impact-section" id="impact" data-reveal>
   <div class="team-impact-row">
 
     <div class="team-impact-title-block">
-      <h2 class="team-impact-title">What this team has been doing for the community</h2>
-      <p class="team-impact-sub">Independent research that doesn't stay on a hard drive — teaching, building, publishing.</p>
+      <h2 class="team-impact-title">Beyond the code</h2>
+      <p class="team-impact-sub">Teaching, building, publishing.</p>
     </div>
 
     <div class="team-impact-cards">
@@ -119,287 +207,35 @@
       <a class="team-card" href="jack-the-robot.html#school">
         <div class="team-card-num">01</div>
         <h3 class="team-card-title">Taught classmates</h3>
-        <p class="team-card-desc">After the school broadcast (إذاعة), led teaching sessions on hardware, networking, and AI APIs for classmates.</p>
+        <p class="team-card-desc">Hardware, networking and AI sessions at school.</p>
       </a>
 
       <a class="team-card" href="jack-the-robot.html">
         <div class="team-card-num">02</div>
-        <h3 class="team-card-title">Built Jack the Robot</h3>
-        <p class="team-card-desc">Hand-built Arabic voice assistant: ESP32 + cloud relay + OpenAI. Real AI engineering under $20 of hardware.</p>
+        <h3 class="team-card-title">Built a robot</h3>
+        <p class="team-card-desc">Arabic voice assistant on under $20 of hardware.</p>
       </a>
 
-      <a class="team-card" href="desertflow.html">
+      <a class="team-card" href="publications.html">
         <div class="team-card-num">03</div>
-        <h3 class="team-card-title">Research paper in prep</h3>
-        <p class="team-card-desc">Desertflow — leakage-audited NDVI forecasting. Methodology paper targeting EarthArXiv with SDG 15.3 relevance.</p>
+        <h3 class="team-card-title">Published a preprint</h3>
+        <p class="team-card-desc">On EarthArXiv, November 2026.</p>
       </a>
 
-      <a class="team-card" href="bundle-framework.html">
+      <a class="team-card" href="https://github.com/bundle-labs/treeroute-v1" target="_blank" rel="noopener">
         <div class="team-card-num">04</div>
-        <h3 class="team-card-title">Open framework</h3>
-        <p class="team-card-desc">Bundle Framework — open-source toolkit for per-region ML. Anyone in the EO/climate/geospatial space can use it.</p>
+        <h3 class="team-card-title">Shared the code</h3>
+        <p class="team-card-desc">Free on GitHub for anyone to reuse.</p>
       </a>
 
     </div>
 
-  </div>
-</section>
-
-<!-- FEATURED: spotlight on the active research -->
-<section class="container">
-  <div class="featured-card" data-reveal>
-    <div class="featured-meta">
-      <span class="dot"></span> Active research · Updated June 2026
-    </div>
-    <h2 class="featured-title">Desertflow Global Bundle</h2>
-    <p class="featured-desc">Per-region NDVI forecasting across 133 WWF ecoregions and 22 years using Google Earth Engine. The headline contribution is a leakage-aware validation protocol that catches the common failure modes most published NDVI forecasting studies miss — sister vegetation features, shared cross-region statistics, pheno-prior leakage.</p>
-    <div class="featured-stats">
-      <div><span class="featured-stat-num" data-counter-target="133">133</span><span class="featured-stat-label">ecoregions</span></div>
-      <div><span class="featured-stat-num" data-counter-target="22">22</span><span class="featured-stat-label">years</span></div>
-      <div><span class="featured-stat-num" data-counter-target="19">19</span><span class="featured-stat-label">driver modules</span></div>
-      <div><span class="featured-stat-num" data-counter-target="0.93">0.93</span><span class="featured-stat-label">R² cross-continental</span></div>
-    </div>
-    <div class="ctas">
-      <a class="btn btn-primary" href="desertflow.html">Read full project →</a>
-      <a class="btn btn-secondary" href="https://github.com/mohtheghost">GitHub →</a>
-    </div>
-  </div>
-</section>
-
-<!-- RESEARCH TIMELINE + CURRENT STATUS -->
-<section class="container research-meta-section">
-  <div class="research-meta-grid">
-
-    <!-- Timeline column -->
-    <div class="research-timeline-col" data-reveal>
-      <h2 class="section-title section-title-sm">Research Timeline</h2>
-      <div class="timeline timeline-home">
-        <div class="timeline-item">
-          <div class="timeline-date">2024</div>
-          <div class="timeline-text">Started independent remote-sensing research; first NDVI experiments using MODIS archives.</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-date">2025</div>
-          <div class="timeline-text">Built Desertflow core: per-region CatBoost specialists + Bayesian-ridge router architecture (B2).</div>
-        </div>
-        <div class="timeline-item timeline-item-current">
-          <div class="timeline-date">2026 — Active</div>
-          <div class="timeline-text">Scaled to 133 WWF ecoregions × 22 years × 19 driver modules. Leakage-audited cross-continental R² ≈ 0.93.</div>
-        </div>
-        <div class="timeline-item timeline-item-future">
-          <div class="timeline-date">2027 — Planned</div>
-          <div class="timeline-text">EarthArXiv preprint, open benchmark dataset release, and global dryland forecast service.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Status column -->
-    <div class="research-status-col" data-reveal data-reveal-delay="1">
-      <h2 class="section-title section-title-sm">Current Status</h2>
-      <ul class="status-checklist">
-        <li class="status-done"><span class="status-mark">✓</span> Dataset collection (133 regions × 22 years)</li>
-        <li class="status-done"><span class="status-mark">✓</span> Feature engineering (19 driver modules)</li>
-        <li class="status-done"><span class="status-mark">✓</span> Model training (89 specialists)</li>
-        <li class="status-done"><span class="status-mark">✓</span> Cross-region testing (44 held-out regions)</li>
-        <li class="status-done"><span class="status-mark">✓</span> Leakage audit protocol</li>
-        <li class="status-progress"><span class="status-mark">●</span> Anomaly modules (E26 fetch)</li>
-        <li class="status-progress"><span class="status-mark">●</span> Preprint writing</li>
-        <li class="status-planned"><span class="status-mark">○</span> EarthArXiv submission</li>
-        <li class="status-planned"><span class="status-mark">○</span> Public benchmark release</li>
-      </ul>
-    </div>
-
-  </div>
-</section>
-
-<section class="projects-section container" id="projects">
-  <h2 class="section-title">All Projects &amp; Work</h2>
-  <p class="section-subtitle">Filter by area of interest:</p>
-
-  <div class="filters">
-    <button class="filter active" data-filter="all">All</button>
-    <button class="filter" data-filter="research">Research</button>
-    <button class="filter" data-filter="ml">Machine Learning</button>
-    <button class="filter" data-filter="climate">Climate &amp; Environment</button>
-    <button class="filter" data-filter="tools">Tools</button>
-    <button class="filter" data-filter="hardware">Hardware</button>
-    <button class="filter" data-filter="gamedev">Game Dev</button>
-  </div>
-
-  <div class="projects-grid">
-
-    <!-- DESERTFLOW (active research) -->
-    <a class="project-card" href="desertflow.html" data-tags="research ml climate">
-      <div class="project-card-image img-ndvi" aria-hidden="true">
-        <span class="card-glyph">D</span>
-        <span class="card-scan"></span>
-      </div>
-      <div class="project-card-body">
-        <div class="project-card-tags">
-          <span class="tag">Research</span>
-          <span class="tag">ML</span>
-          <span class="tag">Climate</span>
-        </div>
-        <h3 class="project-card-title">Desertflow Global Bundle</h3>
-        <p class="project-card-desc">Per-region NDVI forecasting across 133 ecoregions using Google Earth Engine. R² ≈ 0.93 with leakage-audited methodology.</p>
-        <div class="project-card-meta">
-          <span class="project-card-status"><span class="dot"></span> Active</span>
-          <span>June 2026</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- BUNDLE FRAMEWORK (tool spinoff) -->
-    <a class="project-card" href="bundle-framework.html" data-tags="tools ml">
-      <div class="project-card-image img-neural" aria-hidden="true">
-        <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
-          <rect width="200" height="200" fill="#0a1f1c"/>
-          <g stroke="#14a08c" stroke-width="0.7" opacity="0.55" fill="none">
-            <path d="M40,50 L100,40 M40,50 L100,90 M40,50 L100,140 M40,100 L100,40 M40,100 L100,90 M40,100 L100,140 M40,150 L100,40 M40,150 L100,90 M40,150 L100,140 M100,40 L160,75 M100,40 L160,125 M100,90 L160,75 M100,90 L160,125 M100,140 L160,75 M100,140 L160,125"/>
-          </g>
-          <g fill="#14a08c">
-            <circle cx="40" cy="50" r="4"/><circle cx="40" cy="100" r="4"/><circle cx="40" cy="150" r="4"/>
-            <circle cx="100" cy="40" r="4"/><circle cx="100" cy="90" r="4"/><circle cx="100" cy="140" r="4"/>
-            <circle cx="160" cy="75" r="4"/><circle cx="160" cy="125" r="4"/>
-          </g>
-          <circle cx="100" cy="90" r="6" fill="#f4c430">
-            <animate attributeName="opacity" values="1;0.25;1" dur="2.4s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="6;9;6" dur="2.4s" repeatCount="indefinite"/>
-          </circle>
-        </svg>
-        <span class="card-glyph card-glyph-corner">B</span>
-      </div>
-      <div class="project-card-body">
-        <div class="project-card-tags">
-          <span class="tag">Tools</span>
-          <span class="tag">ML</span>
-        </div>
-        <h3 class="project-card-title">Bundle Framework</h3>
-        <p class="project-card-desc">Open-source PySide6 desktop GUI for running per-region ML experiments at scale. Schema-agnostic, supports custom drivers per region.</p>
-        <div class="project-card-meta">
-          <span class="project-card-status"><span class="dot"></span> In progress</span>
-          <span>Spinoff project</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- LEAKAGE AUDIT PROTOCOL (research methodology) -->
-    <a class="project-card" href="leakage-audit.html" data-tags="research ml">
-      <div class="project-card-image img-leakage" aria-hidden="true">
-        <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
-          <rect width="200" height="200" fill="#0a1f1c"/>
-          <!-- Time axis -->
-          <line x1="20" y1="170" x2="180" y2="170" stroke="#14a08c" stroke-width="0.6" opacity="0.65"/>
-          <g stroke="#14a08c" stroke-width="0.5" opacity="0.5">
-            <line x1="40" y1="168" x2="40" y2="174"/>
-            <line x1="80" y1="168" x2="80" y2="174"/>
-            <line x1="120" y1="168" x2="120" y2="174"/>
-            <line x1="160" y1="168" x2="160" y2="174"/>
-          </g>
-          <!-- Train / val / test rolling windows -->
-          <g>
-            <rect x="20"  y="40"  width="80"  height="14" fill="#14a08c" opacity="0.55"/>
-            <rect x="105" y="40"  width="25"  height="14" fill="#88b04b" opacity="0.75"/>
-            <rect x="135" y="40"  width="25"  height="14" fill="#f4c430" opacity="0.88"/>
-            <rect x="20"  y="70"  width="100" height="14" fill="#14a08c" opacity="0.55"/>
-            <rect x="125" y="70"  width="25"  height="14" fill="#88b04b" opacity="0.75"/>
-            <rect x="155" y="70"  width="25"  height="14" fill="#f4c430" opacity="0.88"/>
-            <rect x="20"  y="100" width="120" height="14" fill="#14a08c" opacity="0.55"/>
-            <rect x="145" y="100" width="20"  height="14" fill="#88b04b" opacity="0.75"/>
-            <rect x="170" y="100" width="10"  height="14" fill="#f4c430" opacity="0.88"/>
-          </g>
-          <!-- Forbidden-zone guard line -->
-          <line x1="100" y1="30" x2="100" y2="170" stroke="#f4c430" stroke-width="0.8" stroke-dasharray="3 3" opacity="0.85"/>
-          <text x="103" y="28" font-family="monospace" font-size="7" fill="#f4c430" opacity="0.9">t = cutoff</text>
-        </svg>
-        <span class="card-glyph card-glyph-corner">L</span>
-      </div>
-      <div class="project-card-body">
-        <div class="project-card-tags">
-          <span class="tag">Research</span>
-          <span class="tag">Methodology</span>
-        </div>
-        <h3 class="project-card-title">Leakage Audit Protocol</h3>
-        <p class="project-card-desc">A documented protocol catching the four failure modes most NDVI forecasting studies miss: sister-vegetation features, shared scalers, leaky CV splits, pheno-prior contamination.</p>
-        <div class="project-card-meta">
-          <span class="project-card-status"><span class="dot"></span> Active</span>
-          <span>Preprint planned</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- JACK THE ROBOT (hardware: ESP32 Arabic voice assistant) -->
-    <a class="project-card" href="jack-the-robot.html" data-tags="hardware tools">
-      <div class="project-card-image" style="background:linear-gradient(135deg,#0a1f2c 0%,#0e7490 60%,#22d3ee 100%);position:relative;overflow:hidden">
-        <span class="card-glyph" style="z-index:3">J</span>
-        <span style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(34,211,238,0.06) 0 2px,transparent 2px 8px);z-index:1"></span>
-        <span style="position:absolute;top:10px;right:14px;font-family:var(--font-mono);font-size:0.7rem;color:rgba(207,250,254,0.85);letter-spacing:0.1em;z-index:2">ESP32</span>
-        <span style="position:absolute;bottom:14px;left:14px;font-family:var(--font-mono);font-size:0.72rem;color:rgba(207,250,254,0.85);letter-spacing:0.1em;z-index:2">مساعد</span>
-      </div>
-      <div class="project-card-body">
-        <div class="project-card-tags">
-          <span class="tag">Hardware</span>
-          <span class="tag">Voice AI</span>
-          <span class="tag">C++ / C#</span>
-        </div>
-        <h3 class="project-card-title">Jack the Robot</h3>
-        <p class="project-card-desc">A hand-built voice-assistant robot. Custom ESP32 firmware streams audio to a C# cloud relay; Whisper + GPT-4o + TTS handle Arabic end-to-end.</p>
-        <div class="project-card-meta">
-          <span class="project-card-status"><span class="dot dot-paused"></span> Paused for Desertflow</span>
-          <span>2025–2026</span>
-        </div>
-      </div>
-    </a>
-
-    <!-- LEARNING NOTES (placeholder, future) -->
-    <div class="project-card" data-tags="research ml tools" style="opacity:.55;cursor:default">
-      <div class="project-card-image" style="background:linear-gradient(135deg,#0891b2 0%,#0e7490 100%)">📓</div>
-      <div class="project-card-body">
-        <div class="project-card-tags">
-          <span class="tag">Coming soon</span>
-        </div>
-        <h3 class="project-card-title">Learning notes</h3>
-        <p class="project-card-desc">Paper summaries and methodology notes from research I'm working through. ML, remote sensing, and statistical learning.</p>
-        <div class="project-card-meta">
-          <span class="project-card-status"><span class="dot dot-planned"></span> Planned</span>
-          <span>Q3 2026</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- MORE COMING -->
-    <div class="project-card" data-tags="research ml tools" style="opacity:.45;cursor:default">
-      <div class="project-card-image" style="background:linear-gradient(135deg,#94a3b8 0%,#64748b 100%)">+</div>
-      <div class="project-card-body">
-        <div class="project-card-tags">
-          <span class="tag">Future</span>
-        </div>
-        <h3 class="project-card-title">More projects coming</h3>
-        <p class="project-card-desc">New experiments, tools, and side projects will appear here as they launch.</p>
-        <div class="project-card-meta">
-          <span class="project-card-status"><span class="dot dot-planned"></span> Planned</span>
-          <span>TBD</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- Quick direct-link shortcuts (for sharing) -->
-<section class="container shortcuts-section">
-  <h2 class="section-title">Direct Links</h2>
-  <p class="section-subtitle">Shareable URLs that jump directly to a specific page:</p>
-  <div class="shortcuts">
-    <code>bundle-research.xyz/?go=research</code> → opens the Desertflow research page<br>
-    <code>bundle-research.xyz/?go=about</code> → opens the about page<br>
-    <code>bundle-research.xyz/?go=jack</code> → opens the Jack the Robot repo
   </div>
 </section>
 
 <footer>
   <div class="footer-inner">
-    <span>© 2026 Mohamed Benkaddour · Bundle Research · Independent Earth observation research</span>
+    <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
     <div class="footer-links">
       <a href="https://github.com/mohtheghost">GitHub</a>
       <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
@@ -418,21 +254,6 @@
       setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
     });
   }
-
-  // Project filter
-  const filters=document.querySelectorAll('.filter');
-  const cards=document.querySelectorAll('.project-card');
-  filters.forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      filters.forEach(f=>f.classList.remove('active'));
-      btn.classList.add('active');
-      const filter=btn.dataset.filter;
-      cards.forEach(card=>{
-        const tags=(card.dataset.tags||'').split(' ');
-        card.style.display=(filter==='all'||tags.includes(filter))?'':'none';
-      });
-    });
-  });
 </script>
 
 <!-- Cloudflare Web Analytics -->

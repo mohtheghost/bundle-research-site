@@ -3164,3 +3164,137 @@ footer {
   .community-grid { gap: 1rem; }
   .community-card { padding: 1.25rem 1.35rem 1.2rem; }
 }
+
+/* ==========================================================================
+   v4.0 — New home page: project list first, then research papers
+   ========================================================================== */
+.home-section { padding: 3rem 0 0.5rem; scroll-margin-top: 80px; }
+.home-section .section-subtitle { margin-bottom: 1.5rem; }
+
+.project-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.9rem; }
+.project-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr auto;
+  gap: 1.25rem;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--line) !important;
+  border-radius: var(--r-md);
+  padding: 1.3rem 1.5rem;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--tx-base), box-shadow var(--tx-base), border-color var(--tx-base);
+}
+.project-row:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-light) !important; }
+.project-row-flagship { border-left: 4px solid var(--gold) !important; }
+.project-row-num { font-family: var(--font-mono); font-size: 1.45rem; font-weight: 700; color: var(--accent); }
+.project-row-title { font-family: var(--font-serif); font-size: 1.35rem; font-weight: 600; margin: 0 0 0.3rem; color: var(--ink); line-height: 1.25; letter-spacing: -0.01em; }
+.project-row-desc { margin: 0 0 0.65rem; color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6; }
+.project-row-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.project-row-side { display: flex; flex-direction: column; align-items: flex-end; gap: 0.55rem; text-align: right; white-space: nowrap; }
+.project-row-status { font-size: 0.74rem; font-weight: 600; font-family: var(--font-mono); letter-spacing: 0.04em; color: var(--accent-dark); background: var(--accent-soft); border-radius: 999px; padding: 0.22rem 0.65rem; }
+.project-row-status.is-gold { color: #7a5a06; background: var(--gold-soft); }
+.project-row-status.is-muted { color: var(--muted); background: var(--line-soft); }
+.project-row-date { font-size: 0.78rem; color: var(--muted); }
+.project-row-arrow { font-size: 1.2rem; color: var(--accent); transition: transform var(--tx-fast); }
+.project-row:hover .project-row-arrow { transform: translateX(4px); }
+
+.pub-status-published { background: var(--accent-soft); color: var(--accent-dark); border: 1px solid #9fd3c9; }
+.pub-note { font-size: 0.88rem; color: var(--muted); margin: -0.4rem 0 1rem; }
+.home-section .pub-card { margin: 0 0 1.25rem; }
+
+.research-teaser { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; flex-wrap: wrap; background: var(--dark-bg); color: var(--on-dark); border-radius: var(--r-md); padding: 1.6rem 1.8rem; margin: 1rem 0 0; }
+.research-teaser h3 { font-family: var(--font-serif); font-size: 1.4rem; margin: 0 0 0.3rem; color: #fff; }
+.research-teaser p { margin: 0; color: var(--on-dark-soft); font-size: 0.95rem; max-width: 560px; }
+
+.research-areas { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 0 0 2.5rem; }
+
+@media (max-width: 640px) {
+  .project-row { grid-template-columns: 1fr; gap: 0.55rem; padding: 1.1rem 1.15rem; }
+  .project-row-num { font-size: 1.1rem; }
+  .project-row-side { flex-direction: row; align-items: center; justify-content: space-between; white-space: normal; }
+  .research-teaser { padding: 1.3rem 1.25rem; }
+}
+
+/* v4.0 — the hero's decorative rings spilled past the right edge and caused a sideways scroll */
+html, body { overflow-x: clip; }
+
+/* ==========================================================================
+   v4.1 — Projects as two picture cards (quick to scan, photo beside the name)
+   ========================================================================== */
+.showcase { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.showcase-card {
+  display: grid;
+  grid-template-columns: 44% 1fr;
+  min-height: 320px;
+  background: var(--card);
+  border: 1px solid var(--line) !important;
+  border-radius: 16px;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--tx-base), box-shadow var(--tx-base);
+}
+.showcase-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.showcase-media { position: relative; overflow: hidden; background: var(--dark-bg); }
+.showcase-media img, .showcase-media svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; display: block; transition: transform var(--tx-slow); }
+.showcase-card:hover .showcase-media img, .showcase-card:hover .showcase-media svg { transform: scale(1.04); }
+.showcase-body { display: flex; flex-direction: column; justify-content: center; gap: 0.6rem; padding: 1.75rem 1.6rem; }
+.showcase-kicker { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.showcase-title { font-family: var(--font-serif); font-size: 2rem; line-height: 1.1; margin: 0; color: var(--ink); letter-spacing: -0.02em; }
+.showcase-line { margin: 0; font-size: 1.02rem; color: var(--ink-soft); line-height: 1.5; }
+.showcase-cta { margin-top: 0.6rem; align-self: flex-start; font-weight: 600; font-size: 0.92rem; color: #fff; background: var(--accent); padding: 0.55rem 1rem; border-radius: 999px; transition: background var(--tx-fast); }
+.showcase-card:hover .showcase-cta { background: var(--accent-dark); }
+.engine-flow { stroke-dasharray: 4 6; animation: engine-flow 2.4s linear infinite; }
+@keyframes engine-flow { to { stroke-dashoffset: -20; } }
+@media (prefers-reduced-motion: reduce) { .engine-flow { animation: none; } .showcase-card, .showcase-media img, .showcase-media svg { transition: none; } }
+
+.papers-compact .pub-card { padding: 1.2rem 1.4rem; }
+.papers-compact .pub-title { font-size: 1.12rem; margin-bottom: 0.7rem; }
+
+@media (max-width: 980px) { .showcase { grid-template-columns: 1fr; } }
+@media (max-width: 540px) {
+  .showcase-card { grid-template-columns: 1fr; min-height: 0; }
+  .showcase-media { height: 260px; }
+  .showcase-body { padding: 1.25rem 1.2rem 1.4rem; }
+  .showcase-title { font-size: 1.7rem; }
+}
+
+/* ==========================================================================
+   v4.2 — Small photo cards (projects + papers share one design; grid has room for more)
+   ========================================================================== */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.4rem; }
+.photo-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--line) !important;
+  border-radius: 14px;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--tx-base), box-shadow var(--tx-base);
+}
+.photo-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.photo-card-media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--dark-bg); }
+.photo-card-media img, .photo-card-media svg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform var(--tx-slow); }
+.photo-card:hover .photo-card-media img, .photo-card:hover .photo-card-media svg { transform: scale(1.05); }
+.photo-card-badge { position: absolute; top: 10px; left: 10px; z-index: 2; font-family: var(--font-mono); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 999px; background: rgba(255,255,255,0.92); color: var(--accent-dark); box-shadow: var(--shadow-xs); }
+.photo-card-badge.is-prep { background: #fef3c7; color: #92400e; }
+.photo-card-body { display: flex; flex-direction: column; gap: 0.35rem; padding: 1rem 1.1rem 1.15rem; flex: 1; }
+.photo-card-kicker { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.photo-card-title { font-family: var(--font-serif); font-size: 1.35rem; line-height: 1.2; margin: 0; color: var(--ink); letter-spacing: -0.01em; }
+.photo-card-title.is-long { font-size: 1.02rem; line-height: 1.3; }
+.photo-card-line { margin: 0; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.45; }
+.photo-card-cta { margin-top: auto; padding-top: 0.55rem; font-weight: 600; font-size: 0.88rem; color: var(--accent); }
+.photo-card:hover .photo-card-cta { color: var(--accent-dark); }
+@media (prefers-reduced-motion: reduce) { .photo-card, .photo-card-media img, .photo-card-media svg { transition: none; } }
+
+/* v4.2 — phones: the 6 menu links were wider than the screen; stack brand above links and let links wrap */
+@media (max-width: 640px) {
+  .nav-inner { flex-direction: column; align-items: flex-start; gap: 0.45rem; }
+  .nav-links { flex-wrap: wrap; gap: 0.35rem 1.1rem; width: 100%; }
+}

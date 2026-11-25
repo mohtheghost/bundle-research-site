@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Research — Bundle Research</title>
+<meta name="description" content="The research behind Bundle Research: environmental forecasting with machine learning and satellite data, leakage-aware testing, and an open-source forecasting engine.">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bundle-research.xyz/research.html">
+<meta property="og:title" content="Research — Bundle Research">
+<meta property="og:description" content="Environmental forecasting with machine learning and satellite data: methods, timeline and what comes next.">
+<meta property="og:site_name" content="Bundle Research">
+<meta name="twitter:card" content="summary">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">Bundle Research</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="research.html" class="active">Research</a></li>
+      <li><a href="publications.html">Papers</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="/#contact-footer">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero-home container-narrow">
+  <span class="badge badge-mono" data-reveal>Earth Observation · Machine Learning · Environmental Forecasting</span>
+  <h1 data-reveal data-reveal-delay="1">Research</h1>
+  <p class="lede" data-reveal data-reveal-delay="2">How do you forecast nature when the weather that drives it can't be forecast far ahead? My research builds models that learn from many regions at once, start from each region's normal seasonal pattern, and are tested only on years they never saw.</p>
+</section>
+
+<!-- FEATURED: the main research line -->
+<section class="container">
+  <div class="featured-card" data-reveal>
+    <div class="featured-meta">
+      <span class="dot"></span> Main research line · 2025–2026
+    </div>
+    <h2 class="featured-title">Desertflow Global Bundle</h2>
+    <p class="featured-desc">Per-region forecasting of vegetation greenness (NDVI) across 133 WWF ecoregions and 22 years, using Google Earth Engine. A leakage-aware testing protocol checks for the common ways forecasting studies get inflated scores — features that secretly contain the answer, statistics shared across the train/test line, and leaky splits.</p>
+    <div class="featured-stats">
+      <div><span class="featured-stat-num" data-counter-target="133">133</span><span class="featured-stat-label">ecoregions</span></div>
+      <div><span class="featured-stat-num" data-counter-target="22">22</span><span class="featured-stat-label">years</span></div>
+      <div><span class="featured-stat-num" data-counter-target="19">19</span><span class="featured-stat-label">driver modules</span></div>
+      <div><span class="featured-stat-num" data-counter-target="89">89</span><span class="featured-stat-label">specialist models</span></div>
+    </div>
+    <div class="ctas">
+      <a class="btn btn-primary" href="desertflow.html">Read the full project →</a>
+      <a class="btn btn-secondary" href="leakage-audit.html">Leakage audit →</a>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH AREAS -->
+<section class="container home-section">
+  <h2 class="section-title">Research areas</h2>
+  <p class="section-subtitle">Three connected pieces of work.</p>
+  <div class="research-areas">
+    <a class="team-card" href="publications.html">
+      <div class="team-card-num">01</div>
+      <h3 class="team-card-title">One method, five problems</h3>
+      <p class="team-card-desc">The tree-routing engine, tested on vegetation, coral bleaching, wildfire, deforestation and PM2.5 air pollution. Published as a preprint on EarthArXiv.</p>
+    </a>
+    <a class="team-card" href="desertflow.html">
+      <div class="team-card-num">02</div>
+      <h3 class="team-card-title">Dryland vegetation</h3>
+      <p class="team-card-desc">Desertflow: region-specialist models plus a router for NDVI across 133 ecoregions. Paper in preparation.</p>
+    </a>
+    <a class="team-card" href="leakage-audit.html">
+      <div class="team-card-num">03</div>
+      <h3 class="team-card-title">Honest testing</h3>
+      <p class="team-card-desc">The leakage audit: a protocol for making sure a model is never tested on information it could not have had.</p>
+    </a>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="container research-meta-section">
+  <div class="research-timeline-col" data-reveal>
+    <h2 class="section-title section-title-sm">Research timeline</h2>
+    <div class="timeline timeline-home">
+      <div class="timeline-item">
+        <div class="timeline-date">2024</div>
+        <div class="timeline-text">Started independent remote-sensing research; first NDVI experiments using MODIS archives.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2025</div>
+        <div class="timeline-text">Built the Desertflow core: per-region CatBoost specialists plus a Bayesian-ridge router.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2026</div>
+        <div class="timeline-text">Scaled to 133 WWF ecoregions × 22 years, then took the method to five environmental problems: vegetation, coral bleaching, wildfire, deforestation and PM2.5.</div>
+      </div>
+      <div class="timeline-item timeline-item-current">
+        <div class="timeline-date">November 2026</div>
+        <div class="timeline-text">Released the code as open source (v1.0.0, archived on Zenodo), published the methods preprint on EarthArXiv, and submitted it to a peer-reviewed journal.</div>
+      </div>
+      <div class="timeline-item timeline-item-future">
+        <div class="timeline-date">2027 — Planned</div>
+        <div class="timeline-text">Desertflow paper and an open benchmark dataset for honest testing of regional vegetation models.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
+    <div class="footer-links">
+      <a href="https://github.com/mohtheghost">GitHub</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
+      <a href="about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+</script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "4aaf0ee4234e476abf6fdd8727459ccf"}'></script>
+
+<!-- Consent banner + opt-in Microsoft Clarity -->
+<script src="consent.js" defer></script>
+
+<!-- Scroll reveals + animated stat counters + nav-on-scroll shadow -->
+<script src="effects.js" defer></script>
+
+</body>
+</html>
