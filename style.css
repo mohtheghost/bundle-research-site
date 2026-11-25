@@ -3298,3 +3298,99 @@ html, body { overflow-x: clip; }
   .nav-inner { flex-direction: column; align-items: flex-start; gap: 0.45rem; }
   .nav-links { flex-wrap: wrap; gap: 0.35rem 1.1rem; width: 100%; }
 }
+
+/* ==========================================================================
+   v4.3 — Home page motion & polish (scoped to body.home)
+   ========================================================================== */
+html { scroll-behavior: smooth; }
+
+/* Scroll progress bar */
+.scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 1000; transform: scaleX(0); transform-origin: 0 50%; background: linear-gradient(90deg, var(--accent), var(--accent-light), var(--gold)); pointer-events: none; }
+
+/* Hero: aurora glow + dot network, full page width */
+.home .hero-home { padding-bottom: 5.5rem; }
+.home .hero-home::before { display: none; }
+.hero-aurora, .hero-canvas { position: absolute; top: -4rem; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%); z-index: -2; pointer-events: none; }
+.hero-canvas { z-index: -1; display: block; height: calc(100% + 4rem);
+  mask-image: radial-gradient(ellipse 75% 85% at 50% 45%, #000 35%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 85% at 50% 45%, #000 35%, transparent 85%); }
+.hero-aurora { overflow: hidden; }
+.hero-aurora span { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55; will-change: transform; }
+.hero-aurora span:nth-child(1) { width: 520px; height: 520px; top: -8%; right: 8%; background: radial-gradient(circle, rgba(20,160,140,0.55), transparent 70%); animation: aurora-a 18s ease-in-out infinite alternate; }
+.hero-aurora span:nth-child(2) { width: 420px; height: 420px; top: 30%; left: 4%; background: radial-gradient(circle, rgba(244,196,48,0.38), transparent 70%); animation: aurora-b 22s ease-in-out infinite alternate; }
+.hero-aurora span:nth-child(3) { width: 380px; height: 380px; bottom: -10%; right: 30%; background: radial-gradient(circle, rgba(56,152,236,0.30), transparent 70%); animation: aurora-c 26s ease-in-out infinite alternate; }
+@keyframes aurora-a { to { transform: translate(-120px, 80px) scale(1.15); } }
+@keyframes aurora-b { to { transform: translate(140px, -60px) scale(1.2); } }
+@keyframes aurora-c { to { transform: translate(-90px, -70px) scale(0.9); } }
+
+/* Name: slow moving gradient shimmer */
+.name-shimmer { background: linear-gradient(100deg, var(--accent-dark) 0%, var(--accent) 30%, #d4a017 50%, var(--accent) 70%, var(--accent-dark) 100%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: name-shine 7s ease-in-out infinite; }
+@keyframes name-shine { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+/* Rotating word */
+.rotator { display: inline-block; }
+.rotator-word { display: inline-block; background: linear-gradient(90deg, var(--accent), #d4a017); -webkit-background-clip: text; background-clip: text; color: transparent; font-style: italic; padding-right: 0.08em; }
+.rotator-word.is-out { animation: word-out 0.38s ease-in forwards; }
+.rotator-word.is-in { animation: word-in 0.55s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes word-out { to { opacity: 0; transform: translateY(-0.45em); filter: blur(6px); } }
+@keyframes word-in { from { opacity: 0; transform: translateY(0.45em); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* Badge shine sweep */
+.home .badge-mono { position: relative; overflow: hidden; }
+.home .badge-mono::after { content: ""; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,0.45), transparent); animation: badge-sweep 4.5s ease-in-out infinite; }
+@keyframes badge-sweep { 0%, 60% { left: -60%; } 100% { left: 130%; } }
+
+/* Buttons: soft glow */
+.home .btn-primary { box-shadow: 0 6px 20px rgba(15,123,108,0.28); }
+.home .btn-primary:hover { box-shadow: 0 10px 28px rgba(15,123,108,0.38); }
+
+/* Achievement strip: soft glass */
+.home .achievement-strip { background: rgba(255,255,255,0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+
+/* Scroll cue */
+.scroll-cue { position: absolute; left: 50%; bottom: 1.2rem; transform: translateX(-50%); width: 24px; height: 38px; border: 2px solid var(--accent); border-radius: 14px; opacity: 0.6; border-bottom: 2px solid var(--accent) !important; transition: opacity var(--tx-fast); }
+.scroll-cue:hover { opacity: 1; }
+.scroll-cue span { position: absolute; left: 50%; top: 7px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--accent); animation: cue-drop 1.8s ease-in-out infinite; }
+@keyframes cue-drop { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
+
+/* Section titles: gradient underline grows in */
+.home .section-title { flex-wrap: wrap; }
+.home .section-title::after { content: ""; flex: 0 0 100%; height: 3px; margin-top: 0.55rem; background: linear-gradient(90deg, var(--accent), var(--gold)) no-repeat 0 0 / 0 100%; border-radius: 3px; transition: background-size 1s 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+.home .section-title.is-visible::after { background-size: 72px 100%; }
+
+/* Cards: spotlight that follows the mouse + tilt (JS) */
+.home .photo-card, .home .team-card { position: relative; transform-style: preserve-3d; }
+.home .photo-card::after, .home .team-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity var(--tx-base); background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(20,160,140,0.13), transparent 45%); z-index: 3; }
+.home .photo-card:hover::after, .home .team-card:hover::after { opacity: 1; }
+.home .photo-card.is-tilting, .home .team-card.is-tilting { transition: transform 0.12s ease-out, box-shadow var(--tx-base); box-shadow: 0 18px 40px rgba(15,30,40,0.16); }
+.home .photo-card-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 55%, rgba(10,31,28,0.35)); opacity: 0; transition: opacity var(--tx-base); }
+.home .photo-card:hover .photo-card-media::after { opacity: 1; }
+.home .photo-card-cta { transition: letter-spacing var(--tx-base), color var(--tx-fast); }
+.home .photo-card:hover .photo-card-cta { letter-spacing: 0.02em; }
+
+/* "Published" badge gets a live pulse dot */
+.photo-card-badge:not(.is-prep)::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 0.4rem; border-radius: 50%; background: #16a34a; vertical-align: 1px; animation: live-pulse 1.8s ease-out infinite; }
+@keyframes live-pulse { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,0.6); } 100% { box-shadow: 0 0 0 7px rgba(22,163,74,0); } }
+
+/* Engine picture: nodes breathe, hub sends out ripples */
+.engine-node { transform-box: fill-box; transform-origin: center; animation: node-breathe 3s ease-in-out infinite; }
+.engine-node.n2 { animation-delay: 0.6s; } .engine-node.n3 { animation-delay: 1.2s; }
+.engine-node.n4 { animation-delay: 1.8s; } .engine-node.n5 { animation-delay: 2.4s; }
+@keyframes node-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+.engine-ripple { transform-box: fill-box; transform-origin: center; animation: hub-ripple 2.6s ease-out infinite; }
+.engine-ripple.r2 { animation-delay: 1.3s; }
+@keyframes hub-ripple { 0% { transform: scale(1); opacity: 0.9; } 100% { transform: scale(2.1); opacity: 0; } }
+
+/* Beyond the code: gold title shimmer */
+.home .team-impact-title { background: linear-gradient(100deg, #b8860b 0%, #e0b23a 45%, #b8860b 90%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: name-shine 8s ease-in-out infinite; }
+
+@media (max-width: 640px) {
+  .scroll-cue { display: none; }
+  .home .hero-home { padding-bottom: 3rem; }
+  .hero-aurora span { filter: blur(50px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero-aurora span, .name-shimmer, .home .badge-mono::after, .scroll-cue span, .engine-node, .engine-ripple, .photo-card-badge::before, .home .team-impact-title, .rotator-word { animation: none !important; }
+  .home .section-title::after { transition: none; }
+}
