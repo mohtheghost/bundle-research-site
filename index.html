@@ -33,6 +33,8 @@
     'paper': '/publications.html',
     'papers': '/publications.html',
     'projects': '/#projects',
+    'education': '/#education',
+    'book': '/#education',
     'about': '/about.html',
     'jack': '/jack-the-robot.html'
   };
@@ -64,11 +66,12 @@
     <a href="/" class="nav-brand">Bundle Research</a>
     <ul class="nav-links">
       <li><a href="/" class="active">Home</a></li>
-      <li><a href="/#projects">Projects</a></li>
       <li><a href="research.html">Research</a></li>
       <li><a href="publications.html">Papers</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#education">Education</a></li>
       <li><a href="about.html">About</a></li>
-      <li><a href="#contact-footer" onclick="document.getElementById('contact-footer').scrollIntoView({behavior:'smooth'});return false;">Contact</a></li>
+      <li><a href="/#contact-footer">Contact</a></li>
     </ul>
   </div>
 </nav>
@@ -100,8 +103,8 @@
   <h1 data-reveal data-reveal-delay="1">Hi, I'm <span class="accent name-shimmer">Mohamed Benkaddour</span>. I build forecasting tools for<br> <span class="rotator" data-words="the environment|coral reefs|forests|clean air|wildfire risk|safer communities"><span class="rotator-word">the environment</span></span>.</h1>
   <p class="lede" data-reveal data-reveal-delay="2">Machine learning for nature's hardest forecasts — and a robot that speaks Arabic.</p>
   <div class="ctas" data-reveal data-reveal-delay="3">
-    <a class="btn btn-primary" href="#projects">See my projects ↓</a>
-    <a class="btn btn-secondary" href="#papers">Research papers ↓</a>
+    <a class="btn btn-primary" href="#papers">Research papers ↓</a>
+    <a class="btn btn-secondary" href="#projects">See my projects ↓</a>
   </div>
   <!-- Achievement strip -->
   <div class="achievement-strip" data-reveal data-reveal-delay="4">
@@ -113,7 +116,40 @@
     <span class="dot-sep"></span>
     <span><strong>Open</strong> source</span>
   </div>
-  <a class="scroll-cue" href="#projects" aria-label="Scroll to projects"><span></span></a>
+  <a class="scroll-cue" href="#papers" aria-label="Scroll to research papers"><span></span></a>
+</section>
+
+<!-- RESEARCH PAPERS — same photo-card design as the projects -->
+<section class="container home-section" id="papers">
+  <h2 class="section-title" data-reveal>Research papers</h2>
+
+  <div class="card-grid">
+
+    <a class="photo-card" href="https://doi.org/10.31223/X5VR7D" target="_blank" rel="noopener" data-reveal>
+      <div class="photo-card-media">
+        <span class="photo-card-badge">Published</span>
+        <img src="images/paper-forecast.jpg" alt="Poster: Forecast today, save tomorrow — AI forecasting wildfires, deforestation, desertification and coral bleaching" width="800" height="450" loading="lazy">
+      </div>
+      <div class="photo-card-body">
+        <span class="photo-card-kicker">Preprint · EarthArXiv · Nov 2026</span>
+        <h3 class="photo-card-title is-long">Ridge weighting of other regions’ regression trees, anchored to the seasonal normal: a temporal hold-out test on five environmental forecasting problems</h3>
+        <span class="photo-card-cta">Read the preprint ↗</span>
+      </div>
+    </a>
+
+    <div class="photo-card" data-reveal data-reveal-delay="1">
+      <div class="photo-card-media">
+        <span class="photo-card-badge is-prep">In preparation</span>
+        <img src="images/paper-casualty.jpg" alt="Poster: AI for a safer tomorrow — predicting casualties to help UN peacekeeping forces" width="800" height="450" loading="lazy">
+      </div>
+      <div class="photo-card-body">
+        <span class="photo-card-kicker">Paper · Not yet published</span>
+        <h3 class="photo-card-title is-long">Predicting conflict casualties to help UN peacekeeping forces allocate resources</h3>
+        <span class="photo-card-cta">Coming soon</span>
+      </div>
+    </div>
+
+  </div>
 </section>
 
 <!-- PROJECTS — small photo cards, the first thing a visitor sees (grid has room for more) -->
@@ -173,32 +209,65 @@
   </div>
 </section>
 
-<!-- RESEARCH PAPERS — same photo-card design as the projects -->
-<section class="container home-section" id="papers">
-  <h2 class="section-title" data-reveal>Research papers</h2>
+<!-- EDUCATION MATERIALS — the book and learning materials (same photo-card design) -->
+<section class="container home-section" id="education">
+  <h2 class="section-title" data-reveal>Education materials</h2>
 
   <div class="card-grid">
 
-    <a class="photo-card" href="https://doi.org/10.31223/X5VR7D" target="_blank" rel="noopener" data-reveal>
-      <div class="photo-card-media">
-        <span class="photo-card-badge">Published</span>
-        <img src="images/paper-forecast.jpg" alt="Poster: Forecast today, save tomorrow — AI forecasting wildfires, deforestation, desertification and coral bleaching" width="800" height="450" loading="lazy">
+    <div class="photo-card" data-reveal>
+      <div class="photo-card-media" aria-hidden="true" style="background:radial-gradient(circle at 50% 40%, #143027 0%, #0a1f1c 75%)">
+        <span class="photo-card-badge is-prep">Coming soon</span>
+        <svg viewBox="0 0 300 250" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" stroke="#5eead4" stroke-width="1">
+            <circle cx="150" cy="135" r="45" stroke-opacity="0.3"/>
+            <circle cx="150" cy="135" r="78" stroke-opacity="0.22"/>
+            <circle cx="150" cy="135" r="111" stroke-opacity="0.14"/>
+          </g>
+          <path d="M150 96 C118 84 80 82 48 90 L48 192 C80 184 118 186 150 198 C182 186 220 184 252 192 L252 90 C220 82 182 84 150 96 Z" fill="#0f7b6c"/>
+          <path d="M150 90 C120 78 85 76 55 84 L55 180 C85 172 120 174 150 186 Z" fill="#e8f1ee"/>
+          <path d="M150 90 C180 78 215 76 245 84 L245 180 C215 172 180 174 150 186 Z" fill="#ffffff"/>
+          <line x1="150" y1="90" x2="150" y2="186" stroke="#cbd5e1" stroke-width="1.5"/>
+          <g stroke="#94a3b8" stroke-width="2" stroke-linecap="round" fill="none">
+            <path d="M68 102 Q100 95 136 103"/><path d="M68 118 Q100 111 136 119"/><path d="M68 134 Q100 127 136 135"/><path d="M68 150 Q95 144 120 150"/>
+            <path d="M164 103 Q200 95 232 102"/><path d="M164 119 Q200 111 232 118"/><path d="M164 135 Q200 127 232 134"/>
+          </g>
+          <path d="M206 176 L206 214 L214 206 L222 214 L222 174 Z" fill="#f4c430"/>
+          <circle class="engine-node n1" cx="70" cy="58" r="4" fill="#f4c430"/>
+          <circle class="engine-node n3" cx="236" cy="50" r="3" fill="#5eead4"/>
+          <circle class="engine-node n5" cx="262" cy="118" r="3.5" fill="#f4c430"/>
+          <circle class="engine-node n2" cx="36" cy="130" r="3" fill="#5eead4"/>
+        </svg>
       </div>
       <div class="photo-card-body">
-        <span class="photo-card-kicker">Preprint · EarthArXiv · Nov 2026</span>
-        <h3 class="photo-card-title is-long">Ridge weighting of other regions’ regression trees, anchored to the seasonal normal: a temporal hold-out test on five environmental forecasting problems</h3>
-        <span class="photo-card-cta">Read the preprint ↗</span>
+        <span class="photo-card-kicker">Book</span>
+        <h3 class="photo-card-title">My book</h3>
+        <p class="photo-card-line">Written to help people learn. Free to read here soon.</p>
+        <span class="photo-card-cta">Coming soon</span>
       </div>
-    </a>
+    </div>
 
     <div class="photo-card" data-reveal data-reveal-delay="1">
-      <div class="photo-card-media">
-        <span class="photo-card-badge is-prep">In preparation</span>
-        <img src="images/paper-casualty.jpg" alt="Poster: AI for a safer tomorrow — predicting casualties to help UN peacekeeping forces" width="800" height="450" loading="lazy">
+      <div class="photo-card-media" aria-hidden="true" style="background:radial-gradient(circle at 50% 40%, #143027 0%, #0a1f1c 75%)">
+        <span class="photo-card-badge is-prep">Coming soon</span>
+        <svg viewBox="0 0 300 250" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <circle class="engine-ripple" cx="150" cy="105" r="48" fill="none" stroke="#f4c430" stroke-width="2"/>
+          <circle class="engine-ripple r2" cx="150" cy="105" r="48" fill="none" stroke="#5eead4" stroke-width="2"/>
+          <g stroke="#f4c430" stroke-width="3" stroke-linecap="round" opacity="0.85">
+            <line x1="150" y1="26" x2="150" y2="40"/><line x1="83" y1="56" x2="94" y2="65"/><line x1="217" y1="56" x2="206" y2="65"/>
+            <line x1="62" y1="110" x2="76" y2="110"/><line x1="238" y1="110" x2="224" y2="110"/>
+          </g>
+          <circle cx="150" cy="105" r="48" fill="#f4c430"/>
+          <path d="M132 104 Q150 84 168 104 M141 112 L150 96 L159 112" stroke="#7a5a06" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="128" y="150" width="44" height="12" rx="4" fill="#94a3b8"/>
+          <rect x="132" y="165" width="36" height="10" rx="4" fill="#64748b"/>
+          <rect x="140" y="178" width="20" height="8" rx="3" fill="#475569"/>
+        </svg>
       </div>
       <div class="photo-card-body">
-        <span class="photo-card-kicker">Paper · Not yet published</span>
-        <h3 class="photo-card-title is-long">Predicting conflict casualties to help UN peacekeeping forces allocate resources</h3>
+        <span class="photo-card-kicker">Guides</span>
+        <h3 class="photo-card-title">Learning guides</h3>
+        <p class="photo-card-line">Simple explanations with pictures, to help people learn.</p>
         <span class="photo-card-cta">Coming soon</span>
       </div>
     </div>
