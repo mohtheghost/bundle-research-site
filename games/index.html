@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Games — Bundle Research</title>
+<meta name="description" content="Games by Mohamed Benkaddour. Coming soon to Bundle Research.">
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bundle-research.xyz/games/">
+<meta property="og:title" content="Games — Bundle Research">
+<meta property="og:description" content="Games by Mohamed Benkaddour. Coming soon to Bundle Research.">
+<meta property="og:site_name" content="Bundle Research">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Games — Bundle Research">
+<meta name="twitter:description" content="Games by Mohamed Benkaddour. Coming soon to Bundle Research.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/style.css">
+<!-- Link preview picture (WhatsApp, email, social) -->
+<meta property="og:image" content="https://bundle-research.xyz/images/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Bundle Research — Mohamed Benkaddour: forecasting tools for the environment">
+<meta name="twitter:image" content="https://bundle-research.xyz/images/og-card.jpg">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">Bundle Research</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/research.html">Research</a></li>
+      <li><a href="/publications.html">Papers</a></li>
+      <li><a href="/games/" class="active">Games</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#education">Education</a></li>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="#contact-footer">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero-home container-narrow">
+  <span class="badge badge-mono">Games</span>
+  <h1>Games</h1>
+  <p class="lede">Games I've built, ready to play in your browser.</p>
+</section>
+
+<main class="container-narrow content">
+
+<!-- PLACEHOLDER: replace this block with the real games content -->
+<div class="coming-soon">
+  <div class="coming-soon-art" aria-hidden="true">
+    <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="#14a08c" stroke-width="1"><circle cx="150" cy="115" r="55" stroke-opacity="0.35"/><circle cx="150" cy="115" r="90" stroke-opacity="0.22"/></g>
+      <path d="M92 78 H208 C238 78 258 104 264 140 C270 172 252 186 234 176 C220 168 212 150 196 146 H104 C88 150 80 168 66 176 C48 186 30 172 36 140 C42 104 62 78 92 78 Z" fill="#0f7b6c"/>
+      <rect x="82" y="104" width="12" height="36" rx="3" fill="#e8f1ee"/>
+      <rect x="70" y="116" width="36" height="12" rx="3" fill="#e8f1ee"/>
+      <circle cx="210" cy="106" r="8" fill="#f4c430"/>
+      <circle cx="228" cy="122" r="8" fill="#ff7f6e"/>
+      <circle cx="192" cy="122" r="8" fill="#5eead4"/>
+      <circle cx="210" cy="138" r="8" fill="#9fb4d8"/>
+      <rect x="132" y="98" width="14" height="6" rx="3" fill="#0a1f1c"/>
+      <rect x="154" y="98" width="14" height="6" rx="3" fill="#0a1f1c"/>
+    </svg>
+  </div>
+  <span class="pub-status pub-status-prep">Coming soon</span>
+  <h2 class="coming-soon-title">Games are on their way</h2>
+  <p class="coming-soon-text">This page is ready. The games will appear here soon.</p>
+  <a class="btn btn-primary" href="/">Back to home</a>
+</div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
+    <div class="footer-links">
+      <a href="https://github.com/mohtheghost">GitHub</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
+      <a href="/about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+</script>
+
+<!-- Scroll reveals + nav-on-scroll shadow + phone menu button -->
+<script src="/effects.js" defer></script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "4aaf0ee4234e476abf6fdd8727459ccf"}'></script>
+
+</body>
+</html>

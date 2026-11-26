@@ -3420,7 +3420,7 @@ footer { background: var(--night); border-top: 1px solid rgba(255, 255, 255, 0.0
 .nav-open .nav-toggle span:nth-child(1) { top: 20px; transform: rotate(45deg); }
 .nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
 .nav-open .nav-toggle span:nth-child(3) { top: 20px; transform: rotate(-45deg); }
-@media (max-width: 900px) {
+@media (max-width: 1040px) {
   .js .nav-inner { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0; }
   .js .nav-toggle { display: block; }
   .js .nav-links { display: none; flex-basis: 100%; flex-direction: column; gap: 0; padding: 0.6rem 0 0.3rem; }
@@ -3514,3 +3514,10 @@ body.home { background: var(--night); background-image: none; color: var(--on-ni
   .page-bg-rings { animation: none !important; }
   .js .nav-open .nav-links { animation: none; }
 }
+
+/* v5.2 — placeholder pages (/book/, /games/) */
+.coming-soon { text-align: center; padding: 2.5rem 1.5rem 3rem; margin: 0 auto 2rem; max-width: 620px; background: var(--card); border: 1px dashed #b7c6c1; border-radius: 18px; box-shadow: var(--shadow-sm); }
+.coming-soon-art svg { width: min(100%, 300px); height: auto; display: block; margin: 0 auto 1.25rem; }
+.coming-soon-title { font-family: var(--font-serif); font-size: 1.7rem; margin: 0.9rem 0 0.4rem; }
+.coming-soon-text { color: var(--muted); margin: 0 auto 1.5rem; max-width: 440px; }
+.coming-soon .btn-primary { color: #fff !important; border-bottom: none !important; }

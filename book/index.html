@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Book — Bundle Research</title>
+<meta name="description" content="My book, written to help people learn. Coming soon to Bundle Research.">
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bundle-research.xyz/book/">
+<meta property="og:title" content="My Book — Bundle Research">
+<meta property="og:description" content="My book, written to help people learn. Coming soon to Bundle Research.">
+<meta property="og:site_name" content="Bundle Research">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="My Book — Bundle Research">
+<meta name="twitter:description" content="My book, written to help people learn. Coming soon to Bundle Research.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/style.css">
+<!-- Link preview picture (WhatsApp, email, social) -->
+<meta property="og:image" content="https://bundle-research.xyz/images/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Bundle Research — Mohamed Benkaddour: forecasting tools for the environment">
+<meta name="twitter:image" content="https://bundle-research.xyz/images/og-card.jpg">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">Bundle Research</a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/research.html">Research</a></li>
+      <li><a href="/publications.html">Papers</a></li>
+      <li><a href="/games/">Games</a></li>
+      <li><a href="/#projects">Projects</a></li>
+      <li><a href="/#education" class="active">Education</a></li>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="#contact-footer">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero-home container-narrow">
+  <span class="badge badge-mono">Book · Education materials</span>
+  <h1>My book</h1>
+  <p class="lede">Written to help people learn. It will be free to read here.</p>
+</section>
+
+<main class="container-narrow content">
+
+<!-- PLACEHOLDER: replace this block with the real book content -->
+<div class="coming-soon">
+  <div class="coming-soon-art" aria-hidden="true">
+    <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="#14a08c" stroke-width="1"><circle cx="150" cy="120" r="50" stroke-opacity="0.35"/><circle cx="150" cy="120" r="85" stroke-opacity="0.22"/></g>
+      <path d="M150 76 C118 64 80 62 48 70 L48 172 C80 164 118 166 150 178 C182 166 220 164 252 172 L252 70 C220 62 182 64 150 76 Z" fill="#0f7b6c"/>
+      <path d="M150 70 C120 58 85 56 55 64 L55 160 C85 152 120 154 150 166 Z" fill="#e8f1ee"/>
+      <path d="M150 70 C180 58 215 56 245 64 L245 160 C215 152 180 154 150 166 Z" fill="#ffffff" stroke="#e6e8ee"/>
+      <line x1="150" y1="70" x2="150" y2="166" stroke="#cbd5e1" stroke-width="1.5"/>
+      <g stroke="#94a3b8" stroke-width="2" stroke-linecap="round" fill="none"><path d="M68 82 Q100 75 136 83"/><path d="M68 98 Q100 91 136 99"/><path d="M68 114 Q100 107 136 115"/><path d="M164 83 Q200 75 232 82"/><path d="M164 99 Q200 91 232 98"/><path d="M164 115 Q200 107 232 114"/></g>
+      <path d="M206 156 L206 194 L214 186 L222 194 L222 154 Z" fill="#f4c430"/>
+    </svg>
+  </div>
+  <span class="pub-status pub-status-prep">Coming soon</span>
+  <h2 class="coming-soon-title">The book is on its way</h2>
+  <p class="coming-soon-text">This page is ready. The book will appear here soon, to read online or download.</p>
+  <a class="btn btn-primary" href="/">Back to home</a>
+</div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span>© 2026 Mohamed Benkaddour · Bundle Research</span>
+    <div class="footer-links">
+      <a href="https://github.com/mohtheghost">GitHub</a>
+      <a href="#" id="contact-footer" onclick="copyEmail(this);return false;">bagbagig@bundle-research.xyz</a>
+      <a href="/about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function copyEmail(el){
+    navigator.clipboard.writeText('bagbagig@bundle-research.xyz').then(()=>{
+      const orig=el.innerHTML;
+      el.innerHTML='✓ Copied!';
+      el.classList.add('copied');
+      setTimeout(()=>{el.innerHTML=orig;el.classList.remove('copied')},2000);
+    });
+  }
+</script>
+
+<!-- Scroll reveals + nav-on-scroll shadow + phone menu button -->
+<script src="/effects.js" defer></script>
+
+<!-- Cloudflare Web Analytics -->
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "4aaf0ee4234e476abf6fdd8727459ccf"}'></script>
+
+</body>
+</html>
