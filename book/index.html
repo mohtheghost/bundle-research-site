@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Book — Bundle Research</title>
-<meta name="description" content="My book, written to help people learn. Coming soon to Bundle Research.">
+<title>Machine Learning from Zero — Bundle Research</title>
+<meta name="description" content="Machine Learning from Zero: a free beginner's book on the fundamentals of machine learning, in plain words and pictures. Read it online or download the PDF.">
 
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-<meta property="og:type" content="website">
+<meta property="og:type" content="book">
 <meta property="og:url" content="https://bundle-research.xyz/book/">
-<meta property="og:title" content="My Book — Bundle Research">
-<meta property="og:description" content="My book, written to help people learn. Coming soon to Bundle Research.">
+<meta property="og:title" content="Machine Learning from Zero — a free book">
+<meta property="og:description" content="A free beginner's book on machine learning, in plain words and pictures. Read online or download the PDF.">
 <meta property="og:site_name" content="Bundle Research">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="My Book — Bundle Research">
-<meta name="twitter:description" content="My book, written to help people learn. Coming soon to Bundle Research.">
+<meta name="twitter:title" content="Machine Learning from Zero — a free book">
+<meta name="twitter:description" content="A free beginner's book on machine learning, in plain words and pictures. Read online or download the PDF.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,33 +48,33 @@
 </nav>
 
 <section class="hero-home container-narrow">
-  <span class="badge badge-mono">Book · Education materials</span>
-  <h1>My book</h1>
-  <p class="lede">Written to help people learn. It will be free to read here.</p>
+  <span class="badge badge-mono">Book · Free to read</span>
+  <h1>Machine Learning <span class="accent">from Zero</span></h1>
+  <p class="lede">A beginner's book on the fundamentals of machine learning, in plain words and pictures. No maths beyond everyday arithmetic. Read it right here, or download the PDF and keep it.</p>
+  <div class="ctas">
+    <a class="btn btn-primary" href="#reader">Read online ↓</a>
+    <a class="btn btn-secondary book-download" href="/book/machine-learning-from-zero.pdf" download="Machine Learning from Zero.pdf">Download PDF</a>
+  </div>
+  <p class="book-meta">By Mohamed Benkaddour · 133 pages · PDF · 4.6 MB</p>
 </section>
 
-<main class="container-narrow content">
-
-<!-- PLACEHOLDER: replace this block with the real book content -->
-<div class="coming-soon">
-  <div class="coming-soon-art" aria-hidden="true">
-    <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
-      <g fill="none" stroke="#14a08c" stroke-width="1"><circle cx="150" cy="120" r="50" stroke-opacity="0.35"/><circle cx="150" cy="120" r="85" stroke-opacity="0.22"/></g>
-      <path d="M150 76 C118 64 80 62 48 70 L48 172 C80 164 118 166 150 178 C182 166 220 164 252 172 L252 70 C220 62 182 64 150 76 Z" fill="#0f7b6c"/>
-      <path d="M150 70 C120 58 85 56 55 64 L55 160 C85 152 120 154 150 166 Z" fill="#e8f1ee"/>
-      <path d="M150 70 C180 58 215 56 245 64 L245 160 C215 152 180 154 150 166 Z" fill="#ffffff" stroke="#e6e8ee"/>
-      <line x1="150" y1="70" x2="150" y2="166" stroke="#cbd5e1" stroke-width="1.5"/>
-      <g stroke="#94a3b8" stroke-width="2" stroke-linecap="round" fill="none"><path d="M68 82 Q100 75 136 83"/><path d="M68 98 Q100 91 136 99"/><path d="M68 114 Q100 107 136 115"/><path d="M164 83 Q200 75 232 82"/><path d="M164 99 Q200 91 232 98"/><path d="M164 115 Q200 107 232 114"/></g>
-      <path d="M206 156 L206 194 L214 186 L222 194 L222 154 Z" fill="#f4c430"/>
-    </svg>
+<!-- READER: pages are drawn by reader.js with pdf.js -->
+<section class="reader-wrap" id="reader" data-pdf="/book/machine-learning-from-zero.pdf">
+  <div class="reader-bar">
+    <div class="reader-bar-inner">
+      <div class="reader-zoom" role="group" aria-label="Zoom">
+        <button type="button" id="reader-zoom-out" aria-label="Zoom out">−</button>
+        <span id="reader-zoom-level">100%</span>
+        <button type="button" id="reader-zoom-in" aria-label="Zoom in">+</button>
+      </div>
+      <label class="reader-goto">Page <input id="reader-page" type="number" min="1" value="1" inputmode="numeric" aria-label="Current page"> / <span id="reader-total">…</span></label>
+      <a class="reader-download" href="/book/machine-learning-from-zero.pdf" download="Machine Learning from Zero.pdf">⬇ <span>Download PDF</span></a>
+    </div>
   </div>
-  <span class="pub-status pub-status-prep">Coming soon</span>
-  <h2 class="coming-soon-title">The book is on its way</h2>
-  <p class="coming-soon-text">This page is ready. The book will appear here soon, to read online or download.</p>
-  <a class="btn btn-primary" href="/">Back to home</a>
-</div>
-
-</main>
+  <p class="reader-status" id="reader-status">Opening the book…</p>
+  <noscript><p class="reader-status">The online reader needs JavaScript. <a href="/book/machine-learning-from-zero.pdf" download>Download the PDF</a> to read it.</p></noscript>
+  <div class="reader-pages" id="reader-pages"></div>
+</section>
 
 <footer>
   <div class="footer-inner">
@@ -97,6 +97,10 @@
     });
   }
 </script>
+
+<!-- pdf.js (Mozilla's PDF engine) draws the pages; reader.js runs the reader -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="/book/reader.js" defer></script>
 
 <!-- Scroll reveals + nav-on-scroll shadow + phone menu button -->
 <script src="/effects.js" defer></script>
