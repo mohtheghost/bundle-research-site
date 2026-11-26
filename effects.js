@@ -11,6 +11,8 @@
  * modern browser).
  */
 (function(){
+  document.documentElement.classList.add('js');
+
   // ---------- Scroll reveals ----------
   function initReveals(){
     var els = document.querySelectorAll('[data-reveal]');
@@ -104,12 +106,41 @@
     });
   }
 
+  // ---------- Phone menu button ----------
+  // Adds a ☰ button to the menu bar. CSS only shows it (and hides the
+  // links until it is pressed) on narrow screens; without JS the links
+  // simply stay visible.
+  function initNavToggle(){
+    var nav = document.querySelector('.nav');
+    var inner = nav && nav.querySelector('.nav-inner');
+    var links = nav && nav.querySelector('.nav-links');
+    if (!inner || !links || inner.querySelector('.nav-toggle')) return;
+    if (!links.id) links.id = 'site-menu';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'nav-toggle';
+    btn.setAttribute('aria-label', 'Open menu');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.setAttribute('aria-controls', links.id);
+    btn.innerHTML = '<span></span><span></span><span></span>';
+    inner.insertBefore(btn, links);
+    function setOpen(open){
+      nav.classList.toggle('nav-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    btn.addEventListener('click', function(){ setOpen(!nav.classList.contains('nav-open')); });
+    links.addEventListener('click', function(e){ if (e.target.closest('a')) setOpen(false); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') setOpen(false); });
+  }
+
   // ---------- Init ----------
   function init(){
     initReveals();
     initCounters();
     initNavShadow();
     initTocCircle();
+    initNavToggle();
   }
 
   if (document.readyState === 'loading') {
